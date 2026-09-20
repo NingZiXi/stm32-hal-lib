@@ -63,4 +63,14 @@ python lib/stm_sdram/tests/run_tests.py --include ci/include --include .ci-deps/
 
 当前不包含日志运行时测试、完整固件链接或硬件在环测试。CI 的成功只代表上述软件检查通过。
 
+RTT 可选依赖还会执行独立编译和链接检查：
+
+```sh
+cmake -S ci -B build/rtt -G Ninja "-DCMAKE_TOOLCHAIN_FILE=arm-gcc.cmake" -DSTM_LOG_WITH_RTT=ON
+cmake --build build/rtt
+python ci/check_rtt_dependency.py --source build/rtt/_deps/segger_rtt-src
+```
+
+首个构建实际下载固定 RTT 提交，应用只链接 `stm_log`，验证 RTT 头文件和符号被正确传递；后续检查覆盖关闭依赖、指定本地源码/配置、同级目录、已有 target 和离线缺失报错。链接检查使用 HAL 桩和 newlib nosys，产物仅用于检查，不可烧录，也不代表 RTT 硬件通信测试通过。
+
 升级依赖时同步修改工作流和本文的 commit，并重新运行全部检查。组件更新须先推送到独立远程，再提交总仓库的 gitlink；CI 的递归 checkout 会验证该提交能从远程获取。

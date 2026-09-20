@@ -59,6 +59,11 @@ jobs:
           cmake --build build/compile
       - name: Check shared dependency resolution and pinned download
         run: python ci/check_common_dependency.py
+      - name: Fetch RTT and check transitive linking
+        run: |
+          cmake -S ci -B build/rtt -G Ninja "-DCMAKE_TOOLCHAIN_FILE=arm-gcc.cmake" "-DCMAKE_BUILD_TYPE=Release" -DSTM_LOG_WITH_RTT=ON
+          cmake --build build/rtt
+          python ci/check_rtt_dependency.py --source build/rtt/_deps/segger_rtt-src
       - name: Run Flash and SDRAM software tests
         run: |
           for component in stm_flash stm_sdram; do

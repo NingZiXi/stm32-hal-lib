@@ -13,11 +13,11 @@
 | [stm_common](https://github.com/NingZiXi/stm_common) | [![version 1.0.0](https://img.shields.io/badge/version-1.0.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_common/tree/ce3d186dde2d374a8e9c7b9068a7b88f97d57dc1) | `stm_err_t` 与公共错误码 |
 | [stm_flash](https://github.com/NingZiXi/stm_flash) | [![version 2.0.0](https://img.shields.io/badge/version-2.0.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_flash/tree/7768c76e364b94dbb025356d5fc1c2ad938d9640) | NOR Flash 读取、分页写入、扇区擦除与校验 |
 | [stm_sdram](https://github.com/NingZiXi/stm_sdram) | [![version 2.0.0](https://img.shields.io/badge/version-2.0.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_sdram/tree/34e886445d50a1e013d326f9a6bd105beeb39fc6) | SDRAM 初始化、刷新、读写、填充及自检 |
-| [stm_log](https://github.com/NingZiXi/stm_log) | [![version 2.3.1+059e5bc](https://img.shields.io/badge/version-2.3.1%2B059e5bc-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_log/tree/059e5bc096233fa715d66ba3e92ea9defc697b52) | 分级日志、标签过滤及自定义输出 |
+| [stm_log](https://github.com/NingZiXi/stm_log) | [![version 2.3.1+15642aa](https://img.shields.io/badge/version-2.3.1%2B15642aa-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_log/tree/15642aa90fe3c5a91cd64680437f2ebd867ca20a) | 分级日志、标签过滤及自定义输出 |
 
 表中链接指向独立仓库的最新说明；当前固定版本的说明位于克隆后的 `lib/<组件>/README.md`。
 
-版本徽章对应本仓库固定的提交，点击可查看该版本源码。Flash/SDRAM 显示源码中的版本号，尚无发布标签；`stm_common` 已发布 `v1.0.0` 标签；`stm_log` 为 `v2.3.1` 加后续修复。更新子模块时同步更新徽章，不自动跟随最新发布版。
+版本徽章对应本仓库固定的提交，点击可查看该版本源码。Flash/SDRAM 显示源码中的版本号，尚无发布标签；`stm_common` 已发布 `v1.0.0` 标签；`stm_log` 为 `v2.3.1` 加后续更新。更新子模块时同步更新徽章，不自动跟随最新发布版。
 
 Flash、SDRAM 不依赖日志、RTT 或 RTOS。`stm_log` 保留现有 API；新设备驱动沿用 `flash_*`、`sdram_*` 这样的接口命名，规范见 [CONTRIBUTING.md](CONTRIBUTING.md)。
 
@@ -87,6 +87,8 @@ target_compile_definitions(stm_log PUBLIC STM_LOG_HAL_HEADER="stm32h7xx_hal.h")
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE stm_log)
 ```
 
+使用 RTT 输出时，在添加 `stm_log` 前设置 `STM_LOG_WITH_RTT=ON`，组件会自动提供 `segger_rtt` 链接依赖。默认从 [GitHub RTT](https://github.com/NingZiXi/RTT) 拉取固定提交，也可通过 `STM_LOG_RTT_GIT_REPOSITORY` 切换到 [Gitee RTT](https://gitee.com/nzxhg/RTT)。本地源码、离线选项与输出回调示例见 stm_log README。默认 UART 用法不拉取 RTT。
+
 组件默认从已有的 `stm32cubemx` 目标继承 HAL 头文件和芯片宏。自定义构建系统的配置见各组件 README；Keil/IAR 可手动添加所选组件的 `.c` 文件及 include 路径。
 
 板级仍负责 HAL、时钟、GPIO、外设和 MPU 配置。Flash/SDRAM 的创建使用内部 RAM 堆；器件参数、内存属性、访问限制和最小 `example/main.c` 见对应组件说明。示例不自动加入库目标。
@@ -116,6 +118,7 @@ git submodule update --init --recursive
 - 总仓库 Markdown 本地文件链接、组件目录和子模块引用检查。
 - STM32H723xx / Cortex-M7 配置下，三个 C 组件的 CMake 编译及组合公共头文件的 C/C++ 编译；额外检查日志关闭配置。
 - 公共依赖的本地接入、两个驱动添加顺序、固定提交下载与离线缺失报错。
+- RTT 可选依赖的固定提交下载、本地复用、关闭及缺失检查，以及只链接 stm_log 的消费者链接检查。
 - Flash、SDRAM 真实驱动的 Unicorn 模拟测试，分别使用 O0/O2/Os，覆盖生命周期、边界、错误注入和存储操作。
 
 CI 使用固定提交的 ST HAL、CMSIS Device 和 CMSIS Core，依赖仅下载到工作目录，不随本仓库分发。运行方式及范围见 [ci/README.md](ci/README.md)。
