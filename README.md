@@ -12,7 +12,7 @@
 |---|---|---|
 | [stm_common](https://github.com/NingZiXi/stm_common) | [![version 1.0.0](https://img.shields.io/badge/version-1.0.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_common/tree/ce3d186dde2d374a8e9c7b9068a7b88f97d57dc1) | `stm_err_t` 与公共错误码 |
 | [stm_flash](https://github.com/NingZiXi/stm_flash) | [![version 2.0.0](https://img.shields.io/badge/version-2.0.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_flash/tree/7768c76e364b94dbb025356d5fc1c2ad938d9640) | NOR Flash 读取、分页写入、扇区擦除与校验 |
-| [stm_sdram](https://github.com/NingZiXi/stm_sdram) | [![version 2.0.0](https://img.shields.io/badge/version-2.0.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_sdram/tree/e511206aab04e67c30963fb4b587e96204dc19cc) | SDRAM 初始化、刷新、读写、填充及自检 |
+| [stm_sdram](https://github.com/NingZiXi/stm_sdram) | [![version 2.0.0](https://img.shields.io/badge/version-2.0.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_sdram/tree/34e886445d50a1e013d326f9a6bd105beeb39fc6) | SDRAM 初始化、刷新、读写、填充及自检 |
 | [stm_log](https://github.com/NingZiXi/stm_log) | [![version 2.3.1+059e5bc](https://img.shields.io/badge/version-2.3.1%2B059e5bc-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_log/tree/059e5bc096233fa715d66ba3e92ea9defc697b52) | 分级日志、标签过滤及自定义输出 |
 
 表中链接指向独立仓库的最新说明；当前固定版本的说明位于克隆后的 `lib/<组件>/README.md`。
