@@ -11,13 +11,13 @@
 | 组件 | 当前引用版本 | 用途 |
 |---|---|---|
 | [stm_common](https://github.com/NingZiXi/stm_common) | [![version 1.0.0](https://img.shields.io/badge/version-1.0.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_common/tree/ce3d186dde2d374a8e9c7b9068a7b88f97d57dc1) | `stm_err_t` 与公共错误码 |
-| [stm_flash](https://github.com/NingZiXi/stm_flash) | [![version 2.0.0](https://img.shields.io/badge/version-2.0.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_flash/tree/7768c76e364b94dbb025356d5fc1c2ad938d9640) | NOR Flash 读取、分页写入、扇区擦除与校验 |
-| [stm_sdram](https://github.com/NingZiXi/stm_sdram) | [![version 2.0.0](https://img.shields.io/badge/version-2.0.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_sdram/tree/34e886445d50a1e013d326f9a6bd105beeb39fc6) | SDRAM 初始化、刷新、读写、填充及自检 |
+| [stm_flash](https://github.com/NingZiXi/stm_flash) | [![version 3.0.0](https://img.shields.io/badge/version-3.0.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_flash/tree/c83cd2be646766fd321f0cee06bd32f07810a13e) | NOR Flash 读取、分页写入、扇区擦除与校验 |
+| [stm_sdram](https://github.com/NingZiXi/stm_sdram) | [![version 3.0.0](https://img.shields.io/badge/version-3.0.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_sdram/tree/b0f4faed37fa96739aedeaebd848059fa1b029e7) | SDRAM 初始化、刷新、读写、填充及自检 |
 | [stm_log](https://github.com/NingZiXi/stm_log) | [![version 2.4.0](https://img.shields.io/badge/version-2.4.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_log/tree/15642aa90fe3c5a91cd64680437f2ebd867ca20a) | 分级日志、标签过滤及自定义输出 |
 
 表中链接指向独立仓库的最新说明；当前固定版本的说明位于克隆后的 `lib/<组件>/README.md`。
 
-版本徽章对应本仓库固定的提交，点击可查看该版本源码。Flash/SDRAM 显示源码中的版本号，尚无发布标签；`stm_common` 已发布 `v1.0.0` 标签；`stm_log` 已发布 `v2.4.0` 标签。更新子模块时同步更新徽章，不自动跟随最新发布版。
+版本徽章对应本仓库固定的提交，点击可查看该版本源码。Flash/SDRAM 对应 `v3.0.0`，`stm_common` 对应 `v1.0.0`，`stm_log` 对应 `v2.4.0`。更新子模块时同步更新徽章，不自动跟随最新发布版。
 
 Flash、SDRAM 不依赖日志、RTT 或 RTOS。`stm_log` 保留现有 API；新设备驱动沿用 `flash_*`、`sdram_*` 这样的接口命名，规范见 [CONTRIBUTING.md](CONTRIBUTING.md)。
 
@@ -68,7 +68,7 @@ stm32-hal-lib/
 先由 CubeMX 生成并创建 `stm32cubemx` 目标，再在工程根 `CMakeLists.txt` 中按需添加组件：
 
 ```cmake
-set(STM_LIB_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Lib/stm32-hal-lib/components")
+set(STM_LIB_DIR "${CMAKE_CURRENT_SOURCE_DIR}/Lib/stm32-hal-lib/lib")
 add_subdirectory(${STM_LIB_DIR}/stm_common)
 add_subdirectory(${STM_LIB_DIR}/stm_flash)
 add_subdirectory(${STM_LIB_DIR}/stm_sdram)
