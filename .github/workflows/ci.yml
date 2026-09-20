@@ -17,31 +17,31 @@ jobs:
     runs-on: ubuntu-24.04
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7.0.1
         with:
           submodules: recursive
           persist-credentials: false
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7.0.0
         with:
           python-version: '3.12'
       - name: Check documentation and component references
         run: python ci/check_repository.py
       - name: Checkout STM32H7 HAL
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7.0.1
         with:
           repository: STMicroelectronics/stm32h7xx-hal-driver
           ref: e3c518ebda3e00c8e52b1625ca44fba65da3b63e
           path: .ci-deps/hal
           persist-credentials: false
       - name: Checkout STM32H7 CMSIS device
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7.0.1
         with:
           repository: STMicroelectronics/cmsis-device-h7
           ref: 81db1ec63cdc191fae1565b772da3ea5aa29a683
           path: .ci-deps/device
           persist-credentials: false
       - name: Checkout CMSIS Core 5.9.0
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7.0.1
         with:
           repository: ARM-software/CMSIS_5
           ref: 2b7495b8535bdcb306dac29b9ded4cfb679d7e5c
