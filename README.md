@@ -14,10 +14,11 @@
 | [stm_flash](https://github.com/NingZiXi/stm_flash) | [![version 3.0.0](https://img.shields.io/badge/version-3.0.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_flash/tree/c83cd2be646766fd321f0cee06bd32f07810a13e) | NOR Flash 读取、分页写入、扇区擦除与校验 |
 | [stm_sdram](https://github.com/NingZiXi/stm_sdram) | [![version 3.0.0](https://img.shields.io/badge/version-3.0.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_sdram/tree/b0f4faed37fa96739aedeaebd848059fa1b029e7) | SDRAM 初始化、刷新、读写、填充及自检 |
 | [stm_log](https://github.com/NingZiXi/stm_log) | [![version 2.4.0](https://img.shields.io/badge/version-2.4.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_log/tree/15642aa90fe3c5a91cd64680437f2ebd867ca20a) | 分级日志、标签过滤及自定义输出 |
+| [stm_littlefs](https://github.com/NingZiXi/stm_littlefs) | [![version 1.0.0](https://img.shields.io/badge/version-1.0.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_littlefs/tree/aae17503997cb1c89f6e02908e44499f16acc78c) | LittleFS 分区块设备适配与文件系统接入 |
 
 表中链接指向独立仓库的最新说明；当前固定版本的说明位于克隆后的 `lib/<组件>/README.md`。
 
-版本徽章对应本仓库固定的提交，点击可查看该版本源码。Flash/SDRAM 对应 `v3.0.0`，`stm_common` 对应 `v1.0.0`，`stm_log` 对应 `v2.4.0`。更新子模块时同步更新徽章，不自动跟随最新发布版。
+版本徽章对应本仓库固定的提交，点击可查看该版本源码。Flash/SDRAM 对应 `v3.0.0`，`stm_common`、`stm_littlefs` 对应 `v1.0.0`，`stm_log` 对应 `v2.4.0`。更新子模块时同步更新徽章，不自动跟随最新发布版。
 
 Flash、SDRAM 不依赖日志、RTT 或 RTOS。`stm_log` 保留现有 API；新设备驱动沿用 `flash_*`、`sdram_*` 这样的接口命名，规范见 [CONTRIBUTING.md](CONTRIBUTING.md)。
 
@@ -53,7 +54,8 @@ stm32-hal-lib/
 │   ├── stm_common/
 │   ├── stm_flash/
 │   ├── stm_sdram/
-│   └── stm_log/
+│   ├── stm_log/
+│   └── stm_littlefs/
 ├── ci/                  # 编译检查、文档检查及 CI 专用 HAL 配置
 ├── .github/workflows/
 ├── CONTRIBUTING.md
@@ -76,6 +78,15 @@ target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE stm_flash stm_sdram)
 ```
 
 只使用一个驱动时，删除另一个驱动的两处引用即可。`stm_common` 是头文件库，驱动会传递它的 include 路径；已经在其他位置添加过该目标时，不要重复添加。
+
+需要 LittleFS 时，在上述驱动接入之后添加：
+
+```cmake
+add_subdirectory(${STM_LIB_DIR}/stm_littlefs)
+target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE stm_littlefs)
+```
+
+`stm_littlefs` 提供分区块设备回调，文件操作使用官方 `lfs_*` API；通过 CMake 自动接入固定版本 LittleFS，也支持本地源码。分区划分、生命周期和 `example/main.c` 见 [组件说明](lib/stm_littlefs/README.md)。
 
 单独克隆 Flash 或 SDRAM 时，无需手动下载 `stm_common`：驱动优先使用已有 target 或同级目录，缺失时通过 FetchContent 自动获取 `v1.0.0` 对应的固定提交，两个驱动共享一份依赖。默认下载源为 GitHub；在添加驱动前设置 `STM_COMMON_GIT_REPOSITORY` 可切换到 `https://gitee.com/nzxhg/stm_common.git`，设置 `STM_COMMON_FETCH=OFF` 可禁止自动下载。详细离线配置见各驱动 README。
 
@@ -120,6 +131,7 @@ git submodule update --init --recursive
 - 公共依赖的本地接入、两个驱动添加顺序、固定提交下载与离线缺失报错。
 - RTT 可选依赖的固定提交下载、本地复用、关闭及缺失检查，以及只链接 stm_log 的消费者链接检查。
 - Flash、SDRAM 真实驱动的 Unicorn 模拟测试，分别使用 O0/O2/Os，覆盖生命周期、边界、错误注入和存储操作。
+- LittleFS 适配层与官方文件系统的主机测试，覆盖分区保护、文件操作、重挂载、部分写入/擦除中断恢复和依赖获取。
 
 CI 使用固定提交的 ST HAL、CMSIS Device 和 CMSIS Core，依赖仅下载到工作目录，不随本仓库分发。运行方式及范围见 [ci/README.md](ci/README.md)。
 

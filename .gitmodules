@@ -10,3 +10,6 @@
 [submodule "lib/stm_log"]
 	path = lib/stm_log
 	url = ../stm_log.git
+[submodule "lib/stm_littlefs"]
+	path = lib/stm_littlefs
+	url = ../stm_littlefs.git

@@ -38,7 +38,18 @@ cmake -S ci -B build/compile -G Ninja "-DCMAKE_TOOLCHAIN_FILE=arm-gcc.cmake" "-D
 cmake --build build/compile
 ```
 
-此工程只生成静态库和编译检查对象，不产生可烧录固件。检查三个组件通过各自 CMake 目标继承 HAL 配置，检查组合公共头文件的 C11/C++17 消费者，以及 `STM_LOG_ENABLED=0` 的日志源文件。
+此工程只生成静态库和编译检查对象，不产生可烧录固件。检查组件通过各自 CMake 目标继承 HAL 配置，检查组合公共头文件的 C11/C++17 消费者，以及 `STM_LOG_ENABLED=0` 的日志源文件。LittleFS 上游固定为 v2.11.2 对应提交，由适配组件自动下载。
+
+LittleFS 主机测试使用本机 GCC/G++，无需连接开发板：
+
+```sh
+cmake -S lib/stm_littlefs/tests -B build/littlefs-tests -G Ninja -DCMAKE_BUILD_TYPE=Debug
+cmake --build build/littlefs-tests
+ctest --test-dir build/littlefs-tests --output-on-failure
+python ci/check_littlefs_dependency.py --littlefs-source build/compile/_deps/littlefs-src
+```
+
+主机测试执行官方 LittleFS 文件操作和 NOR 部分写入/擦除中断恢复。依赖检查覆盖已有 target、离线源目录、自动获取 Flash/Common 的固定版本和关闭下载后的缺失报错；可用 `--flash-repository`、`--common-repository` 指定镜像，`--deps-root` 指定 HAL/CMSIS 目录。
 
 `ci/include/stm32h7xx_hal_conf.h` 仅用于 H723 编译与 HAL 桩测试，没有 GPIO、启动、链接脚本或板级配置，不应替代实际工程的 HAL 配置。
 

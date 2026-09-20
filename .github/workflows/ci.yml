@@ -59,6 +59,12 @@ jobs:
           cmake --build build/compile
       - name: Check shared dependency resolution and pinned download
         run: python ci/check_common_dependency.py
+      - name: Run LittleFS adapter and interruption recovery tests
+        run: |
+          cmake -S lib/stm_littlefs/tests -B build/littlefs-tests -G Ninja -DCMAKE_BUILD_TYPE=Debug -DSTM_LITTLEFS_SOURCE_DIR="$GITHUB_WORKSPACE/build/compile/_deps/littlefs-src"
+          cmake --build build/littlefs-tests
+          ctest --test-dir build/littlefs-tests --output-on-failure
+          python ci/check_littlefs_dependency.py --littlefs-source build/compile/_deps/littlefs-src
       - name: Fetch RTT and check transitive linking
         run: |
           cmake -S ci -B build/rtt -G Ninja "-DCMAKE_TOOLCHAIN_FILE=arm-gcc.cmake" "-DCMAKE_BUILD_TYPE=Release" -DSTM_LOG_WITH_RTT=ON
