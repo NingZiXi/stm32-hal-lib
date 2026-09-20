@@ -44,6 +44,14 @@ cmake --build build/compile
 
 ## 模拟测试
 
+公共依赖接入检查（需要网络下载固定版本）：
+
+```sh
+python ci/check_common_dependency.py
+```
+
+此检查在隔离目录中编译两个驱动，覆盖已有 target、同级目录、源码路径覆盖、两个添加顺序的自动下载，以及关闭下载时的缺失依赖错误。可传 `--repository https://gitee.com/nzxhg/stm_common.git` 检查 Gitee 镜像；下载后校验实际提交。
+
 以下命令 PowerShell 和 Bash 均可执行：
 
 ```sh

@@ -57,6 +57,8 @@ jobs:
         run: |
           cmake -S ci -B build/compile -G Ninja "-DCMAKE_TOOLCHAIN_FILE=arm-gcc.cmake" "-DCMAKE_BUILD_TYPE=Release"
           cmake --build build/compile
+      - name: Check shared dependency resolution and pinned download
+        run: python ci/check_common_dependency.py
       - name: Run Flash and SDRAM software tests
         run: |
           for component in stm_flash stm_sdram; do
