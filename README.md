@@ -27,6 +27,14 @@ Flash、SDRAM 不依赖日志、RTT 或 RTOS。`stm_log` 保留现有 API；新�
 git clone --recurse-submodules https://github.com/NingZiXi/stm32-hal-lib.git Lib/stm32-hal-lib
 ```
 
+也可从 Gitee 获取，二选一即可：
+
+```sh
+git clone --recurse-submodules https://gitee.com/nzxhg/stm32-hal-lib.git Lib/stm32-hal-lib
+```
+
+子模块采用同账号下的相对地址：从 GitHub 克隆时使用 GitHub，从 Gitee 克隆时使用 Gitee。两个平台保持相同提交；CI 在 GitHub Actions 执行。
+
 如果已经普通克隆过：
 
 ```sh

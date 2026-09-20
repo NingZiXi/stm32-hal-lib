@@ -2,7 +2,7 @@
 
 ## 仓库关系
 
-本仓库维护组件目录、版本组合、接入说明和 CI；驱动源码在对应的独立仓库维护。只修改总仓库里的子模块工作区而未推送子模块提交，会导致其他人无法克隆，提交前须确认引用已在公开远程可获取。
+本仓库维护组件目录、版本组合、接入说明和 CI；驱动源码在对应的独立仓库维护。只修改总仓库里的子模块工作区而未推送子模块提交，会导致其他人无法克隆。先将组件提交同步到 GitHub 与 Gitee，再同步总仓库，保证两个平台都能获取引用。
 
 更新现有组件时，在总仓库根目录执行，例如：
 
@@ -18,12 +18,12 @@ git commit -m "更新 stm_flash 版本引用"
 ## 新增组件
 
 1. 创建公开独立仓库，提供源码、头文件、CMake 接入、README 和明确的许可证。
-2. 在 `lib/` 添加 submodule，使用公开 HTTPS 地址，固定一个已推送的提交。
+2. 在 GitHub 与 Gitee 的同一账号下分别创建同名公开组件仓库。在 `lib/` 添加 submodule，使用 `../stm_<name>.git` 相对地址，固定一个已推送到两个平台的提交。
 3. 更新总 README 的组件表，明确 MCU/HAL/器件支持范围、依赖和已完成的验证。
 4. 按组件功能增加代表性编译检查和有价值的软件测试；硬件测试须单独说明条件和结果。
 
 ```sh
-git submodule add https://github.com/<owner>/stm_<name>.git lib/stm_<name>
+git submodule add ../stm_<name>.git lib/stm_<name>
 ```
 
 默认目录结构可参考 Flash/SDRAM：根目录放 `.c`、`.h`、`CMakeLists.txt`、`README.md`、`LICENSE`；`example/main.c` 提供最小参考；需要时提供 `tests/`。不要求空目录、CHANGELOG 或额外 docs。

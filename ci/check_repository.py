@@ -31,8 +31,9 @@ def main():
         configured.add(path)
         if not re.fullmatch(r'lib/stm_[a-z0-9_]+', path):
             raise SystemExit(f'Unexpected component path: {path}')
-        if not re.fullmatch(r'https://github\.com/[\w.-]+/[\w.-]+\.git', url):
-            raise SystemExit(f'Expected public GitHub HTTPS URL: {url}')
+        expected_url = f'../{Path(path).name}.git'
+        if url != expected_url:
+            raise SystemExit(f'Expected same-owner relative URL {expected_url}: {url}')
         if path not in entries or not (ROOT / path / '.git').exists():
             raise SystemExit(f'Uninitialized/untracked component: {path}')
         for required in ['README.md', 'LICENSE', 'CMakeLists.txt']:

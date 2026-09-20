@@ -1,12 +1,12 @@
 [submodule "lib/stm_common"]
 	path = lib/stm_common
-	url = https://github.com/NingZiXi/stm_common.git
+	url = ../stm_common.git
 [submodule "lib/stm_flash"]
 	path = lib/stm_flash
-	url = https://github.com/NingZiXi/stm_flash.git
+	url = ../stm_flash.git
 [submodule "lib/stm_sdram"]
 	path = lib/stm_sdram
-	url = https://github.com/NingZiXi/stm_sdram.git
+	url = ../stm_sdram.git
 [submodule "lib/stm_log"]
 	path = lib/stm_log
-	url = https://github.com/NingZiXi/stm_log.git
+	url = ../stm_log.git
