@@ -28,7 +28,7 @@ python -m venv .venv
 激活虚拟环境：PowerShell 使用 `.venv/Scripts/Activate.ps1`，Linux/macOS 使用 `source .venv/bin/activate`，随后：
 
 ```sh
-python -m pip install -r components/stm_flash/tests/requirements.txt -r components/stm_sdram/tests/requirements.txt
+python -m pip install -r lib/stm_flash/tests/requirements.txt -r lib/stm_sdram/tests/requirements.txt
 ```
 
 ## 编译检查
@@ -47,8 +47,8 @@ cmake --build build/compile
 以下命令 PowerShell 和 Bash 均可执行：
 
 ```sh
-python components/stm_flash/tests/run_tests.py --include ci/include --include .ci-deps/hal/Inc --include .ci-deps/device/Include --include .ci-deps/cmsis/CMSIS/Core/Include --build-dir build/flash-tests
-python components/stm_sdram/tests/run_tests.py --include ci/include --include .ci-deps/hal/Inc --include .ci-deps/device/Include --include .ci-deps/cmsis/CMSIS/Core/Include --build-dir build/sdram-tests
+python lib/stm_flash/tests/run_tests.py --include ci/include --include .ci-deps/hal/Inc --include .ci-deps/device/Include --include .ci-deps/cmsis/CMSIS/Core/Include --build-dir build/flash-tests
+python lib/stm_sdram/tests/run_tests.py --include ci/include --include .ci-deps/hal/Inc --include .ci-deps/device/Include --include .ci-deps/cmsis/CMSIS/Core/Include --build-dir build/sdram-tests
 ```
 
 两个运行器分别编译并执行 O0/O2/Os 测试；使用 HAL 桩和 Unicorn Cortex-M7，不访问真实硬件。测试细节见各子模块的 `tests/README.md`，在线版本见 [Flash 测试](https://github.com/NingZiXi/stm_flash/blob/main/tests/README.md) 与 [SDRAM 测试](https://github.com/NingZiXi/stm_sdram/blob/main/tests/README.md)。

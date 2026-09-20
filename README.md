@@ -15,7 +15,7 @@
 | [stm_sdram](https://github.com/NingZiXi/stm_sdram) | SDRAM 初始化、刷新、读写、填充及自检 | H7 FMC、16 位 SDR SDRAM；实测 W9825G6KH-6、32 MiB | HAL、stm_common |
 | [stm_log](https://github.com/NingZiXi/stm_log) | 分级日志、标签过滤及自定义输出 | HAL UART；可接自定义后端，按系列指定 HAL 头文件 | HAL；互斥功能可选依赖 FreeRTOS |
 
-表中链接指向独立仓库的最新说明；当前固定版本的说明位于克隆后的 `components/<组件>/README.md`。
+表中链接指向独立仓库的最新说明；当前固定版本的说明位于克隆后的 `lib/<组件>/README.md`。
 
 Flash、SDRAM 不依赖日志、RTT 或 RTOS。`stm_log` 保留现有 API；新设备驱动沿用 `flash_*`、`sdram_*` 这样的接口命名，规范见 [CONTRIBUTING.md](CONTRIBUTING.md)。
 
@@ -39,7 +39,7 @@ git -C Lib/stm32-hal-lib submodule update --init --recursive
 
 ```text
 stm32-hal-lib/
-├── components/
+├── lib/
 │   ├── stm_common/
 │   ├── stm_flash/
 │   ├── stm_sdram/

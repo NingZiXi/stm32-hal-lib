@@ -7,9 +7,9 @@
 更新现有组件时，在总仓库根目录执行，例如：
 
 ```sh
-git -C components/stm_flash fetch origin
-git -C components/stm_flash switch --detach <已经推送的commit或tag>
-git add components/stm_flash
+git -C lib/stm_flash fetch origin
+git -C lib/stm_flash switch --detach <已经推送的commit或tag>
+git add lib/stm_flash
 git commit -m "更新 stm_flash 版本引用"
 ```
 
@@ -18,12 +18,12 @@ git commit -m "更新 stm_flash 版本引用"
 ## 新增组件
 
 1. 创建公开独立仓库，提供源码、头文件、CMake 接入、README 和明确的许可证。
-2. 在 `components/` 添加 submodule，使用公开 HTTPS 地址，固定一个已推送的提交。
+2. 在 `lib/` 添加 submodule，使用公开 HTTPS 地址，固定一个已推送的提交。
 3. 更新总 README 的组件表，明确 MCU/HAL/器件支持范围、依赖和已完成的验证。
 4. 按组件功能增加代表性编译检查和有价值的软件测试；硬件测试须单独说明条件和结果。
 
 ```sh
-git submodule add https://github.com/<owner>/stm_<name>.git components/stm_<name>
+git submodule add https://github.com/<owner>/stm_<name>.git lib/stm_<name>
 ```
 
 默认目录结构可参考 Flash/SDRAM：根目录放 `.c`、`.h`、`CMakeLists.txt`、`README.md`、`LICENSE`；`example/main.c` 提供最小参考；需要时提供 `tests/`。不要求空目录、CHANGELOG 或额外 docs。

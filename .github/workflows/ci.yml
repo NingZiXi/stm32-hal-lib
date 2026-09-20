@@ -52,7 +52,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install --no-install-recommends -y gcc-arm-none-eabi libnewlib-arm-none-eabi ninja-build
-          python -m pip install -r components/stm_flash/tests/requirements.txt -r components/stm_sdram/tests/requirements.txt
+          python -m pip install -r lib/stm_flash/tests/requirements.txt -r lib/stm_sdram/tests/requirements.txt
       - name: Compile components and public headers for H723
         run: |
           cmake -S ci -B build/compile -G Ninja "-DCMAKE_TOOLCHAIN_FILE=arm-gcc.cmake" "-DCMAKE_BUILD_TYPE=Release"
@@ -60,7 +60,7 @@ jobs:
       - name: Run Flash and SDRAM software tests
         run: |
           for component in stm_flash stm_sdram; do
-            python components/$component/tests/run_tests.py \
+            python lib/$component/tests/run_tests.py \
               --include ci/include \
               --include .ci-deps/hal/Inc \
               --include .ci-deps/device/Include \

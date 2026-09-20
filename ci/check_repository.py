@@ -29,7 +29,7 @@ def main():
         path = modules[section]['path']
         url = modules[section]['url']
         configured.add(path)
-        if not re.fullmatch(r'components/stm_[a-z0-9_]+', path):
+        if not re.fullmatch(r'lib/stm_[a-z0-9_]+', path):
             raise SystemExit(f'Unexpected component path: {path}')
         if not re.fullmatch(r'https://github\.com/[\w.-]+/[\w.-]+\.git', url):
             raise SystemExit(f'Expected public GitHub HTTPS URL: {url}')
