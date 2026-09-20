@@ -10,10 +10,12 @@
 
 | 组件 | 用途 | 当前适用范围 | 依赖 |
 |---|---|---|---|
-| [stm_common](components/stm_common/README.md) | `stm_err_t` 与公共错误码 | 无 MCU 外设依赖 | C 标准整数类型 |
-| [stm_flash](components/stm_flash/README.md) | NOR Flash 读取、分页写入、扇区擦除与校验 | H7 OCTOSPI；实测 W25Q256JVEIQ、32 MiB | HAL、stm_common |
-| [stm_sdram](components/stm_sdram/README.md) | SDRAM 初始化、刷新、读写、填充及自检 | H7 FMC、16 位 SDR SDRAM；实测 W9825G6KH-6、32 MiB | HAL、stm_common |
-| [stm_log](components/stm_log/README.md) | 分级日志、标签过滤及自定义输出 | HAL UART；可接自定义后端，按系列指定 HAL 头文件 | HAL；互斥功能可选依赖 FreeRTOS |
+| [stm_common](https://github.com/NingZiXi/stm_common) | `stm_err_t` 与公共错误码 | 无 MCU 外设依赖 | C 标准整数类型 |
+| [stm_flash](https://github.com/NingZiXi/stm_flash) | NOR Flash 读取、分页写入、扇区擦除与校验 | H7 OCTOSPI；实测 W25Q256JVEIQ、32 MiB | HAL、stm_common |
+| [stm_sdram](https://github.com/NingZiXi/stm_sdram) | SDRAM 初始化、刷新、读写、填充及自检 | H7 FMC、16 位 SDR SDRAM；实测 W9825G6KH-6、32 MiB | HAL、stm_common |
+| [stm_log](https://github.com/NingZiXi/stm_log) | 分级日志、标签过滤及自定义输出 | HAL UART；可接自定义后端，按系列指定 HAL 头文件 | HAL；互斥功能可选依赖 FreeRTOS |
+
+表中链接指向独立仓库的最新说明；当前固定版本的说明位于克隆后的 `components/<组件>/README.md`。
 
 Flash、SDRAM 不依赖日志、RTT 或 RTOS。`stm_log` 保留现有 API；新设备驱动沿用 `flash_*`、`sdram_*` 这样的接口命名，规范见 [CONTRIBUTING.md](CONTRIBUTING.md)。
 

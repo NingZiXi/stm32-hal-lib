@@ -51,7 +51,7 @@ python components/stm_flash/tests/run_tests.py --include ci/include --include .c
 python components/stm_sdram/tests/run_tests.py --include ci/include --include .ci-deps/hal/Inc --include .ci-deps/device/Include --include .ci-deps/cmsis/CMSIS/Core/Include --build-dir build/sdram-tests
 ```
 
-两个运行器分别编译并执行 O0/O2/Os 测试；使用 HAL 桩和 Unicorn Cortex-M7，不访问真实硬件。测试细节见 [Flash 测试](../components/stm_flash/tests/README.md) 与 [SDRAM 测试](../components/stm_sdram/tests/README.md)。
+两个运行器分别编译并执行 O0/O2/Os 测试；使用 HAL 桩和 Unicorn Cortex-M7，不访问真实硬件。测试细节见各子模块的 `tests/README.md`，在线版本见 [Flash 测试](https://github.com/NingZiXi/stm_flash/blob/main/tests/README.md) 与 [SDRAM 测试](https://github.com/NingZiXi/stm_sdram/blob/main/tests/README.md)。
 
 当前不包含日志运行时测试、完整固件链接或硬件在环测试。CI 的成功只代表上述软件检查通过。
 
