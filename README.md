@@ -8,14 +8,16 @@
 
 ## 组件
 
-| 组件 | 用途 | 当前适用范围 | 依赖 |
-|---|---|---|---|
-| [stm_common](https://github.com/NingZiXi/stm_common) | `stm_err_t` 与公共错误码 | 无 MCU 外设依赖 | C 标准整数类型 |
-| [stm_flash](https://github.com/NingZiXi/stm_flash) | NOR Flash 读取、分页写入、扇区擦除与校验 | H7 OCTOSPI；实测 W25Q256JVEIQ、32 MiB | HAL、stm_common |
-| [stm_sdram](https://github.com/NingZiXi/stm_sdram) | SDRAM 初始化、刷新、读写、填充及自检 | H7 FMC、16 位 SDR SDRAM；实测 W9825G6KH-6、32 MiB | HAL、stm_common |
-| [stm_log](https://github.com/NingZiXi/stm_log) | 分级日志、标签过滤及自定义输出 | HAL UART；可接自定义后端，按系列指定 HAL 头文件 | HAL；互斥功能可选依赖 FreeRTOS |
+| 组件 | 当前引用版本 | 用途 | 当前适用范围 | 依赖 |
+|---|---|---|---|---|
+| [stm_common](https://github.com/NingZiXi/stm_common) | [![commit ce3d186](https://img.shields.io/badge/commit-ce3d186-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_common/tree/ce3d186dde2d374a8e9c7b9068a7b88f97d57dc1) | `stm_err_t` 与公共错误码 | 无 MCU 外设依赖 | C 标准整数类型 |
+| [stm_flash](https://github.com/NingZiXi/stm_flash) | [![version 2.0.0](https://img.shields.io/badge/version-2.0.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_flash/tree/7858884cb8bafd0913a2f0ef53ecfcc6e025aea7) | NOR Flash 读取、分页写入、扇区擦除与校验 | H7 OCTOSPI；实测 W25Q256JVEIQ、32 MiB | HAL、stm_common |
+| [stm_sdram](https://github.com/NingZiXi/stm_sdram) | [![version 2.0.0](https://img.shields.io/badge/version-2.0.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_sdram/tree/b61fe2af57b15fa07ba9c47477a5d867ef60547a) | SDRAM 初始化、刷新、读写、填充及自检 | H7 FMC、16 位 SDR SDRAM；实测 W9825G6KH-6、32 MiB | HAL、stm_common |
+| [stm_log](https://github.com/NingZiXi/stm_log) | [![version 2.3.1+059e5bc](https://img.shields.io/badge/version-2.3.1%2B059e5bc-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_log/tree/059e5bc096233fa715d66ba3e92ea9defc697b52) | 分级日志、标签过滤及自定义输出 | HAL UART；可接自定义后端，按系列指定 HAL 头文件 | HAL；互斥功能可选依赖 FreeRTOS |
 
 表中链接指向独立仓库的最新说明；当前固定版本的说明位于克隆后的 `lib/<组件>/README.md`。
+
+版本徽章对应本仓库固定的提交，点击可查看该版本源码。Flash/SDRAM 显示源码中的版本号，尚无发布标签；`stm_common` 暂用短提交号；`stm_log` 为 `v2.3.1` 加后续修复。更新子模块时同步更新徽章，不自动跟随最新发布版。
 
 Flash、SDRAM 不依赖日志、RTT 或 RTOS。`stm_log` 保留现有 API；新设备驱动沿用 `flash_*`、`sdram_*` 这样的接口命名，规范见 [CONTRIBUTING.md](CONTRIBUTING.md)。
 
