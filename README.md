@@ -13,11 +13,11 @@
 | [stm_common](https://github.com/NingZiXi/stm_common) | [![version 1.0.0](https://img.shields.io/badge/version-1.0.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_common/tree/ce3d186dde2d374a8e9c7b9068a7b88f97d57dc1) | `stm_err_t` 与公共错误码 |
 | [stm_flash](https://github.com/NingZiXi/stm_flash) | [![version 2.0.0](https://img.shields.io/badge/version-2.0.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_flash/tree/7768c76e364b94dbb025356d5fc1c2ad938d9640) | NOR Flash 读取、分页写入、扇区擦除与校验 |
 | [stm_sdram](https://github.com/NingZiXi/stm_sdram) | [![version 2.0.0](https://img.shields.io/badge/version-2.0.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_sdram/tree/34e886445d50a1e013d326f9a6bd105beeb39fc6) | SDRAM 初始化、刷新、读写、填充及自检 |
-| [stm_log](https://github.com/NingZiXi/stm_log) | [![version 2.3.1+15642aa](https://img.shields.io/badge/version-2.3.1%2B15642aa-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_log/tree/15642aa90fe3c5a91cd64680437f2ebd867ca20a) | 分级日志、标签过滤及自定义输出 |
+| [stm_log](https://github.com/NingZiXi/stm_log) | [![version 2.4.0](https://img.shields.io/badge/version-2.4.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_log/tree/15642aa90fe3c5a91cd64680437f2ebd867ca20a) | 分级日志、标签过滤及自定义输出 |
 
 表中链接指向独立仓库的最新说明；当前固定版本的说明位于克隆后的 `lib/<组件>/README.md`。
 
-版本徽章对应本仓库固定的提交，点击可查看该版本源码。Flash/SDRAM 显示源码中的版本号，尚无发布标签；`stm_common` 已发布 `v1.0.0` 标签；`stm_log` 为 `v2.3.1` 加后续更新。更新子模块时同步更新徽章，不自动跟随最新发布版。
+版本徽章对应本仓库固定的提交，点击可查看该版本源码。Flash/SDRAM 显示源码中的版本号，尚无发布标签；`stm_common` 已发布 `v1.0.0` 标签；`stm_log` 已发布 `v2.4.0` 标签。更新子模块时同步更新徽章，不自动跟随最新发布版。
 
 Flash、SDRAM 不依赖日志、RTT 或 RTOS。`stm_log` 保留现有 API；新设备驱动沿用 `flash_*`、`sdram_*` 这样的接口命名，规范见 [CONTRIBUTING.md](CONTRIBUTING.md)。
 
