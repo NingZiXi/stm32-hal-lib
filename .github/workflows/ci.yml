@@ -1,0 +1,69 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  components:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check documentation and component references
+        run: python ci/check_repository.py
+      - name: Checkout STM32H7 HAL
+        uses: actions/checkout@v4
+        with:
+          repository: STMicroelectronics/stm32h7xx-hal-driver
+          ref: e3c518ebda3e00c8e52b1625ca44fba65da3b63e
+          path: .ci-deps/hal
+          persist-credentials: false
+      - name: Checkout STM32H7 CMSIS device
+        uses: actions/checkout@v4
+        with:
+          repository: STMicroelectronics/cmsis-device-h7
+          ref: 81db1ec63cdc191fae1565b772da3ea5aa29a683
+          path: .ci-deps/device
+          persist-credentials: false
+      - name: Checkout CMSIS Core 5.9.0
+        uses: actions/checkout@v4
+        with:
+          repository: ARM-software/CMSIS_5
+          ref: 2b7495b8535bdcb306dac29b9ded4cfb679d7e5c
+          path: .ci-deps/cmsis
+          sparse-checkout: CMSIS/Core/Include
+          persist-credentials: false
+      - name: Install compiler and test dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y gcc-arm-none-eabi libnewlib-arm-none-eabi ninja-build
+          python -m pip install -r components/stm_flash/tests/requirements.txt -r components/stm_sdram/tests/requirements.txt
+      - name: Compile components and public headers for H723
+        run: |
+          cmake -S ci -B build/compile -G Ninja "-DCMAKE_TOOLCHAIN_FILE=arm-gcc.cmake" "-DCMAKE_BUILD_TYPE=Release"
+          cmake --build build/compile
+      - name: Run Flash and SDRAM software tests
+        run: |
+          for component in stm_flash stm_sdram; do
+            python components/$component/tests/run_tests.py \
+              --include ci/include \
+              --include .ci-deps/hal/Inc \
+              --include .ci-deps/device/Include \
+              --include .ci-deps/cmsis/CMSIS/Core/Include \
+              --build-dir build/$component
+          done
