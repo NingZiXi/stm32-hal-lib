@@ -10,17 +10,17 @@
 
 ## 组件
 
-| 组件 | 当前引用版本 | 用途 |
-|---|---|---|
-| [stm_common](https://github.com/NingZiXi/stm_common) | [![version 1.0.0](https://img.shields.io/badge/version-1.0.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_common/tree/ce3d186dde2d374a8e9c7b9068a7b88f97d57dc1) | `stm_err_t` 与公共错误码 |
-| [stm_flash](https://github.com/NingZiXi/stm_flash) | [![version 3.0.0](https://img.shields.io/badge/version-3.0.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_flash/tree/c83cd2be646766fd321f0cee06bd32f07810a13e) | NOR Flash 读取、分页写入、扇区擦除与校验 |
-| [stm_sdram](https://github.com/NingZiXi/stm_sdram) | [![version 3.0.0](https://img.shields.io/badge/version-3.0.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_sdram/tree/b0f4faed37fa96739aedeaebd848059fa1b029e7) | SDRAM 初始化、刷新、读写、填充及自检 |
-| [stm_log](https://github.com/NingZiXi/stm_log) | [![version 2.4.0](https://img.shields.io/badge/version-2.4.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_log/tree/15642aa90fe3c5a91cd64680437f2ebd867ca20a) | 分级日志、标签过滤及自定义输出 |
-| [stm_littlefs](https://github.com/NingZiXi/stm_littlefs) | [![version 1.0.1](https://img.shields.io/badge/version-1.0.1-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_littlefs/tree/96c8d2ffa8a07950bb308fcc300aa6c295ac3fda) | LittleFS 分区块设备适配与文件系统接入 |
-| [esp_at_client](https://github.com/NingZiXi/esp_at_client) | [![version 0.5.0](https://img.shields.io/badge/version-0.5.0-5364b5?style=flat-square)](https://github.com/NingZiXi/esp_at_client/tree/b17f954c76ca4cc3cddcddad48faa1328d80a29f) | 平台无关 ESP-AT 轮询客户端，STM32 HAL 适配位于 ports/stm32_hal/ |
-| [stm_ota](https://github.com/NingZiXi/stm_ota) | [![version 0.5.0](https://img.shields.io/badge/version-0.5.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_ota/tree/f9163d2a7efe2f67d089a62c413dc40360c49170) | 同步 OTA 下载、A/B 分区切换与 Flash 校验 |
+| 组件 | 当前引用版本 | 用途 | 镜像 |
+|---|---|---|---|
+| [stm_common](https://github.com/NingZiXi/stm_common) | [![version 1.0.0](https://img.shields.io/badge/version-1.0.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_common/tree/ce3d186dde2d374a8e9c7b9068a7b88f97d57dc1) | `stm_err_t` 与公共错误码 | [GitLab](http://192.168.4.254/libs/stm_common) |
+| [stm_flash](https://github.com/NingZiXi/stm_flash) | [![version 3.0.0](https://img.shields.io/badge/version-3.0.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_flash/tree/c83cd2be646766fd321f0cee06bd32f07810a13e) | NOR Flash 读取、分页写入、扇区擦除与校验 | [GitLab](http://192.168.4.254/libs/stm_flash) |
+| [stm_sdram](https://github.com/NingZiXi/stm_sdram) | [![version 3.0.0](https://img.shields.io/badge/version-3.0.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_sdram/tree/b0f4faed37fa96739aedeaebd848059fa1b029e7) | SDRAM 初始化、刷新、读写、填充及自检 | [GitLab](http://192.168.4.254/libs/stm_sdram) |
+| [stm_log](https://github.com/NingZiXi/stm_log) | [![version 2.4.0](https://img.shields.io/badge/version-2.4.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_log/tree/15642aa90fe3c5a91cd64680437f2ebd867ca20a) | 分级日志、标签过滤及自定义输出 | [GitLab](http://192.168.4.254/libs/stm_log) |
+| [stm_littlefs](https://github.com/NingZiXi/stm_littlefs) | [![version 1.0.1](https://img.shields.io/badge/version-1.0.1-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_littlefs/tree/96c8d2ffa8a07950bb308fcc300aa6c295ac3fda) | LittleFS 分区块设备适配与文件系统接入 | [GitLab](http://192.168.4.254/libs/stm_littlefs) |
+| [esp_at_client](https://github.com/NingZiXi/esp_at_client) | [![version 0.5.0](https://img.shields.io/badge/version-0.5.0-5364b5?style=flat-square)](https://github.com/NingZiXi/esp_at_client/tree/b17f954c76ca4cc3cddcddad48faa1328d80a29f) | 平台无关 ESP-AT 轮询客户端，STM32 HAL 适配位于 ports/stm32_hal/ | [GitLab](http://192.168.4.254/libs/esp_at_client) |
+| [stm_ota](https://github.com/NingZiXi/stm_ota) | [![version 0.5.0](https://img.shields.io/badge/version-0.5.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_ota/tree/f9163d2a7efe2f67d089a62c413dc40360c49170) | 同步 OTA 下载、A/B 分区切换与 Flash 校验 | [GitLab](http://192.168.4.254/libs/stm_ota) |
 
-表中链接指向独立仓库的最新说明；当前固定版本的说明位于克隆后的 `lib/<组件>/README.md`。
+表中链接指向独立仓库的最新说明；当前固定版本的说明位于克隆后的 `lib/<组件>/README.md`。`镜像` 列指向内网 GitLab `libs` 群组下的同名仓库，便于内网 CI 拉取与浏览。
 
 版本徽章对应本仓库固定的提交，点击可查看该版本源码。Flash/SDRAM 对应 `v3.0.0`，`stm_common` 对应 `v1.0.0`，`stm_littlefs` 对应 `v1.0.1`，`stm_log` 对应 `v2.4.0`。更新子模块时同步更新徽章，不自动跟随最新发布版。
 
@@ -40,7 +40,13 @@ git clone --recurse-submodules https://github.com/NingZiXi/stm32-hal-lib.git Lib
 git clone --recurse-submodules https://gitee.com/nzxhg/stm32-hal-lib.git Lib/stm32-hal-lib
 ```
 
-子模块采用同账号下的相对地址：从 GitHub 克隆时使用 GitHub，从 Gitee 克隆时使用 Gitee。两个平台保持相同提交；CI 在 GitHub Actions 执行。
+内网环境可从 GitLab `libs` 群组镜像获取：
+
+```sh
+git clone --recurse-submodules http://192.168.4.254/libs/stm32-hal-lib.git Lib/stm32-hal-lib
+```
+
+子模块采用同账号下的相对地址：从 GitHub 克隆时使用 GitHub，从 Gitee 克隆时使用 Gitee，从内网 GitLab 克隆时使用 GitLab 镜像。三个平台保持相同提交；CI 在 GitHub Actions 执行。
 
 如果已经普通克隆过：
 
@@ -130,6 +136,15 @@ git submodule update --init --recursive
 ```
 
 驱动改动先提交到独立仓库，再更新本仓库引用并通过 CI。不要用 `git submodule update --remote` 替代上述更新命令，它会跳过总仓库固定的版本组合。组件独立发布版本，总仓库后续按验证过的组合发布版本；当前未创建发布标签。
+
+内网 GitLab `libs` 群组下的同名仓库为手动同步镜像（GitLab 内网到 GitHub 网络不通，Pull mirroring 不可用）。组件仓库发版后，在本仓库执行：
+
+```sh
+git submodule update --remote lib/<组件>     # 仅用于临时同步到 GitLab 的辅助命令
+git -C lib/<组件> push gitlab 'refs/heads/*:refs/heads/*' 'refs/tags/*:refs/tags/*'
+```
+
+不要把这个 push 写进常规工作流——总仓库自身的组件版本仍由本仓库固定的 commit 控制。
 
 ## 验证
 
