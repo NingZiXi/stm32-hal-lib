@@ -6,6 +6,8 @@
 
 这是应用层组件集合，不是 ST 官方 HAL 的镜像。当前存储驱动主要在 **STM32H723ZG** 上验证，具体支持范围以各组件说明为准。
 
+配套的可复用开发技能集中在 [`skills/`](skills/README.md)，当前包含 STM32CubeMX + CMake 的 `main/` 应用结构与 `stm_log v3` 接入技能。
+
 ## 组件
 
 | 组件 | 当前引用版本 | 用途 |
@@ -56,6 +58,9 @@ stm32-hal-lib/
 │   ├── stm_sdram/
 │   ├── stm_log/
 │   └── stm_littlefs/
+├── skills/               # 配套开发技能及其分发副本
+│   ├── README.md
+│   └── stm32-app-main/
 ├── ci/                  # 编译检查、文档检查及 CI 专用 HAL 配置
 ├── .github/workflows/
 ├── CONTRIBUTING.md
