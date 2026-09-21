@@ -13,3 +13,6 @@
 [submodule "lib/stm_littlefs"]
 	path = lib/stm_littlefs
 	url = ../stm_littlefs.git
+[submodule "skills/stm32-app-main"]
+	path = skills/stm32-app-main
+	url = ../stm32-app-main.git
