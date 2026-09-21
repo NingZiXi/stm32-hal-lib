@@ -17,6 +17,8 @@
 | [stm_sdram](https://github.com/NingZiXi/stm_sdram) | [![version 3.0.0](https://img.shields.io/badge/version-3.0.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_sdram/tree/b0f4faed37fa96739aedeaebd848059fa1b029e7) | SDRAM 初始化、刷新、读写、填充及自检 |
 | [stm_log](https://github.com/NingZiXi/stm_log) | [![version 2.4.0](https://img.shields.io/badge/version-2.4.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_log/tree/15642aa90fe3c5a91cd64680437f2ebd867ca20a) | 分级日志、标签过滤及自定义输出 |
 | [stm_littlefs](https://github.com/NingZiXi/stm_littlefs) | [![version 1.0.1](https://img.shields.io/badge/version-1.0.1-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_littlefs/tree/96c8d2ffa8a07950bb308fcc300aa6c295ac3fda) | LittleFS 分区块设备适配与文件系统接入 |
+| [esp_at_client](https://github.com/NingZiXi/esp_at_client) | [![version 0.5.0](https://img.shields.io/badge/version-0.5.0-5364b5?style=flat-square)](https://github.com/NingZiXi/esp_at_client/tree/b17f954c76ca4cc3cddcddad48faa1328d80a29f) | 平台无关 ESP-AT 轮询客户端，STM32 HAL 适配位于 ports/stm32_hal/ |
+| [stm_ota](https://github.com/NingZiXi/stm_ota) | [![version 0.5.0](https://img.shields.io/badge/version-0.5.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_ota/tree/f9163d2a7efe2f67d089a62c413dc40360c49170) | 同步 OTA 下载、A/B 分区切换与 Flash 校验 |
 
 表中链接指向独立仓库的最新说明；当前固定版本的说明位于克隆后的 `lib/<组件>/README.md`。
 
@@ -57,7 +59,9 @@ stm32-hal-lib/
 │   ├── stm_flash/
 │   ├── stm_sdram/
 │   ├── stm_log/
-│   └── stm_littlefs/
+│   ├── stm_littlefs/
+│   ├── esp_at_client/
+│   └── stm_ota/
 ├── skills/               # 配套开发技能及其分发副本
 │   ├── README.md
 │   └── stm32-app-main/
@@ -132,7 +136,7 @@ git submodule update --init --recursive
 [GitHub Actions](https://github.com/NingZiXi/stm32-hal-lib/actions) 在 push、pull request 和手动触发时执行：
 
 - 总仓库 Markdown 本地文件链接、组件目录和子模块引用检查。
-- STM32H723xx / Cortex-M7 配置下，三个 C 组件的 CMake 编译及组合公共头文件的 C/C++ 编译；额外检查日志关闭配置。
+- STM32H723xx / Cortex-M7 配置下，三个 C 驱动组件、ESP-AT 协议核心及其 STM32 适配层 (`ports/stm32_hal/`) 的 CMake 编译与组合公共头文件的 C/C++ 编译；额外检查日志关闭配置。
 - 公共依赖的本地接入、两个驱动添加顺序、固定提交下载与离线缺失报错。
 - RTT 可选依赖的固定提交下载、本地复用、关闭及缺失检查，以及只链接 stm_log 的消费者链接检查。
 - Flash、SDRAM 真实驱动的 Unicorn 模拟测试，分别使用 O0/O2/Os，覆盖生命周期、边界、错误注入和存储操作。

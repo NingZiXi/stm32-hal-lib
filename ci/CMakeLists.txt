@@ -25,7 +25,13 @@ add_subdirectory("${LIB_ROOT}/lib/stm_log" stm_log)
 add_subdirectory("${LIB_ROOT}/lib/stm_littlefs" stm_littlefs)
 # 上游仅在 assert 中使用此辅助函数，Release 的 NDEBUG 会使其未使用。
 target_compile_options(littlefs PRIVATE -Wno-unused-function)
+add_subdirectory("${LIB_ROOT}/lib/esp_at_client" esp_at_client)
 target_compile_definitions(stm_log PUBLIC STM_LOG_HAL_HEADER="stm32h7xx_hal.h")
+
+# 验证 STM32 HAL 适配层在 H7 下编译：必须显式 add_subdirectory，库不会自动加入。
+add_subdirectory("${LIB_ROOT}/lib/esp_at_client/ports/stm32_hal" esp_at_stm32_hal)
+target_compile_definitions(esp_at_stm32_hal PUBLIC ESP_AT_STM32_HAL_HEADER="stm32h7xx_hal.h")
+target_link_libraries(esp_at_stm32_hal PUBLIC stm32cubemx)
 
 # 检查消费者通过 target 链接能取得全部公共头文件和宏。
 add_library(public_headers OBJECT headers.c headers.cpp)
@@ -35,6 +41,12 @@ target_link_libraries(public_headers PRIVATE stm_flash stm_sdram stm_log stm_lit
 add_library(log_disabled OBJECT "${LIB_ROOT}/lib/stm_log/stm_log.c")
 target_compile_definitions(log_disabled PRIVATE STM_LOG_HAL_HEADER="stm32h7xx_hal.h" STM_LOG_ENABLED=0)
 target_link_libraries(log_disabled PRIVATE stm32cubemx)
+
+# STM32 适配层编译检查：未引用具体工程 main.h，仅检查 HAL 类型与 UART/DMA 接线。
+add_library(esp_at_stm32_hal_check OBJECT
+    "${LIB_ROOT}/lib/esp_at_client/ports/stm32_hal/esp_at_port_stm32.c"
+    "${LIB_ROOT}/lib/esp_at_client/ports/stm32_hal/esp_at_esp_port.c")
+target_link_libraries(esp_at_stm32_hal_check PRIVATE esp_at_stm32_hal)
 
 if(STM_LOG_WITH_RTT)
     add_executable(rtt_link_check rtt_link.c)

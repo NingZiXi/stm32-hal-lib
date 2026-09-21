@@ -53,4 +53,6 @@ git submodule add ../stm_<name>.git lib/stm_<name>
 
 组件每次修改并交付使用时必须发布新的版本 tag，不能只更新 main：消费工程通过 FetchContent 的 GIT_TAG 固定版本。修复递增 patch，兼容的新功能递增 minor，破坏性接口变更递增 major；已有 tag 不移动、不覆盖。先完成验证，再将组件提交和新 tag 推送到 GitHub、Gitee，两端指向同一提交，随后更新总仓库引用、版本徽章和需要升级的消费工程 GIT_TAG。
 
+**tag 推送到 GitHub 后必须立即创建对应的 GitHub Release**：在 GitHub 端执行 `gh release create <tag> --generate-notes --title "<tag>"`。Release 是用户了解组件变更和兼容性的入口，单独 tag 不构成正式发布。Gitee 端的发行版可在 GitHub Release 创建后由维护者手动同步，或在 `gitee.com/nzxhg/<component>/releases/new` 上传相同内容。历史已有但缺 Release 的 tag 应在补齐时一次性回填。
+
 总仓库发布时固定通过检查的组合，并在 Release 中说明实际变化和验证范围。测试日志、固件、探针信息及开发过程文档保留本地，不放入公开分发目录。

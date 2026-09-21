@@ -16,3 +16,9 @@
 [submodule "skills/stm32-app-main"]
 	path = skills/stm32-app-main
 	url = ../stm32-app-main.git
+[submodule "lib/esp_at_client"]
+	path = lib/esp_at_client
+	url = ../esp_at_client.git
+[submodule "lib/stm_ota"]
+	path = lib/stm_ota
+	url = ../stm_ota.git
