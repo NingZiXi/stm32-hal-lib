@@ -14,7 +14,11 @@
 #define HAL_FLASH_MODULE_ENABLED
 #define HAL_PWR_MODULE_ENABLED
 #define HAL_SDRAM_MODULE_ENABLED
+#if defined(STM32H757xx)
+#define HAL_QSPI_MODULE_ENABLED
+#else
 #define HAL_OSPI_MODULE_ENABLED
+#endif
 #define HAL_UART_MODULE_ENABLED
 
 #define HSE_VALUE 25000000U
@@ -30,6 +34,7 @@
 #define USE_RTOS 0U
 #define USE_HAL_SDRAM_REGISTER_CALLBACKS 0U
 #define USE_HAL_OSPI_REGISTER_CALLBACKS 0U
+#define USE_HAL_QSPI_REGISTER_CALLBACKS 0U
 #define USE_HAL_UART_REGISTER_CALLBACKS 0U
 
 #include "stm32h7xx_hal_rcc.h"
@@ -40,7 +45,11 @@
 #include "stm32h7xx_hal_flash.h"
 #include "stm32h7xx_hal_pwr.h"
 #include "stm32h7xx_hal_sdram.h"
+#if defined(STM32H757xx)
+#include "stm32h7xx_hal_qspi.h"
+#else
 #include "stm32h7xx_hal_ospi.h"
+#endif
 #include "stm32h7xx_hal_uart.h"
 
 #define assert_param(expr) ((void)0U)

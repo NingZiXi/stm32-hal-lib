@@ -11,7 +11,8 @@ endforeach()
 
 add_compile_options(-Wall -Wextra -Werror)
 add_library(stm32cubemx INTERFACE)
-target_compile_definitions(stm32cubemx INTERFACE USE_HAL_DRIVER STM32H723xx)
+set(CI_MCU STM32H723xx CACHE STRING "MCU for HAL compile checks")
+target_compile_definitions(stm32cubemx INTERFACE USE_HAL_DRIVER ${CI_MCU} CORE_CM7)
 target_include_directories(stm32cubemx INTERFACE
     "${CMAKE_CURRENT_SOURCE_DIR}/include"
     "${DEPS_ROOT}/hal/Inc"
@@ -21,6 +22,22 @@ target_include_directories(stm32cubemx INTERFACE
 add_subdirectory("${LIB_ROOT}/lib/stm_common" stm_common)
 add_subdirectory("${LIB_ROOT}/lib/stm_flash" stm_flash)
 add_subdirectory("${LIB_ROOT}/lib/stm_sdram" stm_sdram)
+if(CI_MCU STREQUAL "STM32H757xx")
+    set(STM_FLASH_WITH_QSPI ON)
+    set(STM_FLASH_WITH_OSPI OFF)
+    set(memory_flash_adapter stm_flash_qspi)
+else()
+    set(STM_FLASH_WITH_QSPI OFF)
+    set(STM_FLASH_WITH_OSPI ON)
+    set(memory_flash_adapter stm_flash_ospi)
+endif()
+add_subdirectory("${LIB_ROOT}/lib/stm_flash/adapters/stm32_hal" flash_hal)
+add_subdirectory("${LIB_ROOT}/lib/stm_sdram/adapters/stm32_hal" sdram_hal)
+target_compile_definitions(${memory_flash_adapter} PUBLIC STM_FLASH_HAL_HEADER="stm32h7xx_hal.h")
+target_compile_definitions(stm_sdram_fmc PUBLIC STM_SDRAM_HAL_HEADER="stm32h7xx_hal.h")
+add_library(memory_adapter_headers OBJECT memory_adapter_headers.cpp)
+target_compile_features(memory_adapter_headers PRIVATE cxx_std_17)
+target_link_libraries(memory_adapter_headers PRIVATE ${memory_flash_adapter} stm_sdram_fmc)
 add_subdirectory("${LIB_ROOT}/lib/stm_log" stm_log)
 add_subdirectory("${LIB_ROOT}/lib/stm_littlefs" stm_littlefs)
 # 上游仅在 assert 中使用此辅助函数，Release 的 NDEBUG 会使其未使用。

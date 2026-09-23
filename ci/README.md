@@ -51,7 +51,7 @@ python ci/check_littlefs_dependency.py --littlefs-source build/compile/_deps/lit
 
 主机测试执行官方 LittleFS 文件操作和 NOR 部分写入/擦除中断恢复。依赖检查覆盖已有 target、离线源目录、自动获取 Flash/Common 的固定版本和关闭下载后的缺失报错；可用 `--flash-repository`、`--common-repository` 指定镜像，`--deps-root` 指定 HAL/CMSIS 目录。
 
-`ci/include/stm32h7xx_hal_conf.h` 仅用于 H723 编译与 HAL 桩测试，没有 GPIO、启动、链接脚本或板级配置，不应替代实际工程的 HAL 配置。
+`ci/include/stm32h7xx_hal_conf.h` 仅用于 H723/H757 编译与 HAL 桩测试，没有 GPIO、启动、链接脚本或板级配置，不应替代实际工程的 HAL 配置。
 
 ## 模拟测试
 
@@ -85,3 +85,31 @@ python ci/check_rtt_dependency.py --source build/rtt/_deps/segger_rtt-src
 首个构建实际下载固定 RTT 提交，应用只链接 `stm_log`，验证 RTT 头文件和符号被正确传递；后续检查覆盖关闭依赖、指定本地源码/配置、同级目录、已有 target 和离线缺失报错。链接检查使用 HAL 桩和 newlib nosys，产物仅用于检查，不可烧录，也不代表 RTT 硬件通信测试通过。
 
 升级依赖时同步修改工作流和本文的 commit，并重新运行全部检查。组件更新须先推送到独立远程，再提交总仓库的 gitlink；CI 的递归 checkout 会验证该提交能从远程获取。
+
+## H757 / QSPI 扩展检查
+
+```sh
+cmake -S ci -B build/compile-h757 -G Ninja "-DCMAKE_TOOLCHAIN_FILE=arm-gcc.cmake" "-DCMAKE_BUILD_TYPE=Release" -DCI_MCU=STM32H757xx
+cmake --build build/compile-h757
+python lib/stm_flash/tests/run_tests.py --mcu STM32H757xx --bus qspi --include ci/include --include .ci-deps/hal/Inc --include .ci-deps/device/Include --include .ci-deps/cmsis/CMSIS/Core/Include --build-dir build/qspi-tests
+python lib/stm_sdram/tests/run_tests.py --mcu STM32H757xx --include ci/include --include .ci-deps/hal/Inc --include .ci-deps/device/Include --include .ci-deps/cmsis/CMSIS/Core/Include --build-dir build/sdram-h757-tests
+```
+
+H723 使用 OSPI HAL，H757 使用 QSPI HAL；公共头文件仍同时检查 C11/C++17。板级接线、真实 SDRAM 刷新和 NOR 数据备份/恢复须单独做硬件验证。
+
+
+## v4 开发分支的核心独立性
+
+Flash/SDRAM 核心不再继承 stm32cubemx。此目录显式选择 H723 OSPI 或 H757 QSPI，并单独构建 FMC 适配器。
+独立原生测试不加入任何 HAL/CMSIS 路径，覆盖自定义控制器、器件描述和多实例：
+
+```sh
+cmake -S lib/stm_flash/tests/portable -B build/flash-native -G Ninja
+cmake --build build/flash-native
+ctest --test-dir build/flash-native --output-on-failure
+cmake -S lib/stm_sdram/tests/portable -B build/sdram-native -G Ninja
+cmake --build build/sdram-native
+ctest --test-dir build/sdram-native --output-on-failure
+```
+
+当前内存组件已发布为 `v4.0.0`；H757 QSPI/FMC 实板验证通过，H723 OSPI/FMC 已完成软件模型回归。总仓库 gitlink 固定到已推送的提交。

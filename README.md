@@ -13,8 +13,8 @@
 | 组件 | 当前引用版本 | 用途 |
 |---|---|---|
 | [stm_common](https://github.com/NingZiXi/stm_common) | [![version 1.0.0](https://img.shields.io/badge/version-1.0.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_common/tree/ce3d186dde2d374a8e9c7b9068a7b88f97d57dc1) | `stm_err_t` 与公共错误码 |
-| [stm_flash](https://github.com/NingZiXi/stm_flash) | [![version 3.0.0](https://img.shields.io/badge/version-3.0.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_flash/tree/c83cd2be646766fd321f0cee06bd32f07810a13e) | NOR Flash 读取、分页写入、扇区擦除与校验 |
-| [stm_sdram](https://github.com/NingZiXi/stm_sdram) | [![version 3.0.0](https://img.shields.io/badge/version-3.0.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_sdram/tree/b0f4faed37fa96739aedeaebd848059fa1b029e7) | SDRAM 初始化、刷新、读写、填充及自检 |
+| [stm_flash](https://github.com/NingZiXi/stm_flash) | [![version 4.0.0](https://img.shields.io/badge/version-4.0.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_flash/tree/2d44d3c091262a4d79b33b04ca47a8a04b2fee35) | NOR Flash 读取、分页写入、扇区擦除与校验 |
+| [stm_sdram](https://github.com/NingZiXi/stm_sdram) | [![version 4.0.0](https://img.shields.io/badge/version-4.0.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_sdram/tree/86f106e8693f84a75e0ca120290e4867aee05e6c) | SDRAM 初始化、刷新、读写、填充及自检 |
 | [stm_log](https://github.com/NingZiXi/stm_log) | [![version 2.4.0](https://img.shields.io/badge/version-2.4.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_log/tree/15642aa90fe3c5a91cd64680437f2ebd867ca20a) | 分级日志、标签过滤及自定义输出 |
 | [stm_littlefs](https://github.com/NingZiXi/stm_littlefs) | [![version 1.0.1](https://img.shields.io/badge/version-1.0.1-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_littlefs/tree/96c8d2ffa8a07950bb308fcc300aa6c295ac3fda) | LittleFS 分区块设备适配与文件系统接入 |
 | [esp_at_client](https://github.com/NingZiXi/esp_at_client) | [![version 0.5.0](https://img.shields.io/badge/version-0.5.0-5364b5?style=flat-square)](https://github.com/NingZiXi/esp_at_client/tree/b17f954c76ca4cc3cddcddad48faa1328d80a29f) | 平台无关 ESP-AT 轮询客户端，STM32 HAL 适配位于 ports/stm32_hal/ |
@@ -22,7 +22,7 @@
 
 表中链接指向独立仓库的最新说明；当前固定版本的说明位于克隆后的 `lib/<组件>/README.md`。
 
-版本徽章对应本仓库固定的提交，点击可查看该版本源码。Flash/SDRAM 对应 `v3.0.0`，`stm_common` 对应 `v1.0.0`，`stm_littlefs` 对应 `v1.0.1`，`stm_log` 对应 `v2.4.0`。更新子模块时同步更新徽章，不自动跟随最新发布版。
+版本徽章对应本仓库固定的提交，点击可查看该版本源码。Flash/SDRAM 对应 `v4.0.0`，`stm_common` 对应 `v1.0.0`，`stm_littlefs` 对应 `v1.0.1`，`stm_log` 对应 `v2.4.0`。更新子模块时同步更新徽章，不自动跟随最新发布版。
 
 Flash、SDRAM 不依赖日志、RTT 或 RTOS。`stm_log` 保留现有 API；新设备驱动沿用 `flash_*`、`sdram_*` 这样的接口命名，规范见 [CONTRIBUTING.md](CONTRIBUTING.md)。
 

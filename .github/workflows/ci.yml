@@ -53,10 +53,25 @@ jobs:
           sudo apt-get update
           sudo apt-get install --no-install-recommends -y gcc-arm-none-eabi libnewlib-arm-none-eabi ninja-build
           python -m pip install -r lib/stm_flash/tests/requirements.txt -r lib/stm_sdram/tests/requirements.txt
+      - name: Test memory cores without HAL or CMSIS
+        run: |
+          for component in stm_flash stm_sdram; do
+            cmake -S lib/$component/tests/portable -B build/$component-native -G Ninja -DCMAKE_BUILD_TYPE=Debug
+            cmake --build build/$component-native
+            ctest --test-dir build/$component-native --output-on-failure
+          done
       - name: Compile components and public headers for H723
         run: |
           cmake -S ci -B build/compile -G Ninja "-DCMAKE_TOOLCHAIN_FILE=arm-gcc.cmake" "-DCMAKE_BUILD_TYPE=Release"
           cmake --build build/compile
+      - name: Compile components and public headers for H757
+        run: |
+          cmake -S ci -B build/compile-h757 -G Ninja "-DCMAKE_TOOLCHAIN_FILE=arm-gcc.cmake" "-DCMAKE_BUILD_TYPE=Release" -DCI_MCU=STM32H757xx
+          cmake --build build/compile-h757
+      - name: Run H757 QSPI and SDRAM software tests
+        run: |
+          python lib/stm_flash/tests/run_tests.py --mcu STM32H757xx --bus qspi --include ci/include --include .ci-deps/hal/Inc --include .ci-deps/device/Include --include .ci-deps/cmsis/CMSIS/Core/Include --build-dir build/qspi-tests
+          python lib/stm_sdram/tests/run_tests.py --mcu STM32H757xx --include ci/include --include .ci-deps/hal/Inc --include .ci-deps/device/Include --include .ci-deps/cmsis/CMSIS/Core/Include --build-dir build/sdram-h757-tests
       - name: Check shared dependency resolution and pinned download
         run: python ci/check_common_dependency.py
       - name: Run LittleFS adapter and interruption recovery tests

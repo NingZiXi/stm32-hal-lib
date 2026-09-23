@@ -56,7 +56,7 @@ target_include_directories(littlefs PUBLIC "{source.as_posix()}")
                 raise SystemExit(result.stdout + result.stderr)
             subprocess.run(['cmake', '--build', str(folder / 'build')], check=True)
             if scenario == 'fetch_flash':
-                for name, sha in [('stm_flash', 'c83cd2be646766fd321f0cee06bd32f07810a13e'),
+                for name, sha in [('stm_flash', '2d44d3c091262a4d79b33b04ca47a8a04b2fee35'),
                                   ('stm_common', 'ce3d186dde2d374a8e9c7b9068a7b88f97d57dc1')]:
                     checkout = folder / 'build/_deps' / f'{name}-src'
                     actual = subprocess.check_output(['git', '-C', str(checkout), 'rev-parse', 'HEAD'], text=True).strip()
