@@ -38,6 +38,18 @@ target_compile_definitions(stm_sdram_fmc PUBLIC STM_SDRAM_HAL_HEADER="stm32h7xx_
 add_library(memory_adapter_headers OBJECT memory_adapter_headers.cpp)
 target_compile_features(memory_adapter_headers PRIVATE cxx_std_17)
 target_link_libraries(memory_adapter_headers PRIVATE ${memory_flash_adapter} stm_sdram_fmc)
+add_subdirectory("${LIB_ROOT}/lib/stm_eeprom" stm_eeprom)
+add_subdirectory("${LIB_ROOT}/lib/stm_sd" stm_sd)
+set(STM_EEPROM_WITH_I2C ON)
+set(STM_SD_WITH_SDMMC ON)
+add_subdirectory("${LIB_ROOT}/lib/stm_eeprom/adapters/stm32_hal" eeprom_hal)
+add_subdirectory("${LIB_ROOT}/lib/stm_sd/adapters/stm32_hal" sd_hal)
+target_compile_definitions(stm_eeprom_i2c PUBLIC STM_EEPROM_HAL_HEADER="stm32h7xx_hal.h")
+target_compile_definitions(stm_sd_sdmmc PUBLIC STM_SD_HAL_HEADER="stm32h7xx_hal.h")
+target_link_libraries(memory_adapter_headers PRIVATE stm_eeprom_i2c stm_sd_sdmmc)
+set(STM_FATFS_FETCH_DIR "${LIB_ROOT}/lib/fatfs")
+set(STM_FATFS_WITH_SD ON)
+add_subdirectory("${LIB_ROOT}/lib/stm_fatfs" stm_fatfs)
 add_subdirectory("${LIB_ROOT}/lib/stm_log" stm_log)
 add_subdirectory("${LIB_ROOT}/lib/stm_littlefs" stm_littlefs)
 # 上游仅在 assert 中使用此辅助函数，Release 的 NDEBUG 会使其未使用。
@@ -53,7 +65,8 @@ target_link_libraries(esp_at_stm32_hal PUBLIC stm32cubemx)
 # 检查消费者通过 target 链接能取得全部公共头文件和宏。
 add_library(public_headers OBJECT headers.c headers.cpp)
 target_compile_features(public_headers PRIVATE c_std_11 cxx_std_17)
-target_link_libraries(public_headers PRIVATE stm_flash stm_sdram stm_log stm_littlefs)
+target_link_libraries(public_headers PRIVATE stm_flash stm_sdram stm_log stm_littlefs
+    stm_eeprom_i2c stm_sd_sdmmc stm_fatfs stm_fatfs_sd)
 
 add_library(log_disabled OBJECT "${LIB_ROOT}/lib/stm_log/stm_log.c")
 target_compile_definitions(log_disabled PRIVATE STM_LOG_HAL_HEADER="stm32h7xx_hal.h" STM_LOG_ENABLED=0)

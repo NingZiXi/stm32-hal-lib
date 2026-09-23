@@ -7,6 +7,9 @@
 #include "stm_sdram.h"
 #include "stm_log.h"
 #include "stm_littlefs.h"
+#include "stm_eeprom.h"
+#include "stm_sd.h"
+#include "stm_fatfs.h"
 
 static_assert(STM_OK == 0, "STM_OK must remain zero");
 stm_err_t ci_delete_handles(flash_handle_t *flash, sdram_handle_t *ram)

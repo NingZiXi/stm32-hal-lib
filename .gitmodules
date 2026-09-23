@@ -22,3 +22,12 @@
 [submodule "lib/stm_ota"]
 	path = lib/stm_ota
 	url = ../stm_ota.git
+[submodule "lib/stm_eeprom"]
+	path = lib/stm_eeprom
+	url = ../stm_eeprom.git
+[submodule "lib/stm_sd"]
+	path = lib/stm_sd
+	url = ../stm_sd.git
+[submodule "lib/stm_fatfs"]
+	path = lib/stm_fatfs
+	url = ../stm_fatfs.git

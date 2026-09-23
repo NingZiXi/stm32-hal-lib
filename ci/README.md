@@ -34,7 +34,7 @@ python -m pip install -r lib/stm_flash/tests/requirements.txt -r lib/stm_sdram/t
 ## 编译检查
 
 ```sh
-cmake -S ci -B build/compile -G Ninja "-DCMAKE_TOOLCHAIN_FILE=arm-gcc.cmake" "-DCMAKE_BUILD_TYPE=Release"
+cmake -S ci -B build/compile -G Ninja "-DCMAKE_TOOLCHAIN_FILE=/absolute/path/to/stm32-hal-lib/ci/arm-gcc.cmake" "-DCMAKE_BUILD_TYPE=Release"
 cmake --build build/compile
 ```
 
@@ -77,7 +77,7 @@ python lib/stm_sdram/tests/run_tests.py --include ci/include --include .ci-deps/
 RTT 可选依赖还会执行独立编译和链接检查：
 
 ```sh
-cmake -S ci -B build/rtt -G Ninja "-DCMAKE_TOOLCHAIN_FILE=arm-gcc.cmake" -DSTM_LOG_WITH_RTT=ON
+cmake -S ci -B build/rtt -G Ninja "-DCMAKE_TOOLCHAIN_FILE=/absolute/path/to/stm32-hal-lib/ci/arm-gcc.cmake" -DSTM_LOG_WITH_RTT=ON
 cmake --build build/rtt
 python ci/check_rtt_dependency.py --source build/rtt/_deps/segger_rtt-src
 ```
@@ -89,7 +89,7 @@ python ci/check_rtt_dependency.py --source build/rtt/_deps/segger_rtt-src
 ## H757 / QSPI 扩展检查
 
 ```sh
-cmake -S ci -B build/compile-h757 -G Ninja "-DCMAKE_TOOLCHAIN_FILE=arm-gcc.cmake" "-DCMAKE_BUILD_TYPE=Release" -DCI_MCU=STM32H757xx
+cmake -S ci -B build/compile-h757 -G Ninja "-DCMAKE_TOOLCHAIN_FILE=/absolute/path/to/stm32-hal-lib/ci/arm-gcc.cmake" "-DCMAKE_BUILD_TYPE=Release" -DCI_MCU=STM32H757xx
 cmake --build build/compile-h757
 python lib/stm_flash/tests/run_tests.py --mcu STM32H757xx --bus qspi --include ci/include --include .ci-deps/hal/Inc --include .ci-deps/device/Include --include .ci-deps/cmsis/CMSIS/Core/Include --build-dir build/qspi-tests
 python lib/stm_sdram/tests/run_tests.py --mcu STM32H757xx --include ci/include --include .ci-deps/hal/Inc --include .ci-deps/device/Include --include .ci-deps/cmsis/CMSIS/Core/Include --build-dir build/sdram-h757-tests

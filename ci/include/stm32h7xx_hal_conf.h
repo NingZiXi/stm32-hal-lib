@@ -20,6 +20,8 @@
 #define HAL_OSPI_MODULE_ENABLED
 #endif
 #define HAL_UART_MODULE_ENABLED
+#define HAL_I2C_MODULE_ENABLED
+#define HAL_SD_MODULE_ENABLED
 
 #define HSE_VALUE 25000000U
 #define HSE_STARTUP_TIMEOUT 100U
@@ -51,6 +53,8 @@
 #include "stm32h7xx_hal_ospi.h"
 #endif
 #include "stm32h7xx_hal_uart.h"
+#include "stm32h7xx_hal_i2c.h"
+#include "stm32h7xx_hal_sd.h"
 
 #define assert_param(expr) ((void)0U)
 #endif

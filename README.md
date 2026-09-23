@@ -16,13 +16,16 @@
 | [stm_flash](https://github.com/NingZiXi/stm_flash) | [![version 4.0.0](https://img.shields.io/badge/version-4.0.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_flash/tree/2d44d3c091262a4d79b33b04ca47a8a04b2fee35) | NOR Flash 读取、分页写入、扇区擦除与校验 |
 | [stm_sdram](https://github.com/NingZiXi/stm_sdram) | [![version 4.0.0](https://img.shields.io/badge/version-4.0.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_sdram/tree/86f106e8693f84a75e0ca120290e4867aee05e6c) | SDRAM 初始化、刷新、读写、填充及自检 |
 | [stm_log](https://github.com/NingZiXi/stm_log) | [![version 2.4.0](https://img.shields.io/badge/version-2.4.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_log/tree/15642aa90fe3c5a91cd64680437f2ebd867ca20a) | 分级日志、标签过滤及自定义输出 |
-| [stm_littlefs](https://github.com/NingZiXi/stm_littlefs) | [![version 1.0.1](https://img.shields.io/badge/version-1.0.1-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_littlefs/tree/96c8d2ffa8a07950bb308fcc300aa6c295ac3fda) | LittleFS 分区块设备适配与文件系统接入 |
+| [stm_littlefs](https://github.com/NingZiXi/stm_littlefs) | [![version 1.0.2](https://img.shields.io/badge/version-1.0.2-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_littlefs/tree/6360940d6dfbefdb09f5eed76fb58891af035f0d) | LittleFS 分区块设备适配与文件系统接入 |
+| [stm_eeprom](https://github.com/NingZiXi/stm_eeprom) | [![version 1.0.0](https://img.shields.io/badge/version-1.0.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_eeprom/tree/1ac5b9a8dc6612c5066cefb6b93f5ebbd7e6834c) | I2C EEPROM 器件与控制器适配 |
+| [stm_sd](https://github.com/NingZiXi/stm_sd) | [![version 1.0.0](https://img.shields.io/badge/version-1.0.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_sd/tree/0ef93e067633d3ebc22e3f3aa8dc5d80f25d5d32) | SD NAND/TF 卡块设备与 SDMMC 适配 |
+| [stm_fatfs](https://github.com/NingZiXi/stm_fatfs) | [![version 1.0.1](https://img.shields.io/badge/version-1.0.1-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_fatfs/tree/da4e096bfc7a2137929abca28775479b93b787f9) | FatFs 磁盘注册和块设备粘合层 |
 | [esp_at_client](https://github.com/NingZiXi/esp_at_client) | [![version 0.5.0](https://img.shields.io/badge/version-0.5.0-5364b5?style=flat-square)](https://github.com/NingZiXi/esp_at_client/tree/b17f954c76ca4cc3cddcddad48faa1328d80a29f) | 平台无关 ESP-AT 轮询客户端，STM32 HAL 适配位于 ports/stm32_hal/ |
 | [stm_ota](https://github.com/NingZiXi/stm_ota) | [![version 0.5.0](https://img.shields.io/badge/version-0.5.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_ota/tree/f9163d2a7efe2f67d089a62c413dc40360c49170) | 同步 OTA 下载、A/B 分区切换与 Flash 校验 |
 
 表中链接指向独立仓库的最新说明；当前固定版本的说明位于克隆后的 `lib/<组件>/README.md`。
 
-版本徽章对应本仓库固定的提交，点击可查看该版本源码。Flash/SDRAM 对应 `v4.0.0`，`stm_common` 对应 `v1.0.0`，`stm_littlefs` 对应 `v1.0.1`，`stm_log` 对应 `v2.4.0`。更新子模块时同步更新徽章，不自动跟随最新发布版。
+版本徽章对应本仓库固定的提交，点击可查看该版本源码。Flash/SDRAM 对应 `v4.0.0`，`stm_common` 对应 `v1.0.0`，`stm_littlefs` 对应 `v1.0.2`，`stm_log` 对应 `v2.4.0`，EEPROM 和 SD 对应 `v1.0.0`，FatFs 对应 `v1.0.1`。更新子模块时同步更新徽章，不自动跟随最新发布版。
 
 Flash、SDRAM 不依赖日志、RTT 或 RTOS。`stm_log` 保留现有 API；新设备驱动沿用 `flash_*`、`sdram_*` 这样的接口命名，规范见 [CONTRIBUTING.md](CONTRIBUTING.md)。
 
@@ -60,6 +63,10 @@ stm32-hal-lib/
 │   ├── stm_sdram/
 │   ├── stm_log/
 │   ├── stm_littlefs/
+│   ├── stm_eeprom/
+│   ├── stm_sd/
+│   ├── stm_fatfs/
+│   ├── fatfs/          # FatFs 固定源码副本
 │   ├── esp_at_client/
 │   └── stm_ota/
 ├── skills/               # 配套开发技能及其分发副本
@@ -87,6 +94,15 @@ target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE stm_flash stm_sdram)
 ```
 
 只使用一个驱动时，删除另一个驱动的两处引用即可。`stm_common` 是头文件库，驱动会传递它的 include 路径；已经在其他位置添加过该目标时，不要重复添加。
+
+需要 EEPROM、SD 或 FatFs 时，按需添加对应组件：
+
+```cmake
+add_subdirectory(${STM_LIB_DIR}/stm_eeprom)
+add_subdirectory(${STM_LIB_DIR}/stm_sd)
+add_subdirectory(${STM_LIB_DIR}/stm_fatfs)
+target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE stm_eeprom stm_sd stm_fatfs)
+```
 
 需要 LittleFS 时，在上述驱动接入之后添加：
 

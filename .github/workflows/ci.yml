@@ -62,12 +62,19 @@ jobs:
           done
       - name: Compile components and public headers for H723
         run: |
-          cmake -S ci -B build/compile -G Ninja "-DCMAKE_TOOLCHAIN_FILE=arm-gcc.cmake" "-DCMAKE_BUILD_TYPE=Release"
+          cmake -S ci -B build/compile -G Ninja "-DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/ci/arm-gcc.cmake" "-DCMAKE_BUILD_TYPE=Release"
           cmake --build build/compile
       - name: Compile components and public headers for H757
         run: |
-          cmake -S ci -B build/compile-h757 -G Ninja "-DCMAKE_TOOLCHAIN_FILE=arm-gcc.cmake" "-DCMAKE_BUILD_TYPE=Release" -DCI_MCU=STM32H757xx
+          cmake -S ci -B build/compile-h757 -G Ninja "-DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/ci/arm-gcc.cmake" "-DCMAKE_BUILD_TYPE=Release" -DCI_MCU=STM32H757xx
           cmake --build build/compile-h757
+      - name: Run EEPROM, SD and FatFs host tests
+        run: |
+          for component in stm_eeprom stm_sd stm_fatfs; do
+            cmake -S lib/$component/tests -B build/$component-tests -G Ninja -DCMAKE_BUILD_TYPE=Debug
+            cmake --build build/$component-tests
+            ctest --test-dir build/$component-tests --output-on-failure
+          done
       - name: Run H757 QSPI and SDRAM software tests
         run: |
           python lib/stm_flash/tests/run_tests.py --mcu STM32H757xx --bus qspi --include ci/include --include .ci-deps/hal/Inc --include .ci-deps/device/Include --include .ci-deps/cmsis/CMSIS/Core/Include --build-dir build/qspi-tests
@@ -82,7 +89,7 @@ jobs:
           python ci/check_littlefs_dependency.py --littlefs-source build/compile/_deps/littlefs-src
       - name: Fetch RTT and check transitive linking
         run: |
-          cmake -S ci -B build/rtt -G Ninja "-DCMAKE_TOOLCHAIN_FILE=arm-gcc.cmake" "-DCMAKE_BUILD_TYPE=Release" -DSTM_LOG_WITH_RTT=ON
+          cmake -S ci -B build/rtt -G Ninja "-DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/ci/arm-gcc.cmake" "-DCMAKE_BUILD_TYPE=Release" -DSTM_LOG_WITH_RTT=ON
           cmake --build build/rtt
           python ci/check_rtt_dependency.py --source build/rtt/_deps/segger_rtt-src
       - name: Run Flash and SDRAM software tests
