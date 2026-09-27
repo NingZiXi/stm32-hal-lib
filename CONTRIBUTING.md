@@ -28,6 +28,10 @@ git submodule add ../stm_<name>.git lib/stm_<name>
 
 默认目录结构可参考 Flash/SDRAM：根目录放 `.c`、`.h`、`CMakeLists.txt`、`README.md`、`LICENSE`；`example/main.c` 提供最小参考；需要时提供 `tests/`。不要求空目录、CHANGELOG 或额外 docs。
 
+## 显示与触摸组件
+
+按芯片拆分、板级回调、LVGL 粘合与实板验证的专门要求见[显示与触摸组件开发规范](docs/display-development.md)。该规范区分已经确定的组件边界与仍待硬件核实的参数，并列明现有组件与本文件通用错误码约定的待对齐事项。
+
 ## 接口与错误码
 
 - 组件名使用 `stm_<功能>`；新设备驱动函数使用 `<功能>_<动作>`，例如 `flash_create`、`sdram_read16`。类型、枚举和宏使用组件专属前缀，避免全局命名冲突。

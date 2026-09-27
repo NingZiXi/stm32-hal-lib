@@ -6,6 +6,8 @@
 
 乐鑫侧可对照[独立面板组件示例 esp_lcd_ili9341](https://components.espressif.com/components/espressif/esp_lcd_ili9341)和[esp_lvgl_port](https://components.espressif.com/components/espressif/esp_lvgl_port)。后者提供任务、定时器、屏幕与触摸注册等较完整能力；当前 `stm_lvgl_port` 只实现同步显示刷新及可选触摸输入，因此接入时必须按本文自行提供 tick、handler、板级锁与缓存维护。
 
+新增或维护屏幕、触摸组件时，先看[显示与触摸组件开发规范](display-development.md)；本文负责用户接入步骤。
+
 ## 从旧组件迁移
 
 2026-09-27 起，`stm_display` 与 `stm_lvgl` 不再作为独立远端仓库提供；旧提交中指向这两个远端的子模块无法再从远端检出。已有旧工程需要先升级汇总仓库到删除旧子模块、加入新组件的提交，然后运行 `git submodule sync --recursive` 和 `git submodule update --init --recursive`。使用独立仓库的工程，则自行把引用改到所需新组件。
