@@ -6,6 +6,17 @@
 
 乐鑫侧可对照[独立面板组件示例 esp_lcd_ili9341](https://components.espressif.com/components/espressif/esp_lcd_ili9341)和[esp_lvgl_port](https://components.espressif.com/components/espressif/esp_lvgl_port)。后者提供任务、定时器、屏幕与触摸注册等较完整能力；当前 `stm_lvgl_port` 只实现同步显示刷新及可选触摸输入，因此接入时必须按本文自行提供 tick、handler、板级锁与缓存维护。
 
+## 从旧组件迁移
+
+2026-09-27 起，`stm_display` 与 `stm_lvgl` 不再作为独立远端仓库提供；旧提交中指向这两个远端的子模块无法再从远端检出。已有旧工程需要先升级汇总仓库到删除旧子模块、加入新组件的提交，然后运行 `git submodule sync --recursive` 和 `git submodule update --init --recursive`。使用独立仓库的工程，则自行把引用改到所需新组件。
+
+| 原引用 | 现在的接法 |
+| --- | --- |
+| `stm_display`（若实际是 ST7789/ST7796 SPI 模块） | 选对应的 `stm_lcd_st7789` 或 `stm_lcd_st7796`，在板级实现 SPI/GPIO IO 回调。 |
+| `stm_display`（RGB/LTDC 帧缓冲） | 先实现板级 LTDC 显存绘制，再按需接 `stm_lvgl_port` 的 `draw` 回调；不能套用 SPI 芯片初始化。 |
+| `stm_lvgl` | 用 LVGL 9 + `stm_lvgl_port_attach` 接板级绘图及可选触摸；旧 API 不兼容，tick、handler、任务锁仍由应用负责。 |
+
+删除旧组件前已保存完整本地 Git 历史；新项目请只引用上表的现行组件。
 ## 先确认硬件
 
 慧勤智远 STM32H757XIH6 CB V1.0 的板上显示**接口**不是已确认插接的屏幕型号。厂商实验 50 提供 ST7789/ST7796 SPI 模块初始化参考，实验 24 有 FT5206 I²C 寄存器读取参考；其 RGB/LTDC 模块参数也不能据此认定为上述 SPI 芯片。在实板接入前记录屏幕 PCB/排线型号、控制芯片、分辨率、供电及电平、SPI 或 RGB 接口、引脚定义（含 CS/DC/RST/BL）、触摸芯片与地址。不能凭接口或通用示例推定是哪颗芯片。

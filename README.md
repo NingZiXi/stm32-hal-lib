@@ -27,7 +27,7 @@
 | [stm_lvgl_port](https://github.com/NingZiXi/stm_lvgl_port) | main (LVGL 9 粘合层) | 独立于屏幕型号的显示与触摸接入 |
 | [stm_ota](https://github.com/NingZiXi/stm_ota) | [![version 0.5.0](https://img.shields.io/badge/version-0.5.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_ota/tree/f9163d2a7efe2f67d089a62c413dc40360c49170) | 同步 OTA 下载、A/B 分区切换与 Flash 校验 |
 
-屏幕组件按实际芯片拆分，旧 `stm_display` / `stm_lvgl` 已退出汇总仓库；从组件选择、CubeMX/CMake、HAL 传输回调到 LVGL 9 的步骤见[显示与触摸接入指南](docs/display-components.md)。目前新组件通过主机测试和 H723/H757 编译检查；实际模组、引脚及显示/触摸效果仍需实板验证。
+屏幕组件按实际芯片拆分，旧 `stm_display` / `stm_lvgl` 已退出汇总仓库，旧远端已清理；从组件选择、CubeMX/CMake、HAL 传输回调到 LVGL 9 的步骤见[显示与触摸接入指南](docs/display-components.md)。目前新组件通过主机测试和 H723/H757 编译检查；实际模组、引脚及显示/触摸效果仍需实板验证。
 
 表中链接指向独立仓库的最新说明；当前固定版本的说明位于克隆后的 `lib/<组件>/README.md`。
 
