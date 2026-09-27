@@ -75,7 +75,13 @@ jobs:
             cmake --build build/$component-tests
             ctest --test-dir build/$component-tests --output-on-failure
           done
-      - name: Run H757 QSPI and SDRAM software tests
+      - name: Run LCD, touch and LVGL port host tests
+        run: |
+          for component in stm_lcd_st7789 stm_lcd_st7796 stm_lcd_touch_ft5206 stm_lvgl_port; do
+            cmake -S lib/$component/tests -B build/$component-tests -G Ninja -DCMAKE_BUILD_TYPE=Debug
+            cmake --build build/$component-tests
+            ctest --test-dir build/$component-tests --output-on-failure
+          done      - name: Run H757 QSPI and SDRAM software tests
         run: |
           python lib/stm_flash/tests/run_tests.py --mcu STM32H757xx --bus qspi --include ci/include --include .ci-deps/hal/Inc --include .ci-deps/device/Include --include .ci-deps/cmsis/CMSIS/Core/Include --build-dir build/qspi-tests
           python lib/stm_sdram/tests/run_tests.py --mcu STM32H757xx --include ci/include --include .ci-deps/hal/Inc --include .ci-deps/device/Include --include .ci-deps/cmsis/CMSIS/Core/Include --build-dir build/sdram-h757-tests

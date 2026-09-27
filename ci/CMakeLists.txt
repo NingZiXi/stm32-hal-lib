@@ -50,6 +50,9 @@ target_link_libraries(memory_adapter_headers PRIVATE stm_eeprom_i2c stm_sd_sdmmc
 set(STM_FATFS_FETCH_DIR "${LIB_ROOT}/lib/fatfs")
 set(STM_FATFS_WITH_SD ON)
 add_subdirectory("${LIB_ROOT}/lib/stm_fatfs" stm_fatfs)
+add_subdirectory("${LIB_ROOT}/lib/stm_lcd_st7789" stm_lcd_st7789)
+add_subdirectory("${LIB_ROOT}/lib/stm_lcd_st7796" stm_lcd_st7796)
+add_subdirectory("${LIB_ROOT}/lib/stm_lcd_touch_ft5206" stm_lcd_touch_ft5206)
 add_subdirectory("${LIB_ROOT}/lib/stm_log" stm_log)
 add_subdirectory("${LIB_ROOT}/lib/stm_littlefs" stm_littlefs)
 # 上游仅在 assert 中使用此辅助函数，Release 的 NDEBUG 会使其未使用。
@@ -66,7 +69,8 @@ target_link_libraries(esp_at_stm32_hal PUBLIC stm32cubemx)
 add_library(public_headers OBJECT headers.c headers.cpp)
 target_compile_features(public_headers PRIVATE c_std_11 cxx_std_17)
 target_link_libraries(public_headers PRIVATE stm_flash stm_sdram stm_log stm_littlefs
-    stm_eeprom_i2c stm_sd_sdmmc stm_fatfs stm_fatfs_sd)
+    stm_eeprom_i2c stm_sd_sdmmc stm_fatfs stm_fatfs_sd
+    stm_lcd_st7789 stm_lcd_st7796 stm_lcd_touch_ft5206)
 
 add_library(log_disabled OBJECT "${LIB_ROOT}/lib/stm_log/stm_log.c")
 target_compile_definitions(log_disabled PRIVATE STM_LOG_HAL_HEADER="stm32h7xx_hal.h" STM_LOG_ENABLED=0)

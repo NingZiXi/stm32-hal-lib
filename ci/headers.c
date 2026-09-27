@@ -10,6 +10,9 @@
 #include "stm_eeprom.h"
 #include "stm_sd.h"
 #include "stm_fatfs.h"
+#include "stm_lcd_st7789.h"
+#include "stm_lcd_st7796.h"
+#include "stm_lcd_touch_ft5206.h"
 
 _Static_assert(STM_OK == 0, "STM_OK must remain zero");
 stm_err_t ci_read_info(flash_handle_t flash, sdram_handle_t ram)

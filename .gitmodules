@@ -31,9 +31,15 @@
 [submodule "lib/stm_fatfs"]
 	path = lib/stm_fatfs
 	url = ../stm_fatfs.git
-[submodule "lib/stm_display"]
-	path = lib/stm_display
-	url = ../stm_display.git
-[submodule "lib/stm_lvgl"]
-	path = lib/stm_lvgl
-	url = ../stm_lvgl.git
+[submodule "lib/stm_lcd_st7789"]
+	path = lib/stm_lcd_st7789
+	url = ../stm_lcd_st7789.git
+[submodule "lib/stm_lcd_st7796"]
+	path = lib/stm_lcd_st7796
+	url = ../stm_lcd_st7796.git
+[submodule "lib/stm_lcd_touch_ft5206"]
+	path = lib/stm_lcd_touch_ft5206
+	url = ../stm_lcd_touch_ft5206.git
+[submodule "lib/stm_lvgl_port"]
+	path = lib/stm_lvgl_port
+	url = ../stm_lvgl_port.git

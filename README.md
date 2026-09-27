@@ -21,9 +21,13 @@
 | [stm_sd](https://github.com/NingZiXi/stm_sd) | [![version 1.0.0](https://img.shields.io/badge/version-1.0.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_sd/tree/0ef93e067633d3ebc22e3f3aa8dc5d80f25d5d32) | SD NAND/TF 卡块设备与 SDMMC 适配 |
 | [stm_fatfs](https://github.com/NingZiXi/stm_fatfs) | [![version 1.0.1](https://img.shields.io/badge/version-1.0.1-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_fatfs/tree/da4e096bfc7a2137929abca28775479b93b787f9) | FatFs 磁盘注册和块设备粘合层 |
 | [esp_at_client](https://github.com/NingZiXi/esp_at_client) | [![version 0.5.0](https://img.shields.io/badge/version-0.5.0-5364b5?style=flat-square)](https://github.com/NingZiXi/esp_at_client/tree/b17f954c76ca4cc3cddcddad48faa1328d80a29f) | 平台无关 ESP-AT 轮询客户端，STM32 HAL 适配位于 ports/stm32_hal/ |
-| [stm_display](https://github.com/NingZiXi/stm_display) | main (RGB/LTDC 首版，待实板验证) | RGB 面板时序、帧缓冲与 STM32 HAL LTDC 适配 |
-| [stm_lvgl](https://github.com/NingZiXi/stm_lvgl) | main (LVGL 9 首版，待实板验证) | 与屏幕控制器分离的 LVGL 9 同步刷新粘合层 |
+| [stm_lcd_st7789](https://github.com/NingZiXi/stm_lcd_st7789) | main (源码与主机测试) | ST7789 SPI 面板芯片驱动 |
+| [stm_lcd_st7796](https://github.com/NingZiXi/stm_lcd_st7796) | main (源码与主机测试) | ST7796 SPI 面板芯片驱动 |
+| [stm_lcd_touch_ft5206](https://github.com/NingZiXi/stm_lcd_touch_ft5206) | main (源码与主机测试) | FT5206 I2C 触摸芯片驱动 |
+| [stm_lvgl_port](https://github.com/NingZiXi/stm_lvgl_port) | main (LVGL 9 粘合层) | 独立于屏幕型号的显示与触摸接入 |
 | [stm_ota](https://github.com/NingZiXi/stm_ota) | [![version 0.5.0](https://img.shields.io/badge/version-0.5.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_ota/tree/f9163d2a7efe2f67d089a62c413dc40360c49170) | 同步 OTA 下载、A/B 分区切换与 Flash 校验 |
+
+屏幕组件按实际芯片拆分，不再使用 `stm_display` 和 `stm_lvgl`；接入与板级 HAL 回调见 [显示组件指南](docs/display-components.md)。两份旧仓库已标记弃用并保留历史。目前新显示组件仅通过主机测试，接入前需核对实物模块。
 
 表中链接指向独立仓库的最新说明；当前固定版本的说明位于克隆后的 `lib/<组件>/README.md`。
 
