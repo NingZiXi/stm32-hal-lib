@@ -31,3 +31,9 @@
 [submodule "lib/stm_fatfs"]
 	path = lib/stm_fatfs
 	url = ../stm_fatfs.git
+[submodule "lib/stm_display"]
+	path = lib/stm_display
+	url = ../stm_display.git
+[submodule "lib/stm_lvgl"]
+	path = lib/stm_lvgl
+	url = ../stm_lvgl.git
