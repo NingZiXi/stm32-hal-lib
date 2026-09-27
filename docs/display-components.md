@@ -17,6 +17,18 @@
 | `stm_lvgl` | 用 LVGL 9 + `stm_lvgl_port_attach` 接板级绘图及可选触摸；旧 API 不兼容，tick、handler、任务锁仍由应用负责。 |
 
 删除旧组件前已保存完整本地 Git 历史；新项目请只引用上表的现行组件。
+
+## 组件内中文示例（默认入口）
+
+每个组件的首页均为中文 `README.md`，并在自己的 `examples/stm32_hal/` 下提供中文操作说明与可移植的 C 代码。接入某个芯片时从该组件的示例开始，按实物补齐 HAL 句柄与引脚；示例不是已完成的 H757 屏幕工程，尚需实板验证。
+
+| 组件 | 独立示例 | 演示内容 |
+| --- | --- | --- |
+| ST7789 | [stm_lcd_st7789 示例](../lib/stm_lcd_st7789/examples/stm32_hal/README.md) | SPI 阻塞发送、CS/DC、复位、初始化及 2×2 测试块 |
+| ST7796 | [stm_lcd_st7796 示例](../lib/stm_lcd_st7796/examples/stm32_hal/README.md) | 同上，使用独立的 ST7796 驱动 |
+| FT5206 | [stm_lcd_touch_ft5206 示例](../lib/stm_lcd_touch_ft5206/examples/stm32_hal/README.md) | HAL I²C 寄存器读取、可选复位与触点轮询 |
+| LVGL 9 | [stm_lvgl_port 示例](../lib/stm_lvgl_port/examples/stm32_hal/README.md) | 绘图/触摸回调、计时、事件处理和最小标签 |
+
 ## 先确认硬件
 
 慧勤智远 STM32H757XIH6 CB V1.0 的板上显示**接口**不是已确认插接的屏幕型号。厂商实验 50 提供 ST7789/ST7796 SPI 模块初始化参考，实验 24 有 FT5206 I²C 寄存器读取参考；其 RGB/LTDC 模块参数也不能据此认定为上述 SPI 芯片。在实板接入前记录屏幕 PCB/排线型号、控制芯片、分辨率、供电及电平、SPI 或 RGB 接口、引脚定义（含 CS/DC/RST/BL）、触摸芯片与地址。不能凭接口或通用示例推定是哪颗芯片。
