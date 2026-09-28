@@ -19,6 +19,7 @@
 #else
 #define HAL_OSPI_MODULE_ENABLED
 #endif
+#define HAL_SPI_MODULE_ENABLED
 #define HAL_UART_MODULE_ENABLED
 #define HAL_I2C_MODULE_ENABLED
 #define HAL_SD_MODULE_ENABLED
@@ -52,6 +53,7 @@
 #else
 #include "stm32h7xx_hal_ospi.h"
 #endif
+#include "stm32h7xx_hal_spi.h"
 #include "stm32h7xx_hal_uart.h"
 #include "stm32h7xx_hal_i2c.h"
 #include "stm32h7xx_hal_sd.h"

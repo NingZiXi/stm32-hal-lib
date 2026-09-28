@@ -57,6 +57,7 @@ add_subdirectory("${LIB_ROOT}/lib/stm_log" stm_log)
 add_subdirectory("${LIB_ROOT}/lib/stm_littlefs" stm_littlefs)
 # 上游仅在 assert 中使用此辅助函数，Release 的 NDEBUG 会使其未使用。
 target_compile_options(littlefs PRIVATE -Wno-unused-function)
+add_subdirectory("${LIB_ROOT}/lib/stm_esp_hosted" stm_esp_hosted)
 add_subdirectory("${LIB_ROOT}/lib/esp_at_client" esp_at_client)
 target_compile_definitions(stm_log PUBLIC STM_LOG_HAL_HEADER="stm32h7xx_hal.h")
 

@@ -16,6 +16,7 @@
 | [stm_flash](https://github.com/NingZiXi/stm_flash) | [![version 4.0.0](https://img.shields.io/badge/version-4.0.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_flash/tree/2d44d3c091262a4d79b33b04ca47a8a04b2fee35) | NOR Flash 读取、分页写入、扇区擦除与校验 |
 | [stm_sdram](https://github.com/NingZiXi/stm_sdram) | [![version 4.0.0](https://img.shields.io/badge/version-4.0.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_sdram/tree/86f106e8693f84a75e0ca120290e4867aee05e6c) | SDRAM 初始化、刷新、读写、填充及自检 |
 | [stm_log](https://github.com/NingZiXi/stm_log) | [![version 2.4.0](https://img.shields.io/badge/version-2.4.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_log/tree/15642aa90fe3c5a91cd64680437f2ebd867ca20a) | 分级日志、标签过滤及自定义输出 |
+| [stm_esp_hosted](https://github.com/NingZiXi/stm_esp_hosted) | [![version 0.1.0](https://img.shields.io/badge/version-0.1.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_esp_hosted/tree/v0.1.0) | ESP32-C3 ESP-Hosted SPI 主机及可选 lwIP STA 网卡 |
 | [stm_littlefs](https://github.com/NingZiXi/stm_littlefs) | [![version 1.0.2](https://img.shields.io/badge/version-1.0.2-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_littlefs/tree/6360940d6dfbefdb09f5eed76fb58891af035f0d) | LittleFS 分区块设备适配与文件系统接入 |
 | [stm_eeprom](https://github.com/NingZiXi/stm_eeprom) | [![version 1.0.0](https://img.shields.io/badge/version-1.0.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_eeprom/tree/1ac5b9a8dc6612c5066cefb6b93f5ebbd7e6834c) | I2C EEPROM 器件与控制器适配 |
 | [stm_sd](https://github.com/NingZiXi/stm_sd) | [![version 1.0.0](https://img.shields.io/badge/version-1.0.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_sd/tree/0ef93e067633d3ebc22e3f3aa8dc5d80f25d5d32) | SD NAND/TF 卡块设备与 SDMMC 适配 |
@@ -68,6 +69,7 @@ stm32-hal-lib/
 │   ├── stm_flash/
 │   ├── stm_sdram/
 │   ├── stm_log/
+│   ├── stm_esp_hosted/
 │   ├── stm_littlefs/
 │   ├── stm_eeprom/
 │   ├── stm_sd/
@@ -120,6 +122,15 @@ target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE stm_littlefs)
 `stm_littlefs` 提供分区块设备回调，文件操作使用官方 `lfs_*` API；组件通过 CMake 自动获取固定版本 LittleFS 到同级 `lib/littlefs/`，主工程无需单独拉取。也支持自定义下载位置和离线源码。分区划分、生命周期和 `example/main.c` 见 [组件说明](lib/stm_littlefs/README.md)。
 
 单独克隆 Flash 或 SDRAM 时，无需手动下载 `stm_common`：驱动优先使用已有 target 或同级目录，缺失时通过 FetchContent 自动获取 `v1.0.0` 对应的固定提交，两个驱动共享一份依赖。默认下载源为 GitHub；在添加驱动前设置 `STM_COMMON_GIT_REPOSITORY` 可切换到 `https://gitee.com/nzxhg/stm_common.git`，设置 `STM_COMMON_FETCH=OFF` 可禁止自动下载。详细离线配置见各驱动 README。
+
+ESP32-C3 的 SPI 联网组件可按需加入。项目先提供 `lwip` 静态库目标和 `NO_SYS=1` 配置，然后添加组件；若只需 SPI/RPC 传输，则仅链接 `stm_esp_hosted`：
+
+```cmake
+add_subdirectory(${STM_LIB_DIR}/stm_esp_hosted)
+target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE stm_esp_hosted_lwip)
+```
+
+主循环负责轮询组件和 lwIP 定时器，板级接线、ESP32-C3 固件及完整调用顺序见 [组件说明](lib/stm_esp_hosted/README.md)。本版实板完成一次冷启动与主动断线重连的 DHCP、DNS、TCP/UDP 回显；多次断电重启和长期运行稳定性仍待验证。
 
 日志组件按需加入。下面是 H7 的设置，其他系列须使用对应 HAL 头文件：
 

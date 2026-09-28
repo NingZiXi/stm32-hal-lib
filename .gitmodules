@@ -43,3 +43,6 @@
 [submodule "lib/stm_lvgl_port"]
 	path = lib/stm_lvgl_port
 	url = ../stm_lvgl_port.git
+[submodule "lib/stm_esp_hosted"]
+	path = lib/stm_esp_hosted
+	url = ../stm_esp_hosted.git

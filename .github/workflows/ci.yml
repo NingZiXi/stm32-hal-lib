@@ -68,6 +68,11 @@ jobs:
         run: |
           cmake -S ci -B build/compile-h757 -G Ninja "-DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/ci/arm-gcc.cmake" "-DCMAKE_BUILD_TYPE=Release" -DCI_MCU=STM32H757xx
           cmake --build build/compile-h757
+      - name: Run ESP-Hosted SPI and lwIP adapter host tests
+        run: |
+          cmake -S lib/stm_esp_hosted/tests -B build/stm_esp_hosted-tests -G Ninja -DCMAKE_BUILD_TYPE=Debug
+          cmake --build build/stm_esp_hosted-tests
+          ctest --test-dir build/stm_esp_hosted-tests --output-on-failure
       - name: Run EEPROM, SD and FatFs host tests
         run: |
           for component in stm_eeprom stm_sd stm_fatfs; do
