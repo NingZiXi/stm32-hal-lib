@@ -46,7 +46,7 @@ LittleFS 主机测试使用本机 GCC/G++，无需连接开发板：
 cmake -S lib/stm_littlefs/tests -B build/littlefs-tests -G Ninja -DCMAKE_BUILD_TYPE=Debug
 cmake --build build/littlefs-tests
 ctest --test-dir build/littlefs-tests --output-on-failure
-python ci/check_littlefs_dependency.py --littlefs-source build/compile/_deps/littlefs-src
+python ci/check_littlefs_dependency.py --littlefs-source lib/littlefs
 ```
 
 主机测试执行官方 LittleFS 文件操作和 NOR 部分写入/擦除中断恢复。依赖检查覆盖已有 target、离线源目录、自动获取 Flash/Common 的固定版本和关闭下载后的缺失报错；可用 `--flash-repository`、`--common-repository` 指定镜像，`--deps-root` 指定 HAL/CMSIS 目录。
