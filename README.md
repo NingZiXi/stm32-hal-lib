@@ -16,7 +16,7 @@
 | [stm_flash](https://github.com/NingZiXi/stm_flash) | [![version 4.0.0](https://img.shields.io/badge/version-4.0.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_flash/tree/2d44d3c091262a4d79b33b04ca47a8a04b2fee35) | NOR Flash 读取、分页写入、扇区擦除与校验 |
 | [stm_sdram](https://github.com/NingZiXi/stm_sdram) | [![version 4.0.0](https://img.shields.io/badge/version-4.0.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_sdram/tree/86f106e8693f84a75e0ca120290e4867aee05e6c) | SDRAM 初始化、刷新、读写、填充及自检 |
 | [stm_log](https://github.com/NingZiXi/stm_log) | [![version 2.4.0](https://img.shields.io/badge/version-2.4.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_log/tree/15642aa90fe3c5a91cd64680437f2ebd867ca20a) | 分级日志、标签过滤及自定义输出 |
-| [stm_esp_hosted](https://github.com/NingZiXi/stm_esp_hosted) | [![version 0.1.0](https://img.shields.io/badge/version-0.1.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_esp_hosted/tree/v0.1.0) | ESP32-C3 ESP-Hosted SPI 主机及可选 lwIP STA 网卡 |
+| [stm_esp_hosted](https://github.com/NingZiXi/stm_esp_hosted) | [![version 0.2.0](https://img.shields.io/badge/version-0.2.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_esp_hosted/tree/v0.2.0) | ESP32-C3 ESP-Hosted SPI 主机、STA/AP Wi-Fi 与可选 lwIP 网卡 |
 | [stm_littlefs](https://github.com/NingZiXi/stm_littlefs) | [![version 1.0.2](https://img.shields.io/badge/version-1.0.2-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_littlefs/tree/6360940d6dfbefdb09f5eed76fb58891af035f0d) | LittleFS 分区块设备适配与文件系统接入 |
 | [stm_eeprom](https://github.com/NingZiXi/stm_eeprom) | [![version 1.0.0](https://img.shields.io/badge/version-1.0.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_eeprom/tree/1ac5b9a8dc6612c5066cefb6b93f5ebbd7e6834c) | I2C EEPROM 器件与控制器适配 |
 | [stm_sd](https://github.com/NingZiXi/stm_sd) | [![version 1.0.0](https://img.shields.io/badge/version-1.0.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_sd/tree/0ef93e067633d3ebc22e3f3aa8dc5d80f25d5d32) | SD NAND/TF 卡块设备与 SDMMC 适配 |
@@ -130,7 +130,7 @@ add_subdirectory(${STM_LIB_DIR}/stm_esp_hosted)
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE stm_esp_hosted_lwip)
 ```
 
-主循环负责轮询组件和 lwIP 定时器，板级接线、ESP32-C3 固件及完整调用顺序见 [组件说明](lib/stm_esp_hosted/README.md)。本版实板完成一次冷启动与主动断线重连的 DHCP、DNS、TCP/UDP 回显；多次断电重启和长期运行稳定性仍待验证。
+主循环负责轮询组件和 lwIP 定时器，板级接线、ESP32-C3 固件及完整调用顺序见 [组件说明](lib/stm_esp_hosted/README.md)。实板已验证 STA 的 DHCP、DNS、TCP/UDP、主动断线重连，以及单客户端 AP 的 HTTP 与 UDP 回显；多次断电重启和两小时持续运行稳定性仍待验证。
 
 日志组件按需加入。下面是 H7 的设置，其他系列须使用对应 HAL 头文件：
 
