@@ -1,251 +1,100 @@
 # STM32 显示与触摸组件接入指南
 
-本仓库按**实际芯片型号**选组件：SPI 面板 `stm_lcd_st7789` / `stm_lcd_st7796` 二选一；I²C 触摸 `stm_lcd_touch_ft5206` 按需添加；使用 LVGL 9 时再添加 `stm_lvgl_port`。没有额外的通用 `stm_display` / `stm_touch` 接口层。旧 `stm_display` / `stm_lvgl` 的 API 不再用于新工程。
+每个芯片独立维护组件，板级负责传输、GPIO、电源和时序；LVGL port 连接显示/输入回调。没有额外的通用显示或触摸转发层，不兼容 ESP-IDF API。当前文档对应未发布的 API 迁移，旧 v0.1.0 保留；软件检查通过后仍须完成迁移后的实板回归。
 
-这些驱动采用与乐鑫 LCD 组件相近的职责划分：板级 IO 回调负责总线传输和 GPIO，芯片组件负责命令与坐标，LVGL 粘合层负责把绘图、输入回调接到 LVGL。这里使用本仓库的 `stm_*` API，**不是**兼容 ESP-IDF 的 `esp_lcd_*` API。各组件的公开头文件与简明说明分别在 [ST7789](../lib/stm_lcd_st7789/README.md)、[ST7796](../lib/stm_lcd_st7796/README.md)、[FT5206](../lib/stm_lcd_touch_ft5206/README.md)、[LVGL port](../lib/stm_lvgl_port/README.md)。
+## 1. 选择与添加组件
 
-乐鑫侧可对照[独立面板组件示例 esp_lcd_ili9341](https://components.espressif.com/components/espressif/esp_lcd_ili9341)和[esp_lvgl_port](https://components.espressif.com/components/espressif/esp_lvgl_port)。后者提供任务、定时器、屏幕与触摸注册等较完整能力；当前 `stm_lvgl_port` 只实现同步显示刷新及可选触摸输入，因此接入时必须按本文自行提供 tick、handler、板级锁与缓存维护。
-
-新增或维护屏幕、触摸组件时，先看[显示与触摸组件开发规范](display-development.md)；本文负责用户接入步骤。
-
-## STM32H757 10.1 寸 DSI 实例
-
-主工程 `stm_h757_demo` 的可选示例使用独立的 `stm_lcd_ili9881c`、`stm_lcd_touch_gt9271` 和 `stm_lvgl_port`，LVGL 固定 v9.3.0；默认仍是存储示例。克隆并初始化三个组件后，配置顶层 `-DSTM_DISPLAY_LVGL_DEMO=ON` 构建 Debug/Release；无网络时另传 `-DFETCHCONTENT_SOURCE_DIR_LVGL=<LVGL 9.3.0 源码目录>`。组件只处理芯片命令、坐标和 LVGL 回调，具体 DSI/LTDC 时序、GPIO/I²C、SDRAM 与上电顺序保留在主工程 `examples/display_lvgl_demo.c`。屏幕为 ILI9881C 800×1280 RGB565；触摸 GT9271 地址 0x5d，实测 `mirror_x=0, mirror_y=0`。详情以主工程中文 README 为准。
-
-芯片组件自带中文 README、HAL 接入示例与主机测试；LVGL port 提供同步局部刷新和触摸回调，tick 与 `lv_timer_handler()` 仍由应用负责。2026-09-29 用户现场确认 LVGL 可见刷新、左上/中央/右下触摸坐标、中央按钮计数及连续五次复位。2026-09-30 的独立读回及 RTT 日志显示 LVGL 刷新增长、显示与触摸错误计数均为零，用户再次确认屏幕与操作正常。拆下屏幕、插入 TF 后默认存储固件的五个外设初始化 `err=0`，心跳超过 62 秒；未在这次复测中执行 TF 文件读写，也未验证带屏幕负载的默认固件。最后恢复屏幕和 LVGL 固件，当前板上运行 LVGL 示例。原始日志及备份见主工程 `build/display-touch-validation/final/validation-20260930.md`；命令表来源保留在组件源码，项目维护者确认按 MIT 发布。
-
-## 从旧组件迁移
-
-2026-09-27 起，`stm_display` 与 `stm_lvgl` 不再作为独立远端仓库提供；旧提交中指向这两个远端的子模块无法再从远端检出。已有旧工程需要先升级汇总仓库到删除旧子模块、加入新组件的提交，然后运行 `git submodule sync --recursive` 和 `git submodule update --init --recursive`。使用独立仓库的工程，则自行把引用改到所需新组件。
-
-| 原引用 | 现在的接法 |
-| --- | --- |
-| `stm_display`（若实际是 ST7789/ST7796 SPI 模块） | 选对应的 `stm_lcd_st7789` 或 `stm_lcd_st7796`，在板级实现 SPI/GPIO IO 回调。 |
-| `stm_display`（RGB/LTDC 帧缓冲） | 先实现板级 LTDC 显存绘制，再按需接 `stm_lvgl_port` 的 `draw` 回调；不能套用 SPI 芯片初始化。 |
-| `stm_lvgl` | 用 LVGL 9 + `stm_lvgl_port_attach` 接板级绘图及可选触摸；旧 API 不兼容，tick、handler、任务锁仍由应用负责。 |
-
-删除旧组件前已保存完整本地 Git 历史；新项目请只引用上表的现行组件。
-
-## 组件内中文示例（默认入口）
-
-每个组件的首页均为中文 `README.md`，并在自己的 `examples/stm32_hal/` 下提供中文操作说明与可移植的 C 代码。接入某个芯片时从该组件的示例开始，按实物补齐 HAL 句柄与引脚；示例不是已完成的 H757 屏幕工程，尚需实板验证。
-
-| 组件 | 独立示例 | 演示内容 |
+| 器件/功能 | 组件与中文示例 | 边界 |
 | --- | --- | --- |
-| ST7789 | [stm_lcd_st7789 示例](../lib/stm_lcd_st7789/examples/stm32_hal/README.md) | SPI 阻塞发送、CS/DC、复位、初始化及 2×2 测试块 |
-| ST7796 | [stm_lcd_st7796 示例](../lib/stm_lcd_st7796/examples/stm32_hal/README.md) | 同上，使用独立的 ST7796 驱动 |
-| FT5206 | [stm_lcd_touch_ft5206 示例](../lib/stm_lcd_touch_ft5206/examples/stm32_hal/README.md) | HAL I²C 寄存器读取、可选复位与触点轮询 |
-| LVGL 9 | [stm_lvgl_port 示例](../lib/stm_lvgl_port/examples/stm32_hal/README.md) | 绘图/触摸回调、计时、事件处理和最小标签 |
+| ST7789 SPI | [stm_lcd_st7789](../lib/stm_lcd_st7789/examples/stm32_hal/README.md) | 独立命令表、窗口、RGB565 写入 |
+| ST7796 SPI | [stm_lcd_st7796](../lib/stm_lcd_st7796/examples/stm32_hal/README.md) | 独立命令表、窗口、RGB565 写入 |
+| ILI9881C DSI | [stm_lcd_ili9881c](../lib/stm_lcd_ili9881c/examples/stm32_hal/README.md) | 已测 10.1 寸模组 DCS 初始化，DSI/LTDC 归板级 |
+| FT5206 I²C | [stm_lcd_touch_ft5206](../lib/stm_lcd_touch_ft5206/examples/stm32_hal/README.md) | 8 位寄存器、最多 5 点 |
+| GT9271 I²C | [stm_lcd_touch_gt9271](../lib/stm_lcd_touch_gt9271/examples/stm32_hal/README.md) | 16 位寄存器、最多 10 点、帧 ACK |
+| LVGL 9 | [stm_lvgl_port](../lib/stm_lvgl_port/examples/stm32_hal/README.md) | 同步 PARTIAL RGB565，输入可选 |
 
-## 先确认硬件
-
-慧勤智远 STM32H757XIH6 CB V1.0 的板上显示**接口**不是已确认插接的屏幕型号。厂商实验 50 提供 ST7789/ST7796 SPI 模块初始化参考，实验 24 有 FT5206 I²C 寄存器读取参考；其 RGB/LTDC 模块参数也不能据此认定为上述 SPI 芯片。在实板接入前记录屏幕 PCB/排线型号、控制芯片、分辨率、供电及电平、SPI 或 RGB 接口、引脚定义（含 CS/DC/RST/BL）、触摸芯片与地址。不能凭接口或通用示例推定是哪颗芯片。
-
-H757 当前存储示例的 `.ioc` 和启动代码**尚未接入显示外设**。本指南展示新工程或确认模块后的可选接入方式，不修改已验证的存储启动路径。确认 GPIO 与现有 FMC、QSPI、SDMMC、I²C4 的引脚复用和总线使用后，再配置 CubeMX；如果实际为 RGB/LTDC 面板，先由板级代码实现显存绘制，不要选 SPI 芯片驱动。
-
-## 1. 加入组件并配置 CubeMX
-
-克隆汇总仓库时使用 `git clone --recurse-submodules`；已有检出使用 `git submodule update --init --recursive`。也可以在项目 `Lib/` 中固定检出实际需要的独立仓库。只选实际屏幕对应的面板库；无触摸或不使用 LVGL 时，无须添加对应库。
-
-以下是 **CM7/CMakeLists.txt 中**可选的接入示意（先把选中的组件放在工程 `Lib/` 下）。`stm_lvgl_port` 要求在添加前已有 **LVGL 9 的 CMake 目标 `lvgl`**；LVGL 的源码和 `lv_conf.h` 由工程提供。
+只选实物对应组件。旧 stm_display/stm_lvgl 已退出，不继续使用其 API。参考职责来自乐鑫独立 LCD 组件和 esp_lvgl_port，当前库不提供其 RTOS 任务、自动定时器或异步 DMA 能力。
 
 ```cmake
-# 假定真实模块为 ST7789；若为 ST7796，请将两处 stm_lcd_st7789 改成 stm_lcd_st7796。
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../Lib/stm_lcd_st7789
-                 ${CMAKE_CURRENT_BINARY_DIR}/stm_lcd_st7789)
-target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE stm_lcd_st7789)
-
-# 确认有 FT5206 后才启用：
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../Lib/stm_lcd_touch_ft5206
-                 ${CMAKE_CURRENT_BINARY_DIR}/stm_lcd_touch_ft5206)
-target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE stm_lcd_touch_ft5206)
-
-# 配好 LVGL 9 并创建 lvgl CMake 目标后才启用：
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/../Lib/stm_lvgl_port
-                 ${CMAKE_CURRENT_BINARY_DIR}/stm_lvgl_port)
-target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE stm_lvgl_port)
+# Lib/stm_common 可同级提供，也可提前定义其 target。
+add_subdirectory(Lib/stm_lcd_st7789)
+target_link_libraries(your_firmware PRIVATE stm_lcd_st7789)
+# 需要 LVGL 时先提供 LVGL 9 的 lvgl target 和 lv_conf.h。
+add_subdirectory(Lib/stm_lvgl_port)
+target_link_libraries(your_firmware PRIVATE stm_lvgl_port)
 ```
 
-面板为 SPI 时，在 CubeMX 中配置选定 SPI 外设和 CS/DC/RST/BL GPIO，SPI 数据位宽使用 8 位，核对模式、速率及供电时序。触摸确认型号为 FT5206 后再配置对应 I²C 和可选 RST。复用现有总线时须在每笔传输期间保护 CS 与总线访问。不要在 `main.c` 的自动生成区域写入调用；在板级代码持有 HAL 句柄和引脚，应用入口只调用板级初始化。
+组件复用已有 stm_common target，或自动加入同级源码；否则固定下载 stm_common v1.0.0 提交 ce3d186dde2d374a8e9c7b9068a7b88f97d57dc1。STM_COMMON_FETCH=OFF 禁止网络，STM_COMMON_GIT_REPOSITORY 可指定 Gitee 镜像，FETCHCONTENT_SOURCE_DIR_STM_COMMON 可指定离线源码。
 
-## 2. 将 HAL 传输接到面板组件
+## 2. 板级 HAL 适配与句柄
 
-芯片配置结构体包含 `tx_param`、`tx_color`、可选 `reset`、必需的 `delay_ms`、用户上下文 `io`、屏幕逻辑宽高以及 `x_gap/y_gap`。两个发送回调返回 **0 表示成功，非 0 表示失败**，而且必须在返回前完成对缓冲区的使用。`tx_color` 收到的是 RAMWR 命令（通常 `0x2C`）及**字节长度**，必须在同一笔受保护的传输里发送命令和 RGB565 像素；不能只发送颜色数据。
-
-以下示意中的 `LCD_CS_GPIO_Port`、`LCD_DC_GPIO_Port`、引脚宏、`hspi_display` 和锁函数应由板级代码根据已确认硬件提供。`board_lcd_send_all` 示例为阻塞发送；**不能**从中断回调调用这些阻塞 HAL API。
+CubeMX 配置实际 GPIO/总线；芯片组件不硬编码 MCU 系列或板级引脚。SPI 示例用 8-bit 数据宽度，CS 覆盖命令与全部像素；I²C 地址存 7 位值，HAL 参数左移一位。GT9271 的 INT/RST 地址选择和屏幕背光时序由板级完成。示例 example.c/example.h 复制到应用后按中文说明填写 HAL 句柄和引脚，不自动编入芯片库。
 
 ```c
-#include <limits.h>
-#include "stm_lcd_st7789.h"             /* ST7796 时换成 stm_lcd_st7796.h */
-#include "spi.h"
-#include "gpio.h"
-
-static int board_lcd_send_all(const void *data, size_t bytes)
-{
-    const uint8_t *p = (const uint8_t *)data;
-    while (bytes != 0u) {
-        uint16_t n = (uint16_t)(bytes > UINT16_MAX ? UINT16_MAX : bytes);
-        if (HAL_SPI_Transmit(&hspi_display, (uint8_t *)p, n, 1000u) != HAL_OK)
-            return -1;
-        p += n;
-        bytes -= n;
-    }
-    return 0;
-}
-
-static int board_lcd_tx_param(void *io, uint8_t command,
-                              const uint8_t *data, size_t bytes)
-{
-    (void)io;
-    board_lcd_lock();                    /* 裸机独占总线时可为空实现 */
-    HAL_GPIO_WritePin(LCD_CS_GPIO_Port, LCD_CS_Pin, GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(LCD_DC_GPIO_Port, LCD_DC_Pin, GPIO_PIN_RESET);
-    int rc = board_lcd_send_all(&command, 1u);
-    if (rc == 0 && bytes != 0u) {
-        HAL_GPIO_WritePin(LCD_DC_GPIO_Port, LCD_DC_Pin, GPIO_PIN_SET);
-        rc = board_lcd_send_all(data, bytes);
-    }
-    HAL_GPIO_WritePin(LCD_CS_GPIO_Port, LCD_CS_Pin, GPIO_PIN_SET);
-    board_lcd_unlock();
-    return rc;
-}
-
-static int board_lcd_tx_color(void *io, uint8_t command,
-                              const void *pixels, size_t bytes)
-{
-    (void)io;
-    board_lcd_lock();
-    HAL_GPIO_WritePin(LCD_CS_GPIO_Port, LCD_CS_Pin, GPIO_PIN_RESET);
-    HAL_GPIO_WritePin(LCD_DC_GPIO_Port, LCD_DC_Pin, GPIO_PIN_RESET);
-    int rc = board_lcd_send_all(&command, 1u);
-    if (rc == 0) {
-        HAL_GPIO_WritePin(LCD_DC_GPIO_Port, LCD_DC_Pin, GPIO_PIN_SET);
-        rc = board_lcd_send_all(pixels, bytes);  /* 大块像素按 HAL 上限分段，CS 不释放 */
-    }
-    HAL_GPIO_WritePin(LCD_CS_GPIO_Port, LCD_CS_Pin, GPIO_PIN_SET);
-    board_lcd_unlock();
-    return rc;
-}
-
-static void board_lcd_delay(void *io, uint32_t ms) { (void)io; HAL_Delay(ms); }
-static void board_lcd_reset(void *io, int high)
-{
-    (void)io;
-    HAL_GPIO_WritePin(LCD_RST_GPIO_Port, LCD_RST_Pin,
-                      high ? GPIO_PIN_SET : GPIO_PIN_RESET);
-}
-
-static stm_lcd_st7789_t lcd;
-static int board_display_init(void)
-{
-    const stm_lcd_st7789_config_t cfg = {
-        .tx_param = board_lcd_tx_param, .tx_color = board_lcd_tx_color,
-        .reset = board_lcd_reset, .delay_ms = board_lcd_delay,
-        .width = PANEL_WIDTH, .height = PANEL_HEIGHT,
-        .x_gap = 0, .y_gap = 0,          /* 依实物模块确定偏移 */
-    };
-    int rc = stm_lcd_st7789_new_panel(&lcd, &cfg);
-    if (rc == 0) rc = stm_lcd_st7789_reset(&lcd);
-    if (rc == 0) rc = stm_lcd_st7789_init(&lcd);
-    if (rc == 0) board_backlight_on();  /* 由板级 GPIO/PWM 控制 */
-    return rc;
-}
+static lcd_st7789_handle_t panel = NULL;
+const lcd_st7789_config_t cfg = {
+    .tx_param=board_tx_param, .tx_color=board_tx_color,
+    .delay_ms=board_delay_ms, .reset=board_reset, .io=&board_io,
+    .width=PANEL_WIDTH, .height=PANEL_HEIGHT,
+};
+stm_err_t err = lcd_st7789_create(&cfg, &panel);
+if (err == STM_OK) err = lcd_st7789_reset(panel);
+if (err == STM_OK) err = lcd_st7789_init(panel);
+if (err != STM_OK) lcd_st7789_delete(&panel);
 ```
 
-SPI 模块的 MADCTL、反色、RGB/BGR、偏移等初始值来自厂商示例，实际模块的方向与颜色要实板校正。驱动不修改输入像素；调用者负责 RGB565 的线上字节顺序。若改用 DMA，回调必须等 DMA 结束再返回，并处理 CM7 D-cache 的清理/失效和 DMA 可访问内存；此同步接口不支持异步交还 LVGL 绘制缓冲。
+create 只分配小型控制对象并复制配置，不访问芯片；out 必须指向 NULL 句柄，重复创建返回 INVALID_STATE 且原对象不变。面板统一 reset/init 顺序，ILI9881C init 不再隐式复位。delete(&handle) 释放对象、清空句柄，空句柄也成功，不关闭或释放借用的 HAL/总线/背光/缓冲。删除前停止并发访问并清除别名。
 
-绘制 API `stm_lcd_st7789_draw_bitmap(&lcd, x1, y1, x2, y2, pixels)`（ST7796 同理）的终点 **`x2/y2` 不包含在绘制区域内**。数组按行紧密排列，每像素 2 字节；先用小矩形或色条验证宽高、偏移和颜色，再打开完整 UI。返回码 `0` 成功、`-1` 参数或状态无效、`-2` 总线回调失败；不自动重试。
+所有操作及传输/复位回调返回 stm_err_t，delay_ms 返回 void。HAL_OK→STM_OK、HAL_TIMEOUT→STM_ERR_TIMEOUT、HAL_ERROR/HAL_BUSY→STM_ERR_IO；底层统一错误原样传递。只用 err != STM_OK 检查，禁止 err < 0。回调必须同步完成，阻塞 API 不从中断调用；共享总线整笔事务加锁，DMA/DCache 一致性由板级保证。
 
-## 3. 可选：FT5206 I²C 触摸
+## 3. 绘图与触摸
 
-FT5206 的 `read_reg(io, reg, buf, bytes)` 需要从寄存器地址开始连续读 `bytes` 字节，成功返回 0。厂商示例的读写地址为 `0x71/0x70`（8 位表示）；STM32 HAL 的 `HAL_I2C_Mem_Read` 接收**左移一位的 7 位地址**，常见写法为 `(0x38u << 1)`，以实物和实际 HAL 调用为准。
+draw_bitmap(handle,x1,y1,x2,y2,pixels) 使用半开矩形 [x1,x2)×[y1,y2)，每像素 2 字节、紧密按行排列；tx_color 长度是字节，调用者负责像素容量和线上色序。参数失败不访问硬件；复位/初始化失败不得绘图，可重新初始化。绘图通信失败停止后续命令，可能已写部分像素，不回滚、不重试，实例仍可使用。
+
+触摸采用 lcd_touch_<型号>_create/read_data/get_data/delete。逻辑尺寸是 swap_xy 后的尺寸，方向仅允许 0/1；越界点过滤。get_data 复制 min(点数,capacity)，capacity=0 允许 NULL 数组，失败时有效 count 清零。通信或畸形帧失败清空缓存，下一次读取可恢复。GT9271 没有新帧时保持状态，仅有效零点帧释放；就绪帧解析失败仍尝试 ACK，返回首个错误。ID 不匹配返回 NOT_SUPPORTED，并保留实际读到的 ID。
+
+## 4. LVGL 注册与板级扩展
 
 ```c
-#include "stm_lcd_touch_ft5206.h"
-#include "i2c.h"
-
-static int board_touch_read_reg(void *context, uint8_t reg,
-                                uint8_t *data, size_t bytes)
-{
-    I2C_HandleTypeDef *bus = (I2C_HandleTypeDef *)context;
-    if (bytes > UINT16_MAX) return -1;
-    return HAL_I2C_Mem_Read(bus, 0x38u << 1, reg, I2C_MEMADD_SIZE_8BIT,
-                            data, (uint16_t)bytes, 1000u) == HAL_OK ? 0 : -1;
-}
-
-static stm_lcd_touch_ft5206_t touch;
-static int board_touch_init(void)
-{
-    const stm_lcd_touch_ft5206_config_t cfg = {
-        .read_reg = board_touch_read_reg, .io = &hi2c_touch,
-        .x_max = PANEL_WIDTH, .y_max = PANEL_HEIGHT,
-        .swap_xy = 0, .mirror_x = 0, .mirror_y = 0,
-    };
-    int rc = stm_lcd_touch_ft5206_new_i2c(&touch, &cfg);
-    /* 只有已接 FT5206 RST 且提供 reset/delay_ms 回调时才调用 reset。 */
-    return rc;
-}
+lvgl_port_handle_t port = NULL;
+lvgl_port_config_t cfg = {
+    .width=PANEL_WIDTH, .height=PANEL_HEIGHT,
+    .draw_buffer=buffer, .draw_buffer_bytes=sizeof(buffer),
+    .display_context=panel, .draw=board_draw,
+    .touch_context=touch, .touch=board_touch, /* 无触摸设为 NULL。 */
+};
+lv_init();
+stm_err_t err = lvgl_port_create(&cfg, &port);
+lv_display_t *display = NULL;
+if (err == STM_OK) err = lvgl_port_get_display(port, &display);
+/* 应用设置 tick 并周期调用 lv_timer_handler。 */
+lvgl_port_status_t status;
+if (err == STM_OK) err = lvgl_port_get_status(port, &status);
+/* 退出时停止 handler/所有访问，再 lvgl_port_delete(&port)。 */
 ```
 
-循环中先 `stm_lcd_touch_ft5206_read_data(&touch)`，成功后再用 `stm_lcd_touch_ft5206_get_data(&touch, points, capacity, &count)` 读取最新触点。`get_data` 读取缓存而非重新发起 I²C；最多 5 点，`capacity` 限制拷贝个数。根据屏幕旋转方向设置 `swap_xy/mirror_x/mirror_y`。`read_data` 返回 `-2` 表示 I²C 读失败，`-3` 表示点数超限；失败时驱动清空旧触点。
+buffer 至少一行 RGB565，最大 UINT32_MAX，满足 LV_DRAW_BUF_ALIGN。PARTIAL 回调将 LVGL 闭区间终点转换一次为半开区间；刷新失败也 flush_ready，输入失败释放，错误由 get_status 查询。create 在任意分配阶段失败都回收资源；delete 顺序为 indev→display→控制对象，外部缓冲/上下文始终归应用。
 
-## 4. 可选：连接 LVGL 9
+get_display/get_indev 返回借用对象，不得删除或替换 user_data，无触摸时 indev 为 NULL。板级可在首次绘制前配置 DIRECT 和自定义 flush，但自定义 flush 错误须由板级记录；组件 get_status 只记录其自身回调。组件不新增 DIRECT/DMA/VSYNC 功能。
 
-先由工程提供 LVGL 9 目标和 `lv_conf.h`，初始化屏幕与可选触摸之后调用 `lv_init()`。粘合层只接收板级绘图和触摸函数，不依赖具体面板组件。
+## H757 已有示例与验证边界
 
-```c
-#include "stm_lvgl_port.h"
+主工程默认 STM_DISPLAY_LVGL_DEMO=OFF，存储启动不变。启用 ON 后使用 ILI9881C/GT9271 与 LVGL 9.3.0；STM_LVGL_OFFICIAL_WIDGETS=ON 显示官方 Widgets，OFF 显示诊断界面。离线构建使用 FETCHCONTENT_SOURCE_DIR_LVGL。
 
-static int board_draw(void *context, uint16_t x1, uint16_t y1,
-                      uint16_t x2, uint16_t y2, const void *pixels)
-{
-    return stm_lcd_st7789_draw_bitmap((stm_lcd_st7789_t *)context,
-                                       x1, y1, x2, y2, pixels);
-}
-static int board_read_pointer(void *context, int *pressed,
-                              uint16_t *x, uint16_t *y)
-{
-    stm_lcd_touch_ft5206_t *t = (stm_lcd_touch_ft5206_t *)context;
-    stm_lcd_touch_ft5206_point_t point;
-    size_t count = 0;
-    int rc = stm_lcd_touch_ft5206_read_data(t);
-    if (rc == 0) rc = stm_lcd_touch_ft5206_get_data(t, &point, 1u, &count);
-    if (rc != 0) return rc;
-    *pressed = count != 0u;
-    if (count != 0u) { *x = point.x; *y = point.y; }
-    return 0;
-}
+板级保留 800×1280 RGB565，两块缓冲 0xD0000000/0xD0200000，每块 2,048,000 字节、stride=1600；LVGL 96 KiB 池位于 0xD0400000。DIRECT 双缓冲、DCache clean、VSYNC 切帧、4ms 刷新和 1ms 服务保持原有设置。ILI9881C 命令表来自板厂实验 13，按维护者确认的 MIT 许可保留来源；不代表其他模组均适用。GT9271 地址 0x5d、swap_xy/mirror_x/mirror_y 均为 0。
 
-static stm_lvgl_port_t display_port;             /* 全局静态，初始化时必须清零 */
-static uint8_t draw_buffer[PANEL_WIDTH * 20u * 2u]; /* RGB565，20 行示例 */
-static int board_lvgl_init(void)
-{
-    const stm_lvgl_port_config_t cfg = {
-        .width = PANEL_WIDTH, .height = PANEL_HEIGHT,
-        .draw_buffer = draw_buffer, .draw_buffer_bytes = sizeof(draw_buffer),
-        .display_context = &lcd, .draw = board_draw,
-        .touch_context = &touch, .touch = board_read_pointer, /* 没有触摸时将 .touch 留空 */
-    };
-    lv_init();
-    return stm_lvgl_port_attach(&display_port, &cfg);
-}
-/* 应用通过定时器/任务提供 lv_tick_inc(实际经过的毫秒)，并定期调用 lv_timer_handler()。 */
-```
+v0.1.0 配套实例已有显示、坐标、点击、空白区域滑动、连续拖动和五次复位实测，用户确认流畅度接近厂商示例，未记录具体 FPS。当前 API 迁移只做软件测试和 Debug/Release 构建，没有烧录或硬件回归；ST7789/ST7796/FT5206 仍仅主机验证。旧实测不能替代新提交的硬件验收。
 
-`stm_lvgl_port_attach` 要求显示缓冲至少 `width * 2` 字节，LVGL 使用 RGB565、部分刷新。LVGL 的刷新坐标终点是**包含**的，粘合层会转换成面板 API 的**不包含**终点。`draw` 必须同步结束、使用完缓冲后返回；错误记在 `display_port.last_display_error`，输入错误在 `last_touch_error`。粘合层在失败时也会释放 LVGL 刷新缓冲，因此应由应用读错误状态并记录日志。退出前可调用 `stm_lvgl_port_detach`，调用后重新 attach 前保持 port 结构体清零。LVGL tick 和 handler 的运行线程、任务锁由应用自行安排。
+## v0.1.0 API 迁移表
 
-### H757 配套 DSI 屏幕的 DIRECT 双缓冲接入
+| 旧用法 | 新用法 |
+| --- | --- |
+| stm_lcd_<型号>_t / stm_lcd_touch_<型号>_t | lcd_<型号>_handle_t / lcd_touch_<型号>_handle_t，初始化 NULL |
+| new_panel/new_i2c(&instance,&cfg) | lcd_<型号>_create(&cfg,&handle) / lcd_touch_<型号>_create(&cfg,&handle) |
+| stm_lvgl_port_t、attach/detach | lvgl_port_handle_t、lvgl_port_create/delete |
+| config_t/point_t/MAX_POINTS 旧前缀 | lcd_<型号> 或 lcd_touch_<型号> 前缀；LVGL 类型使用 lvgl_port 前缀 |
+| 操作传 &instance | 操作直接传 handle，只有 create/delete 传 &handle |
+| 直接访问 port.display/indev/last_*_error | get_display/get_indev/get_status；DIRECT 错误板级独立记录 |
+| int 与 -1/-2/-3 | stm_err_t、STM_OK 与公共错误；回调同步迁移，不保留兼容包装 |
 
-H757 可选示例支持 LVGL 9.3.0 官方 Widgets 演示。板级在 `stm_lvgl_port_attach()` 后、第一次绘制前，用 `lv_display_set_buffers_with_stride()` 将显示切换为 RGB565 DIRECT 双缓冲，并替换 flush 回调；通用粘合层的公开 API 保持不变。两块 800×1280 帧缓冲位于 `0xD0000000` 和 `0xD0200000`，各 2,048,000 字节，stride=1600；96 KiB LVGL 内存池位于 `0xD0400000`，避免重叠。
-
-该板级示例按厂商方式配置 SDRAM MPU/D-Cache，提交前清理整帧缓存，等待 LTDC CDSR 的 VSYNC 状态后重载帧地址。4 ms 刷新周期、1 ms handler 服务间隔以及 `-O3` 绘制优化仅用于可选屏幕示例；默认存储配置继续使用其原有缓存策略。右下角显示 FPS/CPU，比较帧率时应持续执行同样的拖动或动画，不能用静止画面的 flush 计数代替 FPS。
-
-GT9271 的“未准备好新帧”与“松手”必须区分：ready=0 时保持上一触摸状态；ready=1 且触点数=0 才释放。否则快速轮询会打断拖动和滑动手势。2026-09-30 完成主机回归、Debug/Release 构建、五次复位及独立固件读回；用户确认流畅度接近厂商例程，空白区域滑动与控件连续拖动正常。接入代码与日志位置见 [H757 主工程](https://github.com/NingZiXi/stm_h757_demo)。
-
-## 5. 其他模组的实板验证清单
-
-1. 记录实际模组型号、芯片丝印、供电电压、接线/排线方向和外设引脚；核对现有存储外设资源无冲突。
-2. 先只接单个面板驱动：上电、复位、初始化，背光最后打开；分别绘制纯色和四角定位点，验证坐标、方向、色序和像素字节序。记录返回码及 HAL 错误码。
-3. 若有 FT5206，读寄存器并逐角触摸，核对读到的坐标、旋转与屏幕方向；没有对应芯片则不启用组件。
-4. 最后接 LVGL 9：刷新小矩形、全屏及连续动画，观察图像、触摸、刷新耗时与错误码；检查与已有 EEPROM、SDRAM、QSPI、SDMMC 的联合启动。
-5. 确认所用模组、版本、固件、接线、日志、测试结果；H757 已验证的 ILI9881C/GT9271 配套模组见上文。其他型号的组件通过主机测试和编译检查，不代表其模组实板已验收。
+状态和错误详细契约见各公开头文件；维护规则见[显示组件开发规范](display-development.md)。已发布 v0.1.0 不移动；新代码、子模块组合和主工程本轮只本地提交，待实板验收再推送并发布 v0.2.0。

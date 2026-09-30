@@ -30,6 +30,8 @@
 | [stm_lvgl_port](https://github.com/NingZiXi/stm_lvgl_port) | [![version 0.1.0](https://img.shields.io/badge/version-0.1.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_lvgl_port/tree/cd07ab8d66dc88b9c1ba0d2b309ac681e04d7470) | 独立于屏幕型号的显示与触摸接入 |
 | [stm_ota](https://github.com/NingZiXi/stm_ota) | [![version 0.5.0](https://img.shields.io/badge/version-0.5.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_ota/tree/f9163d2a7efe2f67d089a62c413dc40360c49170) | 同步 OTA 下载、A/B 分区切换与 Flash 校验 |
 
+当前本地屏幕组件组合采用未发布的新 API：统一 stm_err_t、不透明句柄及 create/delete。下表 v0.1.0 是保留的已发布版本，不代表本地子模块已完成硬件回归；新组合仅本地提交，后续实板验收再发布 v0.2.0。迁移方法见[显示接入指南](docs/display-components.md)。
+
 显示、触摸与 LVGL 粘合层的首次版本统一为 `v0.1.0`（初始预览版本），GitHub Release 记录各组件的 API 与验证范围。ILI9881C、GT9271 和 LVGL port 已在 H757 配套模组完成实板验证；ST7789、ST7796、FT5206 已通过主机测试。
 
 显示与触摸组件以中文 README 为默认入口，各自提供 `examples/stm32_hal/` 中文接入示例。屏幕组件按实际芯片拆分，旧 `stm_display` / `stm_lvgl` 已退出汇总仓库，旧远端已清理；从组件选择、CubeMX/CMake、HAL 传输回调到 LVGL 9 的步骤见[显示与触摸接入指南](docs/display-components.md)。H757 配套 ILI9881C/GT9271 模组已完成 LVGL 显示、触摸和五次复位的用户现场观察；默认存储固件已在无屏幕、TF 插入时复测五个外设初始化成功；最终板上恢复为 LVGL 示例。ILI9881C 命令表保留来源，并按维护者确认的 MIT 条款发布。

@@ -89,6 +89,15 @@ jobs:
             cmake --build build/$component-tests
             ctest --test-dir build/$component-tests --output-on-failure
           done
+      - name: Checkout LVGL for display integration checks
+        uses: actions/checkout@v7.0.1
+        with:
+          repository: lvgl/lvgl
+          ref: v9.3.0
+          path: .ci-deps/lvgl
+          persist-credentials: false
+      - name: Check display dependencies and HAL examples
+        run: python ci/check_display_integration.py --lvgl-source .ci-deps/lvgl
       - name: Run H757 QSPI and SDRAM software tests
         run: |
           python lib/stm_flash/tests/run_tests.py --mcu STM32H757xx --bus qspi --include ci/include --include .ci-deps/hal/Inc --include .ci-deps/device/Include --include .ci-deps/cmsis/CMSIS/Core/Include --build-dir build/qspi-tests

@@ -57,6 +57,9 @@
 #include "stm32h7xx_hal_uart.h"
 #include "stm32h7xx_hal_i2c.h"
 #include "stm32h7xx_hal_sd.h"
+#if defined(HAL_DSI_MODULE_ENABLED) && defined(STM32H757xx)
+#include "stm32h7xx_hal_dsi.h"
+#endif
 
 #define assert_param(expr) ((void)0U)
 #endif

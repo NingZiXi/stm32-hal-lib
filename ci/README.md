@@ -86,6 +86,18 @@ python ci/check_rtt_dependency.py --source build/rtt/_deps/segger_rtt-src
 
 升级依赖时同步修改工作流和本文的 commit，并重新运行全部检查。组件更新须先推送到独立远程，再提交总仓库的 gitlink；CI 的递归 checkout 会验证该提交能从远程获取。
 
+## 显示接口软件迁移检查
+
+六个组件各自的 tests/ 检查参数、分配故障、生命周期、错误传递和 C11/C++17 头文件；测试库替换 calloc/free，生产构建使用正常 libc。LVGL 主机测试使用桩验证资源回收和回调，不能替代真实 LVGL 编译或硬件检查。
+
+```sh
+python ci/check_display_integration.py --lvgl-source /absolute/path/to/lvgl-9.3.0
+```
+
+该脚本用新隔离目录验证 stm_common 已有 target、同级源码、离线源码覆盖、两个添加顺序的固定提交下载和每个组件关闭下载后的缺失报错；默认从本地 stm_common Git 仓库获取固定 v1.0.0 提交，无需联网，可用 --repository 指定 GitHub/Gitee 镜像。随后用真实 H757 HAL/CMSIS 及 LVGL 头文件编译六份中文 HAL 示例、LVGL port 实现和 C11/C++17 消费者。原始命令日志及隔离源码保留在 build/display-api-migration/integration/。
+
+Windows 可用 --c-compiler、--cxx-compiler 指定 MinGW GCC/G++，--arm-compiler 指定 GNU Arm GCC。CI 使用 LVGL v9.3.0。本轮不烧录、不发布，主工程 Debug/Release 完整链接和迁移后硬件回归仍是独立验收步骤；不能因该脚本通过就声明硬件支持。
+
 ## H757 / QSPI 扩展检查
 
 ```sh
