@@ -132,7 +132,7 @@ add_subdirectory(${STM_LIB_DIR}/stm_esp_hosted)
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE stm_esp_hosted_lwip)
 ```
 
-主循环负责轮询组件和 lwIP 定时器，板级接线、ESP32-C3 固件及完整调用顺序见 [组件说明](lib/stm_esp_hosted/README.md)。实板已验证 STA 的 DHCP、DNS、TCP/UDP、主动断线重连，以及单客户端 AP 的 HTTP 与 UDP 回显；两小时纯 STA 持续运行完成 121 轮回显，三种 STA 省电模式各完成 10 轮 DHCP/DNS/TCP/UDP 验证；多次整板断电重启仍待独立验收。
+主循环负责轮询组件和 lwIP 定时器，板级接线、ESP32-C3 固件及完整调用顺序见 [组件说明](lib/stm_esp_hosted/README.md)。实板已验证 STA 的 DHCP、DNS、TCP/UDP、主动断线重连，以及单客户端 AP 的 HTTP 与 UDP 回显；两小时纯 STA 持续运行完成 121 轮回显，三种 STA 省电模式各完成 10 轮 DHCP/DNS/TCP/UDP 验证；整板断电重启独立观察 13 次，其中 10 次有效通过（非连续无故障通过），另有一次欠压启动失败、一次采集缺口无法判定、一次无法证明整板重启且网络验证失败；详见组件 README。
 
 日志组件按需加入。下面是 H7 的设置，其他系列须使用对应 HAL 头文件：
 
