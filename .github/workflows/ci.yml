@@ -24,6 +24,8 @@ jobs:
       - uses: actions/setup-python@v7.0.0
         with:
           python-version: '3.12'
+      - name: Test latest-tag selection
+        run: python -m unittest discover -s ci -p test_sync_latest_tags.py
       - name: Check documentation and component references
         run: python ci/check_repository.py
       - name: Checkout STM32H7 HAL

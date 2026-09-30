@@ -34,7 +34,7 @@
 
 表中链接指向独立仓库的最新说明；当前固定版本的说明位于克隆后的 `lib/<组件>/README.md`。
 
-版本徽章对应本仓库固定的提交，点击可查看该版本源码。Flash/SDRAM 对应 `v4.0.0`，`stm_common` 对应 `v1.0.0`，`stm_littlefs` 对应 `v1.0.2`，`stm_log` 对应 `v2.4.0`，EEPROM 和 SD 对应 `v1.0.0`，FatFs 对应 `v1.0.1`。更新子模块时同步更新徽章，不自动跟随最新发布版。
+版本徽章对应本仓库当前引用的提交，点击可查看该版本源码。自动同步任务每天查询各组件的最新稳定语义化版本 tag（`vX.Y.Z` 或 `X.Y.Z`），并更新子模块引用及徽章。尚无版本 tag 的组件保持当前提交，不自动跟随 `main`。新版本先创建草稿 PR，需审查兼容性并验证后合并；README 不会在新 tag 发布瞬间自行改变。
 
 Flash、SDRAM 不依赖日志、RTT 或 RTOS。`stm_log` 保留现有 API；新设备驱动沿用 `flash_*`、`sdram_*` 这样的接口命名，规范见 [CONTRIBUTING.md](CONTRIBUTING.md)。
 
@@ -150,7 +150,7 @@ target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE stm_log)
 
 ## 更新与版本
 
-总仓库提交记录固定每个组件的完整 commit，不会在构建时自动跟随组件的最新分支。查看当前组合：
+总仓库提交记录固定每个组件的完整 commit，不会在构建时自动跟随组件的最新分支。每日的 [自动同步任务](.github/workflows/sync-latest-tags.yml) 与手动触发会选择带 tag 组件的最新稳定版本，更新 gitlink 和 README，并提交草稿 PR；合并后才成为总仓库的新组合。也可以在干净的工作区手动运行 `python ci/sync_latest_tags.py`（先以 `--dry-run` 预览）。查看当前组合：
 
 ```sh
 git submodule status
@@ -164,7 +164,7 @@ git submodule sync --recursive
 git submodule update --init --recursive
 ```
 
-驱动改动先提交到独立仓库，再更新本仓库引用并通过 CI。不要用 `git submodule update --remote` 替代上述更新命令，它会跳过总仓库固定的版本组合。组件独立发布版本，总仓库后续按验证过的组合发布版本；当前未创建发布标签。
+驱动改动先提交到独立仓库并发布稳定版本 tag，再通过同步任务更新本仓库引用并验证。不要用 `git submodule update --remote` 替代上述更新命令，它会跳过总仓库固定的版本组合。新版本可能不兼容，草稿 PR 必须人工审查；GitHub Actions 自带的 token 创建的 PR 不会自动触发 CI，需要手动运行 CI 或由维护者推送后再合并。组件独立发布版本，总仓库后续按验证过的组合发布版本；当前未创建发布标签。
 
 ## 验证
 
