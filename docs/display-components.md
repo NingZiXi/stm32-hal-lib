@@ -8,6 +8,12 @@
 
 新增或维护屏幕、触摸组件时，先看[显示与触摸组件开发规范](display-development.md)；本文负责用户接入步骤。
 
+## STM32H757 10.1 寸 DSI 实例
+
+主工程 `stm_h757_demo` 的可选示例使用独立的 `stm_lcd_ili9881c`、`stm_lcd_touch_gt9271` 和 `stm_lvgl_port`，LVGL 固定 v9.3.0；默认仍是存储示例。克隆并初始化三个组件后，配置顶层 `-DSTM_DISPLAY_LVGL_DEMO=ON` 构建 Debug/Release；无网络时另传 `-DFETCHCONTENT_SOURCE_DIR_LVGL=<LVGL 9.3.0 源码目录>`。组件只处理芯片命令、坐标和 LVGL 回调，具体 DSI/LTDC 时序、GPIO/I²C、SDRAM 与上电顺序保留在主工程 `examples/display_lvgl_demo.c`。屏幕为 ILI9881C 800×1280 RGB565；触摸 GT9271 地址 0x5d，实测 `mirror_x=0, mirror_y=0`。详情以主工程中文 README 为准。
+
+芯片组件自带中文 README、HAL 接入示例与主机测试；LVGL port 提供同步局部刷新和触摸回调，tick 与 `lv_timer_handler()` 仍由应用负责。2026-09-29 用户现场确认 LVGL 可见刷新、左上/中央/右下触摸坐标、中央按钮计数及连续五次复位。2026-09-30 的独立读回及 RTT 日志显示 LVGL 刷新增长、显示与触摸错误计数均为零，用户再次确认屏幕与操作正常。拆下屏幕、插入 TF 后默认存储固件的五个外设初始化 `err=0`，心跳超过 62 秒；未在这次复测中执行 TF 文件读写，也未验证带屏幕负载的默认固件。最后恢复屏幕和 LVGL 固件，当前板上运行 LVGL 示例。原始日志及备份见主工程 `build/display-touch-validation/final/validation-20260930.md`；命令表来源保留在组件源码，项目维护者确认按 MIT 发布。
+
 ## 从旧组件迁移
 
 2026-09-27 起，`stm_display` 与 `stm_lvgl` 不再作为独立远端仓库提供；旧提交中指向这两个远端的子模块无法再从远端检出。已有旧工程需要先升级汇总仓库到删除旧子模块、加入新组件的提交，然后运行 `git submodule sync --recursive` 和 `git submodule update --init --recursive`。使用独立仓库的工程，则自行把引用改到所需新组件。
@@ -228,10 +234,10 @@ static int board_lvgl_init(void)
 
 `stm_lvgl_port_attach` 要求显示缓冲至少 `width * 2` 字节，LVGL 使用 RGB565、部分刷新。LVGL 的刷新坐标终点是**包含**的，粘合层会转换成面板 API 的**不包含**终点。`draw` 必须同步结束、使用完缓冲后返回；错误记在 `display_port.last_display_error`，输入错误在 `last_touch_error`。粘合层在失败时也会释放 LVGL 刷新缓冲，因此应由应用读错误状态并记录日志。退出前可调用 `stm_lvgl_port_detach`，调用后重新 attach 前保持 port 结构体清零。LVGL tick 和 handler 的运行线程、任务锁由应用自行安排。
 
-## 5. 次日实板验证清单
+## 5. 其他模组的实板验证清单
 
 1. 记录实际模组型号、芯片丝印、供电电压、接线/排线方向和外设引脚；核对现有存储外设资源无冲突。
 2. 先只接单个面板驱动：上电、复位、初始化，背光最后打开；分别绘制纯色和四角定位点，验证坐标、方向、色序和像素字节序。记录返回码及 HAL 错误码。
 3. 若有 FT5206，读寄存器并逐角触摸，核对读到的坐标、旋转与屏幕方向；没有对应芯片则不启用组件。
 4. 最后接 LVGL 9：刷新小矩形、全屏及连续动画，观察图像、触摸、刷新耗时与错误码；检查与已有 EEPROM、SDRAM、QSPI、SDMMC 的联合启动。
-5. 确认所用模组、版本、固件、接线、日志、测试结果；**当前完成的是主机侧测试与 H723/H757 编译检查，不代表屏幕实板已经通过**。
+5. 确认所用模组、版本、固件、接线、日志、测试结果；H757 已验证的 ILI9881C/GT9271 配套模组见上文。其他型号的组件通过主机测试和编译检查，不代表其模组实板已验收。

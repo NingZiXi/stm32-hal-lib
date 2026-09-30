@@ -46,3 +46,9 @@
 [submodule "lib/stm_esp_hosted"]
 	path = lib/stm_esp_hosted
 	url = ../stm_esp_hosted.git
+[submodule "lib/stm_lcd_ili9881c"]
+	path = lib/stm_lcd_ili9881c
+	url = ../stm_lcd_ili9881c.git
+[submodule "lib/stm_lcd_touch_gt9271"]
+	path = lib/stm_lcd_touch_gt9271
+	url = ../stm_lcd_touch_gt9271.git

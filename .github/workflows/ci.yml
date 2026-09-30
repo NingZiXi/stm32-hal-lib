@@ -82,7 +82,7 @@ jobs:
           done
       - name: Run LCD, touch and LVGL port host tests
         run: |
-          for component in stm_lcd_st7789 stm_lcd_st7796 stm_lcd_touch_ft5206 stm_lvgl_port; do
+          for component in stm_lcd_st7789 stm_lcd_st7796 stm_lcd_touch_ft5206 stm_lcd_ili9881c stm_lcd_touch_gt9271 stm_lvgl_port; do
             cmake -S lib/$component/tests -B build/$component-tests -G Ninja -DCMAKE_BUILD_TYPE=Debug
             cmake --build build/$component-tests
             ctest --test-dir build/$component-tests --output-on-failure

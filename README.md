@@ -25,10 +25,12 @@
 | [stm_lcd_st7789](https://github.com/NingZiXi/stm_lcd_st7789) | main (源码与主机测试) | ST7789 SPI 面板芯片驱动 |
 | [stm_lcd_st7796](https://github.com/NingZiXi/stm_lcd_st7796) | main (源码与主机测试) | ST7796 SPI 面板芯片驱动 |
 | [stm_lcd_touch_ft5206](https://github.com/NingZiXi/stm_lcd_touch_ft5206) | main (源码与主机测试) | FT5206 I2C 触摸芯片驱动 |
+| [stm_lcd_ili9881c](https://github.com/NingZiXi/stm_lcd_ili9881c) | main（实板已验） | ILI9881C DSI 面板初始化，模组命令表仅适用于已测 10.1 寸屏幕 |
+| [stm_lcd_touch_gt9271](https://github.com/NingZiXi/stm_lcd_touch_gt9271) | main（实板已验） | GT9271 I²C 触摸与坐标读取 |
 | [stm_lvgl_port](https://github.com/NingZiXi/stm_lvgl_port) | main (LVGL 9 粘合层) | 独立于屏幕型号的显示与触摸接入 |
 | [stm_ota](https://github.com/NingZiXi/stm_ota) | [![version 0.5.0](https://img.shields.io/badge/version-0.5.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_ota/tree/f9163d2a7efe2f67d089a62c413dc40360c49170) | 同步 OTA 下载、A/B 分区切换与 Flash 校验 |
 
-显示与触摸组件以中文 README 为默认入口，各自提供 `examples/stm32_hal/` 中文接入示例。屏幕组件按实际芯片拆分，旧 `stm_display` / `stm_lvgl` 已退出汇总仓库，旧远端已清理；从组件选择、CubeMX/CMake、HAL 传输回调到 LVGL 9 的步骤见[显示与触摸接入指南](docs/display-components.md)。目前新组件通过主机测试和 H723/H757 编译检查；实际模组、引脚及显示/触摸效果仍需实板验证。
+显示与触摸组件以中文 README 为默认入口，各自提供 `examples/stm32_hal/` 中文接入示例。屏幕组件按实际芯片拆分，旧 `stm_display` / `stm_lvgl` 已退出汇总仓库，旧远端已清理；从组件选择、CubeMX/CMake、HAL 传输回调到 LVGL 9 的步骤见[显示与触摸接入指南](docs/display-components.md)。H757 配套 ILI9881C/GT9271 模组已完成 LVGL 显示、触摸和五次复位的用户现场观察；默认存储固件已在无屏幕、TF 插入时复测五个外设初始化成功；最终板上恢复为 LVGL 示例。ILI9881C 命令表保留来源，并按维护者确认的 MIT 条款发布。
 
 表中链接指向独立仓库的最新说明；当前固定版本的说明位于克隆后的 `lib/<组件>/README.md`。
 
