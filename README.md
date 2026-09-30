@@ -22,13 +22,15 @@
 | [stm_sd](https://github.com/NingZiXi/stm_sd) | [![version 1.0.0](https://img.shields.io/badge/version-1.0.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_sd/tree/0ef93e067633d3ebc22e3f3aa8dc5d80f25d5d32) | SD NAND/TF 卡块设备与 SDMMC 适配 |
 | [stm_fatfs](https://github.com/NingZiXi/stm_fatfs) | [![version 1.0.1](https://img.shields.io/badge/version-1.0.1-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_fatfs/tree/da4e096bfc7a2137929abca28775479b93b787f9) | FatFs 磁盘注册和块设备粘合层 |
 | [esp_at_client](https://github.com/NingZiXi/esp_at_client) | [![version 0.5.0](https://img.shields.io/badge/version-0.5.0-5364b5?style=flat-square)](https://github.com/NingZiXi/esp_at_client/tree/b17f954c76ca4cc3cddcddad48faa1328d80a29f) | 平台无关 ESP-AT 轮询客户端，STM32 HAL 适配位于 ports/stm32_hal/ |
-| [stm_lcd_st7789](https://github.com/NingZiXi/stm_lcd_st7789) | main (源码与主机测试) | ST7789 SPI 面板芯片驱动 |
-| [stm_lcd_st7796](https://github.com/NingZiXi/stm_lcd_st7796) | main (源码与主机测试) | ST7796 SPI 面板芯片驱动 |
-| [stm_lcd_touch_ft5206](https://github.com/NingZiXi/stm_lcd_touch_ft5206) | main (源码与主机测试) | FT5206 I2C 触摸芯片驱动 |
-| [stm_lcd_ili9881c](https://github.com/NingZiXi/stm_lcd_ili9881c) | main（实板已验） | ILI9881C DSI 面板初始化，模组命令表仅适用于已测 10.1 寸屏幕 |
-| [stm_lcd_touch_gt9271](https://github.com/NingZiXi/stm_lcd_touch_gt9271) | main（实板已验） | GT9271 I²C 触摸与坐标读取 |
-| [stm_lvgl_port](https://github.com/NingZiXi/stm_lvgl_port) | main (LVGL 9 粘合层) | 独立于屏幕型号的显示与触摸接入 |
+| [stm_lcd_st7789](https://github.com/NingZiXi/stm_lcd_st7789) | [![version 0.1.0](https://img.shields.io/badge/version-0.1.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_lcd_st7789/tree/81bcb60a282014432c58770a37db29c183066492) | ST7789 SPI 面板芯片驱动 |
+| [stm_lcd_st7796](https://github.com/NingZiXi/stm_lcd_st7796) | [![version 0.1.0](https://img.shields.io/badge/version-0.1.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_lcd_st7796/tree/f3b01c31868be9697a4d157700c4729a3eb8eae5) | ST7796 SPI 面板芯片驱动 |
+| [stm_lcd_touch_ft5206](https://github.com/NingZiXi/stm_lcd_touch_ft5206) | [![version 0.1.0](https://img.shields.io/badge/version-0.1.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_lcd_touch_ft5206/tree/9fa64830343e0610adbd7f17b0eaa69540365c4a) | FT5206 I2C 触摸芯片驱动 |
+| [stm_lcd_ili9881c](https://github.com/NingZiXi/stm_lcd_ili9881c) | [![version 0.1.0](https://img.shields.io/badge/version-0.1.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_lcd_ili9881c/tree/2ba5622b9f8f47c4e6f6a85240c80d488d119417) | ILI9881C DSI 面板初始化，模组命令表仅适用于已测 10.1 寸屏幕 |
+| [stm_lcd_touch_gt9271](https://github.com/NingZiXi/stm_lcd_touch_gt9271) | [![version 0.1.0](https://img.shields.io/badge/version-0.1.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_lcd_touch_gt9271/tree/53c68fe1de0acbbd47ed120ad5413163a23349f4) | GT9271 I²C 触摸与坐标读取 |
+| [stm_lvgl_port](https://github.com/NingZiXi/stm_lvgl_port) | [![version 0.1.0](https://img.shields.io/badge/version-0.1.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_lvgl_port/tree/cd07ab8d66dc88b9c1ba0d2b309ac681e04d7470) | 独立于屏幕型号的显示与触摸接入 |
 | [stm_ota](https://github.com/NingZiXi/stm_ota) | [![version 0.5.0](https://img.shields.io/badge/version-0.5.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_ota/tree/f9163d2a7efe2f67d089a62c413dc40360c49170) | 同步 OTA 下载、A/B 分区切换与 Flash 校验 |
+
+显示、触摸与 LVGL 粘合层的首次版本统一为 `v0.1.0`（初始预览版本），GitHub Release 记录各组件的 API 与验证范围。ILI9881C、GT9271 和 LVGL port 已在 H757 配套模组完成实板验证；ST7789、ST7796、FT5206 已通过主机测试。
 
 显示与触摸组件以中文 README 为默认入口，各自提供 `examples/stm32_hal/` 中文接入示例。屏幕组件按实际芯片拆分，旧 `stm_display` / `stm_lvgl` 已退出汇总仓库，旧远端已清理；从组件选择、CubeMX/CMake、HAL 传输回调到 LVGL 9 的步骤见[显示与触摸接入指南](docs/display-components.md)。H757 配套 ILI9881C/GT9271 模组已完成 LVGL 显示、触摸和五次复位的用户现场观察；默认存储固件已在无屏幕、TF 插入时复测五个外设初始化成功；最终板上恢复为 LVGL 示例。ILI9881C 命令表保留来源，并按维护者确认的 MIT 条款发布。
 
