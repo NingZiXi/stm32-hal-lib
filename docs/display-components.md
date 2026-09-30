@@ -234,6 +234,14 @@ static int board_lvgl_init(void)
 
 `stm_lvgl_port_attach` 要求显示缓冲至少 `width * 2` 字节，LVGL 使用 RGB565、部分刷新。LVGL 的刷新坐标终点是**包含**的，粘合层会转换成面板 API 的**不包含**终点。`draw` 必须同步结束、使用完缓冲后返回；错误记在 `display_port.last_display_error`，输入错误在 `last_touch_error`。粘合层在失败时也会释放 LVGL 刷新缓冲，因此应由应用读错误状态并记录日志。退出前可调用 `stm_lvgl_port_detach`，调用后重新 attach 前保持 port 结构体清零。LVGL tick 和 handler 的运行线程、任务锁由应用自行安排。
 
+### H757 配套 DSI 屏幕的 DIRECT 双缓冲接入
+
+H757 可选示例支持 LVGL 9.3.0 官方 Widgets 演示。板级在 `stm_lvgl_port_attach()` 后、第一次绘制前，用 `lv_display_set_buffers_with_stride()` 将显示切换为 RGB565 DIRECT 双缓冲，并替换 flush 回调；通用粘合层的公开 API 保持不变。两块 800×1280 帧缓冲位于 `0xD0000000` 和 `0xD0200000`，各 2,048,000 字节，stride=1600；96 KiB LVGL 内存池位于 `0xD0400000`，避免重叠。
+
+该板级示例按厂商方式配置 SDRAM MPU/D-Cache，提交前清理整帧缓存，等待 LTDC CDSR 的 VSYNC 状态后重载帧地址。4 ms 刷新周期、1 ms handler 服务间隔以及 `-O3` 绘制优化仅用于可选屏幕示例；默认存储配置继续使用其原有缓存策略。右下角显示 FPS/CPU，比较帧率时应持续执行同样的拖动或动画，不能用静止画面的 flush 计数代替 FPS。
+
+GT9271 的“未准备好新帧”与“松手”必须区分：ready=0 时保持上一触摸状态；ready=1 且触点数=0 才释放。否则快速轮询会打断拖动和滑动手势。2026-09-30 完成主机回归、Debug/Release 构建、五次复位及独立固件读回；用户确认流畅度接近厂商例程，空白区域滑动与控件连续拖动正常。接入代码与日志位置见 [H757 主工程](https://github.com/NingZiXi/stm_h757_demo)。
+
 ## 5. 其他模组的实板验证清单
 
 1. 记录实际模组型号、芯片丝印、供电电压、接线/排线方向和外设引脚；核对现有存储外设资源无冲突。
