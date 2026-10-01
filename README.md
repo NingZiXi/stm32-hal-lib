@@ -16,7 +16,7 @@
 | [stm_flash](https://github.com/NingZiXi/stm_flash) | [![version 4.0.0](https://img.shields.io/badge/version-4.0.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_flash/tree/2d44d3c091262a4d79b33b04ca47a8a04b2fee35) | NOR Flash 读取、分页写入、扇区擦除与校验 |
 | [stm_sdram](https://github.com/NingZiXi/stm_sdram) | [![version 4.0.0](https://img.shields.io/badge/version-4.0.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_sdram/tree/86f106e8693f84a75e0ca120290e4867aee05e6c) | SDRAM 初始化、刷新、读写、填充及自检 |
 | [stm_log](https://github.com/NingZiXi/stm_log) | [![version 2.4.0](https://img.shields.io/badge/version-2.4.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_log/tree/15642aa90fe3c5a91cd64680437f2ebd867ca20a) | 分级日志、标签过滤及自定义输出 |
-| [stm_esp_hosted](https://github.com/NingZiXi/stm_esp_hosted) | [![version 0.6.0](https://img.shields.io/badge/version-0.6.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_esp_hosted/tree/v0.6.0) | ESP32-C3 ESP-Hosted SPI 主机、STA/AP Wi-Fi、协议/带宽配置、运行信息与客户端管理、可选 lwIP 网卡 |
+| [stm_esp_hosted](https://github.com/NingZiXi/stm_esp_hosted) | [![version 0.7.0](https://img.shields.io/badge/version-0.7.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_esp_hosted/tree/v0.7.0) | ESP32-C3 SPI 主机、STA/AP Wi-Fi、异步恢复与诊断、国家/信道/功率、协议/带宽配置、可选 lwIP 网卡 |
 | [stm_littlefs](https://github.com/NingZiXi/stm_littlefs) | [![version 1.0.2](https://img.shields.io/badge/version-1.0.2-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_littlefs/tree/6360940d6dfbefdb09f5eed76fb58891af035f0d) | LittleFS 分区块设备适配与文件系统接入 |
 | [stm_eeprom](https://github.com/NingZiXi/stm_eeprom) | [![version 1.0.0](https://img.shields.io/badge/version-1.0.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_eeprom/tree/1ac5b9a8dc6612c5066cefb6b93f5ebbd7e6834c) | I2C EEPROM 器件与控制器适配 |
 | [stm_sd](https://github.com/NingZiXi/stm_sd) | [![version 1.0.0](https://img.shields.io/badge/version-1.0.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_sd/tree/0ef93e067633d3ebc22e3f3aa8dc5d80f25d5d32) | SD NAND/TF 卡块设备与 SDMMC 适配 |
@@ -151,6 +151,8 @@ target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE stm_log)
 板级仍负责 HAL、时钟、GPIO、外设和 MPU 配置。Flash/SDRAM 的创建使用内部 RAM 堆；器件参数、内存属性、访问限制和最小 `example/main.c` 见对应组件说明。示例不自动加入库目标。
 
 `stm_esp_hosted v0.6.0` 已验证 B/HT20、BG/HT20、BGN/HT20、BGN/HT40 四组 STA 的 40 轮 DHCP/DNS/TCP/UDP 及四次断线恢复，单手机 AP 四组 DHCP/HTTP/UDP 与原配置恢复通过。HT40 读回为配置值，不代表实际 40 MHz 通信；本轮不新增吞吐、长期运行或断电稳定性结论，复现步骤与限制见组件说明。
+
+`stm_esp_hosted v0.7.0` 补齐心跳、本地诊断和异步传输恢复，以及国家策略、共享信道和功率配置。应用负责密码和配置重放、lwIP 与探针清理。十个 CP 故障注入及后续十轮周期、CN 两种策略共二十轮、三档功率共三十轮及三次断线恢复通过；单手机信道 1/6/11、AP+STA 同时通信、CP 独立复位、三档功率与原配置恢复复测通过。国家配置可能持久写入 CP Flash，功率接口单位 0.25 dBm，读回与通信不代表射频输出测量；本轮不新增长期运行、吞吐或整板断电结论。
 
 ## 更新与版本
 
