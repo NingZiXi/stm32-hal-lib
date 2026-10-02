@@ -61,11 +61,11 @@ git submodule add ../stm_<name>.git lib/stm_<name>
 
 **tag 推送到 GitHub 后必须立即创建对应的 GitHub Release**：在 GitHub 端执行 `gh release create <tag> --generate-notes --title "<tag>"`。Release 是用户了解组件变更和兼容性的入口，单独 tag 不构成正式发布。Gitee 端的发行版可在 GitHub Release 创建后由维护者手动同步，或在 `gitee.com/nzxhg/<component>/releases/new` 上传相同内容。历史已有但缺 Release 的 tag 应在补齐时一次性回填。
 
-总仓库发布时固定通过检查的组合，并在 Release 中说明实际变化和验证范围。测试日志、固件、探针信息及开发过程文档保留本地，不放入公开分发目录。
+总仓库仅保留 `main`，不创建总仓库版本 tag 或 Release；组件仍按上述规则独立发布，组合由总仓库提交和 gitlink 固定。测试日志、固件、探针信息及开发过程文档保留本地，不放入公开分发目录。
 
 ## 自动候选更新与开发组合
 
-[同步工作流](.github/workflows/sync-latest-tags.yml)每天或手动运行 [sync_latest_tags.py](ci/sync_latest_tags.py)，查询 `lib/` 子模块的最高数字语义化版本 tag（`vX.Y.Z` 或 `X.Y.Z`，排除预发布后缀），同步 README 的当前提交与版本徽章，并创建或更新草稿 PR。`skills/` 不在该任务范围内。
+[同步工作流](.github/workflows/sync-latest-tags.yml)原先每天或手动运行 [sync_latest_tags.py](ci/sync_latest_tags.py)，查询 `lib/` 子模块的最高数字语义化版本 tag（`vX.Y.Z` 或 `X.Y.Z`，排除预发布后缀），同步 README 的当前提交与版本徽章，并创建或更新草稿 PR。为保持总仓库仅有 `main`，该工作流当前已在 GitHub 停用；确定不创建额外分支的同步方式前，不直接重新启用。手动脚本仍可使用，`skills/` 不在该任务范围内。
 
 在干净工作区可先运行 `python ci/sync_latest_tags.py --dry-run` 预览，再运行不带该参数的命令更新。脚本只允许当前提交向候选 tag 的后代快进；若当前提交在旧 tag 之后或历史分叉，则跳过并报告，保留未发布开发组合。预览缺少候选对象时会提示需获取对象后检查历史，不把无法确认的关系当作可更新。
 

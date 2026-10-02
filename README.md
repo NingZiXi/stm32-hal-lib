@@ -53,7 +53,7 @@ git submodule update --init --recursive
 git submodule status
 ```
 
-这些命令获取总仓库固定的组合。组件更新通过[自动候选同步任务](.github/workflows/sync-latest-tags.yml)或维护者审查完成；具体的 tag 选择、未发布组合保护与合入条件见[维护流程](CONTRIBUTING.md)。
+这些命令获取总仓库固定的组合。总仓库仅保留 `main`，不发布自身的 tag；组件仍独立发布版本。目前自动创建候选分支的任务已停用，可通过手动脚本预览并由维护者审查更新；具体的 tag 选择、未发布组合保护与合入条件见[维护流程](CONTRIBUTING.md)。
 
 ## 接入 STM32CubeMX + CMake
 
