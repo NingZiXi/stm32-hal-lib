@@ -46,7 +46,7 @@ jobs:
             gh pr create --draft --base "${{ github.event.repository.default_branch }}" \
               --head codex/latest-component-tags \
               --title 'chore: sync library submodules to latest stable tags' \
-              --body 'Automated sync to the latest stable semantic-version tags. Review API compatibility and run CI before merging; the GitHub Actions token does not trigger CI on its own PR.'
+              --body 'Fast-forward candidates from the highest numeric non-prerelease tags. Newer development commits and divergent histories are preserved. Verify Release records, mirrors, API compatibility and CI before merging; the GitHub Actions token does not trigger CI on its own PR.'
           else
             echo "Updated existing pull request #$number"
           fi

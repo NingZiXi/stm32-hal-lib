@@ -1,5 +1,7 @@
 # 组件维护约定
 
+本文件是组件维护与发布政策的共同来源。用户接入从 [README.md](README.md) 开始，Agent 的任务分流见 [AGENTS.md](AGENTS.md)；具体 API 契约、构建目标和验证范围读取所选组件同一提交的头文件、CMake 与测试说明。
+
 ## 仓库关系
 
 本仓库维护组件目录、版本组合、接入说明和 CI；驱动源码在对应的独立仓库维护。只修改总仓库里的子模块工作区而未推送子模块提交，会导致其他人无法克隆。先将组件提交同步到 GitHub 与 Gitee，再同步总仓库，保证两个平台都能获取引用。
@@ -26,11 +28,11 @@ git commit -m "更新 stm_flash 版本引用"
 git submodule add ../stm_<name>.git lib/stm_<name>
 ```
 
-默认目录结构可参考 Flash/SDRAM：根目录放 `.c`、`.h`、`CMakeLists.txt`、`README.md`、`LICENSE`；`example/main.c` 提供最小参考；需要时提供 `tests/`。不要求空目录、CHANGELOG 或额外 docs。
+按实际复杂度组织目录：当前 Flash/SDRAM 使用 `include/`、`src/`、`adapters/stm32_hal/`，较小组件可以在根目录放源码与头文件；均提供 `CMakeLists.txt`、`README.md` 和 `LICENSE`。示例和测试按需提供，不要求空目录、CHANGELOG 或额外 docs。
 
 ## 显示与触摸组件
 
-按芯片拆分、板级回调、LVGL 粘合与实板验证的专门要求见[显示与触摸组件开发规范](docs/display-development.md)。该规范区分已经确定的组件边界与仍待硬件核实的参数，并列明现有组件与本文件通用错误码约定的待对齐事项。
+按芯片拆分、板级回调、LVGL 粘合与实板验证的专门要求见[显示与触摸组件开发规范](docs/display-development.md)。通用规则以本文件为准，具体版本的迁移与验证状态见[接入指南](docs/display-components.md)和组件说明。
 
 ## 接口与错误码
 
@@ -60,3 +62,20 @@ git submodule add ../stm_<name>.git lib/stm_<name>
 **tag 推送到 GitHub 后必须立即创建对应的 GitHub Release**：在 GitHub 端执行 `gh release create <tag> --generate-notes --title "<tag>"`。Release 是用户了解组件变更和兼容性的入口，单独 tag 不构成正式发布。Gitee 端的发行版可在 GitHub Release 创建后由维护者手动同步，或在 `gitee.com/nzxhg/<component>/releases/new` 上传相同内容。历史已有但缺 Release 的 tag 应在补齐时一次性回填。
 
 总仓库发布时固定通过检查的组合，并在 Release 中说明实际变化和验证范围。测试日志、固件、探针信息及开发过程文档保留本地，不放入公开分发目录。
+
+## 自动候选更新与开发组合
+
+[同步工作流](.github/workflows/sync-latest-tags.yml)每天或手动运行 [sync_latest_tags.py](ci/sync_latest_tags.py)，查询 `lib/` 子模块的最高数字语义化版本 tag（`vX.Y.Z` 或 `X.Y.Z`，排除预发布后缀），同步 README 的当前提交与版本徽章，并创建或更新草稿 PR。`skills/` 不在该任务范围内。
+
+在干净工作区可先运行 `python ci/sync_latest_tags.py --dry-run` 预览，再运行不带该参数的命令更新。脚本只允许当前提交向候选 tag 的后代快进；若当前提交在旧 tag 之后或历史分叉，则跳过并报告，保留未发布开发组合。预览缺少候选对象时会提示需获取对象后检查历史，不把无法确认的关系当作可更新。
+
+tag 发现不等于正式发布验收：该脚本不检查 GitHub Release、镜像可获取性或硬件结果。合入前按上节确认发布资料、两端提交、兼容性和所需检查；GitHub Actions 自带 token 创建的 PR 不自动触发 CI，需要在候选分支手动运行 CI 或由维护者推送触发。
+
+README 表格必须展示实际 gitlink，只有对应提交有版本 tag 时才展示版本徽章。未发布提交标明基线版本与验证状态；保留旧 tag，不能用其测试结论覆盖新接口迁移。文档中的迁移状态描述特定组合，不构成后续任务的推送、烧录或发布授权。
+
+## 文档与技能维护
+
+- README 提供项目与使用入口；AGENTS.md 提供任务边界与按需阅读路径；本文件维护通用政策；docs 中的接入指南与开发规范分别解释使用步骤和领域要求。避免在入口文件重复完整 API、命令或开发日志。
+- 组件独立克隆后仍须可用，因此各自 README 保留必要的依赖、接口及验证信息；总仓库只维护跨组件组合与摘要。源码、头文件和 CMake 变化时同步相关说明，发现事实不一致须修正。
+- 技能在独立仓库维护。其 README 介绍安装和使用，SKILL.md 提供流程及读取条件，references 保存细节，assets 保存移植模板；按任务读取，不将应用模板偏好扩大为组件库规则。技能的依赖版本与总仓库组件组合分别管理。
+- 子目录只有存在独有工作规则时才增加 AGENTS.md；独立组件或技能的局部文件由其仓库维护。临时任务限制留在任务中，公开的验证摘要明确版本与条件。

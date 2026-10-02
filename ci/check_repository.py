@@ -5,11 +5,34 @@ import re
 import subprocess
 from urllib.parse import unquote, urlsplit
 
+from sync_latest_tags import BADGE, COMMIT, component_row
+
 ROOT = Path(__file__).resolve().parents[1]
 
 
 def git(*args):
     return subprocess.check_output(['git', *args], cwd=ROOT, text=True, encoding='utf-8')
+
+
+def check_readme_references(readme, entries):
+    for path, sha in entries.items():
+        if not path.startswith('lib/'):
+            continue
+        name = Path(path).name
+        try:
+            row = component_row(readme, name)
+        except ValueError as error:
+            raise SystemExit(str(error)) from error
+        commit = COMMIT.fullmatch(row[2].strip())
+        if not commit or commit['name'] != name or commit['sha'] != sha or commit['short'] != sha[:12]:
+            raise SystemExit(f'{path}: README current commit differs from staged gitlink')
+        release = row[3].strip()
+        badge = BADGE.fullmatch(release)
+        if badge:
+            if badge['name'] != name or badge['sha'] != sha:
+                raise SystemExit(f'{path}: README version badge must link to the current commit')
+        elif not release.startswith('未发布（基于 '):
+            raise SystemExit(f'{path}: expected a version badge or an unpublished baseline')
 
 
 def main():
@@ -46,6 +69,8 @@ def main():
             raise SystemExit(f'{path}: HEAD differs from staged gitlink; stage the intended version')
     if not entries or set(entries) != configured:
         raise SystemExit('Gitlinks and .gitmodules disagree')
+
+    check_readme_references((ROOT / 'README.md').read_text(encoding='utf-8'), entries)
 
     checked = 0
     for name in git('ls-files', '-z').split('\0'):

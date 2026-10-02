@@ -11,7 +11,7 @@ git submodule update --init --recursive
 python ci/check_repository.py
 ```
 
-文档检查只检查总仓库跟踪的 Markdown 中内联链接的本地文件目标，不检查外部网站可用性或标题锚点。子模块引用必须与暂存区记录一致；新增文件须先 `git add` 才会纳入检查。
+文档检查只检查总仓库跟踪的 Markdown 中内联链接的本地文件目标，不检查外部网站可用性或标题锚点。子模块引用必须与暂存区记录一致；README 组件表的提交也须与暂存区 gitlink 一致。新增文件须先 `git add` 才会纳入检查（只验证新文件时可用 `git add -N`）。本检查不递归检查子模块内部 Markdown，也不查询远端 Release 或硬件状态。
 
 HAL 和 CMSIS 是测试环境依赖，不是新组件。首次准备时执行以下命令（目录已存在时 fetch 后 checkout 同一提交即可）：
 
@@ -38,7 +38,7 @@ cmake -S ci -B build/compile -G Ninja "-DCMAKE_TOOLCHAIN_FILE=/absolute/path/to/
 cmake --build build/compile
 ```
 
-此工程只生成静态库和编译检查对象，不产生可烧录固件。检查组件通过各自 CMake 目标继承 HAL 配置，检查组合公共头文件的 C11/C++17 消费者，以及 `STM_LOG_ENABLED=0` 的日志源文件。LittleFS 上游固定为 v2.11.2 对应提交，由适配组件自动下载。
+基础编译工程生成静态库和检查对象；RTT 链接目标也仅用于检查，均不可烧录。平台无关核心不依赖 HAL，显式加入的 STM32 适配器继承 CI 配置。检查组合公共头文件的 C11/C++17 消费者，以及 `STM_LOG_ENABLED=0` 的日志源文件。LittleFS 上游固定为 v2.11.2 对应提交，由适配组件自动下载。
 
 LittleFS 主机测试使用本机 GCC/G++，无需连接开发板：
 
@@ -96,7 +96,7 @@ python ci/check_display_integration.py --lvgl-source /absolute/path/to/lvgl-9.3.
 
 该脚本用新隔离目录验证 stm_common 已有 target、同级源码、离线源码覆盖、两个添加顺序的固定提交下载和每个组件关闭下载后的缺失报错；默认从本地 stm_common Git 仓库获取固定 v1.0.0 提交，无需联网，可用 --repository 指定 GitHub/Gitee 镜像。随后用真实 H757 HAL/CMSIS 及 LVGL 头文件编译六份中文 HAL 示例、LVGL port 实现和 C11/C++17 消费者。原始命令日志及隔离源码保留在 build/display-api-migration/integration/。
 
-Windows 可用 --c-compiler、--cxx-compiler 指定 MinGW GCC/G++，--arm-compiler 指定 GNU Arm GCC。CI 使用 LVGL v9.3.0。本轮不烧录、不发布，主工程 Debug/Release 完整链接和迁移后硬件回归仍是独立验收步骤；不能因该脚本通过就声明硬件支持。
+Windows 可用 --c-compiler、--cxx-compiler 指定 MinGW GCC/G++，--arm-compiler 指定 GNU Arm GCC。CI 使用 LVGL v9.3.0。该脚本不烧录也不发布；外部消费工程的完整链接和硬件回归是独立验收步骤，不能因脚本通过就声明硬件支持。组合状态见[显示接入指南](../docs/display-components.md)。
 
 ## H757 / QSPI 扩展检查
 
@@ -110,7 +110,7 @@ python lib/stm_sdram/tests/run_tests.py --mcu STM32H757xx --include ci/include -
 H723 使用 OSPI HAL，H757 使用 QSPI HAL；公共头文件仍同时检查 C11/C++17。板级接线、真实 SDRAM 刷新和 NOR 数据备份/恢复须单独做硬件验证。
 
 
-## v4 开发分支的核心独立性
+## Flash/SDRAM v4 核心独立性
 
 Flash/SDRAM 核心不再继承 stm32cubemx。此目录显式选择 H723 OSPI 或 H757 QSPI，并单独构建 FMC 适配器。
 独立原生测试不加入任何 HAL/CMSIS 路径，覆盖自定义控制器、器件描述和多实例：
@@ -125,3 +125,12 @@ ctest --test-dir build/sdram-native --output-on-failure
 ```
 
 当前内存组件已发布为 `v4.0.0`；H757 QSPI/FMC 实板验证通过，H723 OSPI/FMC 已完成软件模型回归。总仓库 gitlink 固定到已推送的提交。
+
+## 文档与候选版本同步检查
+
+```sh
+python ci/check_repository.py
+python -m unittest discover -s ci -p test_sync_latest_tags.py
+```
+
+前者检查总仓库跟踪的 Markdown（包括 AGENTS.md）、组件目录、README 当前提交和暂存区 gitlink。后者离线测试 tag 选择、版本表更新与历史关系保护，不需要 HAL 或开发板。同步任务的候选选择、预览和合入条件统一见 [CONTRIBUTING.md](../CONTRIBUTING.md)，不用为文档整理运行会修改 gitlink 的同步命令。
