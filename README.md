@@ -6,6 +6,22 @@
 
 支持范围与验证结果以各组件**当前提交**的说明为准。维护者阅读 [CONTRIBUTING.md](CONTRIBUTING.md)，编码 Agent 从 [AGENTS.md](AGENTS.md) 按任务选择上下文；可复用应用接入技能见 [skills/](skills/README.md)。
 
+## 🤖 让 Agent 帮助接入
+
+复制以下 Prompt 给你的编程 Agent（如 Codex、Trae），将 `<...>` 替换为实际需求。
+
+### 🚀 快速接入
+
+> 将 [stm32-hal-lib](https://github.com/NingZiXi/stm32-hal-lib) 中的 `<组件>` 接入当前工程，制作 `<功能>` 的最小 Demo。先检查工程，按组件文档适配，保留已有代码；信息不全先询问。需要业务入口和日志时，按 skills/README.md 使用适用的 skill。完成后说明版本、编译结果和未验证项。
+
+### 🔌 指定硬件
+
+在上面的 Prompt 后补充以下信息，删除不适用的字段：
+
+> 硬件：MCU/开发板 `<型号>`，器件 `<型号>`，外设 `<I2C1/SPI1等>`，信号与引脚 `<如 SDA=PB7、SCL=PB6>`，按键 `<UP/DOWN/OK引脚及有效电平>`。先核对引脚和外设配置，不猜测接线；缺少初始化时列出 CubeMX 配置步骤。未经确认不烧录或擦写存储。
+
+💡 [Gitee 镜像](https://gitee.com/nzxhg/stm32-hal-lib)也可使用。配套 [stm32-app-main skill](skills/README.md) 仅用于已有 **CubeMX1 CMake 工程的业务入口与日志**，不是通用外设或 UI 接入技能；编译通过不代表实板验证通过。
+
 ## 组件与固定组合
 
 | 组件 | 当前提交 | 发布状态 | 用途 |
