@@ -25,12 +25,12 @@
 | [stm_lcd_touch_ft5206](https://github.com/NingZiXi/stm_lcd_touch_ft5206) | [`e49ae91ff723`](https://github.com/NingZiXi/stm_lcd_touch_ft5206/tree/e49ae91ff723b23ce7d619e895152d96727b3b02) | [![version 0.2.0](https://img.shields.io/badge/version-0.2.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_lcd_touch_ft5206/tree/e49ae91ff723b23ce7d619e895152d96727b3b02) | FT5206 I2C 触摸芯片驱动 |
 | [stm_lcd_ili9881c](https://github.com/NingZiXi/stm_lcd_ili9881c) | [`daeb162266d2`](https://github.com/NingZiXi/stm_lcd_ili9881c/tree/daeb162266d217709187629ea90768cf6083ebaf) | [![version 0.2.0](https://img.shields.io/badge/version-0.2.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_lcd_ili9881c/tree/daeb162266d217709187629ea90768cf6083ebaf) | ILI9881C DSI 面板初始化，模组命令表仅适用于已测 10.1 寸屏幕 |
 | [stm_lcd_touch_gt9271](https://github.com/NingZiXi/stm_lcd_touch_gt9271) | [`da4479a471bb`](https://github.com/NingZiXi/stm_lcd_touch_gt9271/tree/da4479a471bb21a1acd72fc5fdccca7d0fd2749b) | [![version 0.2.0](https://img.shields.io/badge/version-0.2.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_lcd_touch_gt9271/tree/da4479a471bb21a1acd72fc5fdccca7d0fd2749b) | GT9271 I²C 触摸与坐标读取 |
-| [stm_lvgl_port](https://github.com/NingZiXi/stm_lvgl_port) | [`7be2b9ed669b`](https://github.com/NingZiXi/stm_lvgl_port/tree/7be2b9ed669b64c1d5b4bad62797408d7467e91f) | 未发布（基于 v0.2.0，文档整理，本地待板级回归） | 独立于屏幕型号的显示与触摸接入 |
+| [stm_lvgl_port](https://github.com/NingZiXi/stm_lvgl_port) | [`54acff68ecf7`](https://github.com/NingZiXi/stm_lvgl_port/tree/54acff68ecf7ac709b4bf88dc79219a900843031) | [![version 0.2.1](https://img.shields.io/badge/version-0.2.1-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_lvgl_port/tree/54acff68ecf7ac709b4bf88dc79219a900843031) | 独立于屏幕型号的显示与触摸接入 |
 | [stm_ota](https://github.com/NingZiXi/stm_ota) | [`f9163d2a7efe`](https://github.com/NingZiXi/stm_ota/tree/f9163d2a7efe2f67d089a62c413dc40360c49170) | [![version 0.5.0](https://img.shields.io/badge/version-0.5.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_ota/tree/f9163d2a7efe2f67d089a62c413dc40360c49170) | 同步 OTA 下载、A/B 分区切换与 Flash 校验 |
 
 “当前提交”链接对应本仓库固定的 gitlink；徽章只用于有对应 tag 的提交。标为“未发布”的组合不能用其基线 tag 的硬件结论代替新提交验收。组件名称链接到独立仓库首页，那里可能已更新；使用此组合时请读克隆后的 `lib/<组件>/README.md`。
 
-显示与触摸六组件当前固定为 `v0.2.0`，采用不透明句柄、`create/delete` 和 `stm_err_t`，不提供 `v0.1.0` 兼容包装。2026-10-07，ILI9881C/GT9271/LVGL port 在 H757 配套模组完成新接口的诊断、五次复位、Release 启动及官方 Widgets 滑动/点击回归；ST7789/ST7796/FT5206 仅完成软件验证。接入、迁移和验证边界见[显示接入指南](docs/display-components.md)。
+五款显示与触摸芯片组件固定为 `v0.2.0`，`stm_lvgl_port` 固定为 `v0.2.1` 文档补丁（源码/API 与 v0.2.0 相同），采用不透明句柄、`create/delete` 和 `stm_err_t`，不提供 `v0.1.0` 兼容包装。2026-10-07，ILI9881C/GT9271/LVGL port 在 H757 配套模组完成新接口的诊断、五次复位、Release 启动及官方 Widgets 滑动/点击回归；ST7789/ST7796/FT5206 仅完成软件验证。接入、迁移和验证边界见[显示接入指南](docs/display-components.md)。
 
 ## 获取与更新
 
