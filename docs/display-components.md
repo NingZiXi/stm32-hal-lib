@@ -77,6 +77,14 @@ buffer 至少一行 RGB565，最大 UINT32_MAX，满足 LV_DRAW_BUF_ALIGN。PART
 
 get_display/get_indev 返回借用对象，不得删除或替换 user_data，无触摸时 indev 为 NULL。板级可在首次绘制前配置 DIRECT 和自定义 flush，但自定义 flush 错误须由板级记录；组件 get_status 只记录其自身回调。组件不新增 DIRECT/DMA/VSYNC 功能。
 
+## 5. PARTIAL / DIRECT 职责与数据流
+
+通用 port 保持同步 PARTIAL；应用持有小块 RGB565 缓冲，draw 接收半开矩形、紧密行排列，返回前必须完成像素使用。组件转换闭区间坐标一次，并在成功或失败后调用 flush_ready。启动 DMA 后立即返回不符合该契约。
+
+DIRECT 是消费工程通过借用 display 实现的扩展：首次 handler 前设置两块全屏缓冲、明确 stride 和自定义 flush，不替换 user_data。LVGL 管理双帧渲染区域同步，板级负责缓存一致性、扫描地址、安全切换和 flush_ready；自定义显示错误独立记录，触摸仍查询 port。旧前台还在扫描时不能继续复用；异步地址重载必须等待完成。
+
+CPU 写、LTDC 读时先 clean 再提交，不 invalidate 尚未写回的像素。VSYNC 轮询只是特定 H757 实例策略，不等同通用 DMA/异步 VBlank 支持。同步切帧失败须锁存错误，当前 handler 返回后停止后续处理。详细责任表、缓存对齐、错误恢复及缓冲生命周期见 [stm_lvgl_port 刷新模式指南](../lib/stm_lvgl_port/docs/render-modes.md)。
+
 ## H757 外部板级参考（非本仓库固件）
 
 以下参数记录既有 H757 消费工程的特定配置，该完整固件没有随本仓库分发。`STM_DISPLAY_LVGL_DEMO`、`STM_LVGL_OFFICIAL_WIDGETS` 是该外部工程的开关，不是组件或总仓库 CMake 选项；分别控制示例启用及官方 Widgets/诊断界面选择。该实例使用 ILI9881C/GT9271 与 LVGL 9.3.0；其他工程应按实际 CMake 配置接入。

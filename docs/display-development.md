@@ -45,3 +45,9 @@ LVGL port 默认仍是同步 PARTIAL RGB565。get_display/get_indev 返回借用
 修改显示接口时，覆盖生命周期、参数、错误路径和 C11/C++17 主机检查，使用真实 HAL/LVGL 头文件编译中文示例，并验证依赖复用、固定下载和离线失败。检查入口见 [ci/README.md](../ci/README.md)。旧版本的实测不能代替新提交的硬件回归。
 
 当前组合的发布状态和 v0.1.0 迁移步骤统一见[接入指南](display-components.md)；具体组件契约见各版本公开头文件。`examples/stm32_hal/` 是移植用板级代码，不是包含完整 `.ioc` 的固件工程。
+
+## 刷新模式的职责边界
+
+port 默认 PARTIAL 的 draw 必须同步消费完紧密排列的矩形像素后返回；flush_ready 由 port 调用。DIRECT 扩展属于消费工程，板级负责全屏 stride、cache clean、扫描地址和旧帧释放条件，不能把芯片组件或 port 变成某系列 LTDC 框架。应用通过借用 display 扩展，不替换 user_data，并独立记录替换后的 flush 错误。
+
+板级 refactor 保持已验证时序时仍须独立回归。文档区分 host PARTIAL 验证与实板 DIRECT 验证，刷新周期不能当作实测 FPS。完整接入契约见 [刷新模式指南](../lib/stm_lvgl_port/docs/render-modes.md)。
