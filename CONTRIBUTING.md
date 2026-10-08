@@ -55,6 +55,8 @@ git submodule add ../stm_<name>.git lib/stm_<name>
 
 ## 验证与发布
 
+总仓库中由 Codex 协助完成的提交保留维护者为主作者，并在提交说明末尾添加 `Co-authored-by: Codex <codex@openai.com>`。不为补录署名而重写已发布历史，也不移除已有共同作者。
+
 编译须检查警告；软件测试关注边界、故障路径和资源生命周期。修改子模块引用或 CI 后运行 [ci/README.md](ci/README.md) 中的检查。新增系列和器件须提供对应验证，不能仅因编译成功就宣称硬件支持。
 
 组件每次修改并交付使用时必须发布新的版本 tag，不能只更新 main：消费工程通过 FetchContent 的 GIT_TAG 固定版本。修复递增 patch，兼容的新功能递增 minor，破坏性接口变更递增 major；已有 tag 不移动、不覆盖。先完成验证，再将组件提交和新 tag 推送到 GitHub、Gitee，两端指向同一提交，随后更新总仓库引用、版本徽章和需要升级的消费工程 GIT_TAG。
