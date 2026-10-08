@@ -157,4 +157,4 @@ CI 不连接 J-Link，也不证明板级电气时序、温度或长期稳定性�
 
 ## 贡献与许可
 
-新增组件、接口契约、注释和发布流程见 [CONTRIBUTING.md](CONTRIBUTING.md)。本仓库原创文档和工具采用 [MIT License](LICENSE)；子模块及第三方部分遵循各自许可证。
+新增组件、接口契约、注释和发布流程见 [CONTRIBUTING.md](CONTRIBUTING.md)；自动依赖的 target 复用、离线源码、固定版本拉取和验证要求见 [CMake 依赖获取规范](CONTRIBUTING.md#cmake-依赖获取规范)。本仓库原创文档和工具采用 [MIT License](LICENSE)；子模块及第三方部分遵循各自许可证。
