@@ -56,6 +56,8 @@ add_subdirectory("${LIB_ROOT}/lib/stm_lcd_st7796" stm_lcd_st7796)
 add_subdirectory("${LIB_ROOT}/lib/stm_lcd_touch_ft5206" stm_lcd_touch_ft5206)
 add_subdirectory("${LIB_ROOT}/lib/stm_lcd_ili9881c" stm_lcd_ili9881c)
 add_subdirectory("${LIB_ROOT}/lib/stm_lcd_touch_gt9271" stm_lcd_touch_gt9271)
+add_subdirectory("${LIB_ROOT}/lib/stm_lcd_axs15231b" stm_lcd_axs15231b)
+add_subdirectory("${LIB_ROOT}/lib/stm_lcd_touch_axs15231b" stm_lcd_touch_axs15231b)
 add_subdirectory("${LIB_ROOT}/lib/stm_log" stm_log)
 add_subdirectory("${LIB_ROOT}/lib/stm_littlefs" stm_littlefs)
 # 上游仅在 assert 中使用此辅助函数，Release 的 NDEBUG 会使其未使用。
@@ -73,7 +75,8 @@ add_library(public_headers OBJECT headers.c headers.cpp)
 target_compile_features(public_headers PRIVATE c_std_11 cxx_std_17)
 target_link_libraries(public_headers PRIVATE stm_flash stm_sdram stm_log stm_littlefs
     stm_eeprom_i2c stm_eeprom_gpio_i2c stm_sd_sdmmc stm_fatfs stm_fatfs_sd stm_fatfs_flash
-    stm_lcd_st7789 stm_lcd_st7796 stm_lcd_touch_ft5206 stm_lcd_ili9881c stm_lcd_touch_gt9271)
+    stm_lcd_st7789 stm_lcd_st7796 stm_lcd_touch_ft5206 stm_lcd_ili9881c stm_lcd_touch_gt9271
+    stm_lcd_axs15231b stm_lcd_touch_axs15231b)
 
 add_library(log_disabled OBJECT "${LIB_ROOT}/lib/stm_log/stm_log.c")
 target_compile_definitions(log_disabled PRIVATE STM_LOG_ENABLED=0)

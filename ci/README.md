@@ -96,13 +96,13 @@ stm_log v3.0.2 首次自动获取 RTT 时将固定提交的源码放在 `lib/seg
 
 ## 显示接口软件迁移检查
 
-六个组件各自的 tests/ 检查参数、分配故障、生命周期、错误传递和 C11/C++17 头文件；测试库替换 calloc/free，生产构建使用正常 libc。LVGL 主机测试使用桩验证资源回收和回调，不能替代真实 LVGL 编译或硬件检查。
+八个显示/触摸/LVGL 组件（包括两个 AXS15231B 组件）各自的 tests/ 检查参数、分配故障、生命周期、错误传递和 C11/C++17 头文件；测试库替换 calloc/free，生产构建使用正常 libc。LVGL 主机测试使用桩验证资源回收和回调，不能替代真实 LVGL 编译或硬件检查。
 
 ```sh
 python ci/check_display_integration.py --lvgl-source /absolute/path/to/lvgl-9.3.0
 ```
 
-该脚本用新隔离目录验证 stm_common 已有 target、同级源码、离线源码覆盖、两个添加顺序的固定提交下载和每个组件关闭下载后的缺失报错；默认从本地 stm_common Git 仓库获取固定 v1.0.0 提交，无需联网，可用 --repository 指定 GitHub/Gitee 镜像。随后用真实 H757 HAL/CMSIS 及 LVGL 头文件编译六份中文 HAL 示例、LVGL port 实现和 C11/C++17 消费者。原始命令日志及隔离源码保留在 build/display-api-migration/integration/。
+该脚本用新隔离目录验证 stm_common 已有 target、同级源码、离线源码覆盖、两个添加顺序的固定提交下载和每个组件关闭下载后的缺失报错；默认从本地 stm_common Git 仓库获取固定 v1.0.0 提交，无需联网，可用 --repository 指定 GitHub/Gitee 镜像。随后用真实 H757 HAL/CMSIS 及 LVGL 头文件编译原有六份中文 HAL 示例、LVGL port 实现和八个组件的 C11/C++17 消费者。AXS15231B 核心与公共头文件也纳入 H723/H757 编译工程和主机测试；两个新组件的示例专用于 F407，不混入 H757 示例编译，本轮在 F407 消费工程的真实 HAL/CMSIS 头文件下单独检查，尚未加入持续集成示例编译。原始命令日志及隔离源码保留在 build/display-api-migration/integration/。
 
 Windows 可用 --c-compiler、--cxx-compiler 指定 MinGW GCC/G++，--arm-compiler 指定 GNU Arm GCC。CI 使用 LVGL v9.3.0。该脚本不烧录也不发布；外部消费工程的完整链接和硬件回归是独立验收步骤，不能因脚本通过就声明硬件支持。组合状态见[显示接入指南](../docs/display-components.md)。
 

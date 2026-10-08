@@ -1,6 +1,6 @@
 # STM32 显示与触摸组件接入指南
 
-每个芯片独立维护组件，板级负责传输、GPIO、电源和时序；LVGL port 连接显示/输入回调。没有额外的通用显示或触摸转发层，不兼容 ESP-IDF API。本文针对总仓库当前 gitlink 的五款芯片组件 `v0.2.0` 与 `stm_lvgl_port v0.2.1`，`v0.1.0` 保留旧接口。使用旧 tag 时请读取该 tag 的组件文档，不直接复制本文的新接口。当前提交与发布状态见[总仓库组件表](../README.md)。
+每个芯片独立维护组件，板级负责传输、GPIO、电源和时序；LVGL port 连接显示/输入回调。没有额外的通用显示或触摸转发层，不兼容 ESP-IDF API。本文针对总仓库当前 gitlink 的五款芯片组件 `v0.2.0` 与 `stm_lvgl_port v0.2.1`，`v0.1.0` 保留旧接口。使用旧 tag 时请读取该 tag 的组件文档，不直接复制本文的新接口。新增 AXS15231B 显示与触摸组件固定为未标记版本的提交，采用同类句柄/回调契约；其 STM32F407 示例和验证范围以组件 README 为准。当前提交与发布状态见[总仓库组件表](../README.md)。
 
 ## 1. 选择与添加组件
 
@@ -11,6 +11,8 @@
 | ILI9881C DSI | [stm_lcd_ili9881c](../lib/stm_lcd_ili9881c/examples/stm32_hal/README.md) | 已测 10.1 寸模组 DCS 初始化，DSI/LTDC 归板级 |
 | FT5206 I²C | [stm_lcd_touch_ft5206](../lib/stm_lcd_touch_ft5206/examples/stm32_hal/README.md) | 8 位寄存器、最多 5 点 |
 | GT9271 I²C | [stm_lcd_touch_gt9271](../lib/stm_lcd_touch_gt9271/examples/stm32_hal/README.md) | 16 位寄存器、最多 10 点、帧 ACK |
+| AXS15231B SPI | [stm_lcd_axs15231b](../lib/stm_lcd_axs15231b/examples/stm32_hal/README.md) | SPI 命令、窗口与 RGB565，板级提供模组初始化表，不支持 QSPI |
+| AXS15231B I²C | [stm_lcd_touch_axs15231b](../lib/stm_lcd_touch_axs15231b/examples/stm32_hal/README.md) | 11 字节查询命令、8 字节响应、单点坐标与变换 |
 | LVGL 9 | [stm_lvgl_port](../lib/stm_lvgl_port/examples/stm32_hal/README.md) | 同步 PARTIAL RGB565，输入可选 |
 
 只选实物对应组件。旧 stm_display/stm_lvgl 已退出，不继续使用其 API。参考职责来自乐鑫独立 LCD 组件和 esp_lvgl_port，当前库不提供其 RTOS 任务、自动定时器或异步 DMA 能力。

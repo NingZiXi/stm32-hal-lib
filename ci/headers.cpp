@@ -16,6 +16,8 @@
 #include "stm_lcd_touch_ft5206.h"
 #include "stm_lcd_ili9881c.h"
 #include "stm_lcd_touch_gt9271.h"
+#include "stm_lcd_axs15231b.h"
+#include "stm_lcd_touch_axs15231b.h"
 
 static_assert(STM_OK == 0, "STM_OK must remain zero");
 stm_err_t ci_delete_handles(flash_handle_t *flash, sdram_handle_t *ram)

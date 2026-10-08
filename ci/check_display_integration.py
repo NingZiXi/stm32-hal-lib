@@ -7,8 +7,10 @@ import subprocess
 import tempfile
 
 ROOT = Path(__file__).resolve().parents[1]
-COMPONENTS = ['stm_lcd_st7789', 'stm_lcd_st7796', 'stm_lcd_ili9881c',
-              'stm_lcd_touch_ft5206', 'stm_lcd_touch_gt9271', 'stm_lvgl_port']
+HAL_COMPONENTS = ['stm_lcd_st7789', 'stm_lcd_st7796', 'stm_lcd_ili9881c',
+                  'stm_lcd_touch_ft5206', 'stm_lcd_touch_gt9271', 'stm_lvgl_port']
+# AXS15231B 示例使用 F407 HAL，不混入 H757 示例编译；核心/依赖/公共头文件仍检查。
+COMPONENTS = HAL_COMPONENTS + ['stm_lcd_axs15231b', 'stm_lcd_touch_axs15231b']
 PIN = 'ce3d186dde2d374a8e9c7b9068a7b88f97d57dc1'
 
 
@@ -94,7 +96,7 @@ def main():
     flags = ['-mcpu=cortex-m7', '-mthumb', '-mfloat-abi=soft', '-std=c11', '-Wall', '-Wextra', '-Werror',
              '-DSTM32H757xx', '-DUSE_HAL_DRIVER', '-DCORE_CM7', '-DHAL_DSI_MODULE_ENABLED',
              f'-DLV_CONF_PATH="{config.as_posix()}"']
-    for name in COMPONENTS:
+    for name in HAL_COMPONENTS:
         component = ROOT / 'lib' / name
         command = [args.arm_compiler, *flags]
         for path in [*includes, component / 'include', component / 'examples/stm32_hal']:
