@@ -4,7 +4,7 @@
 
 ## 依赖
 
-组件须完整初始化：
+组件须完整初始化。CI 的递归 checkout 使用 `fetch-depth: 0` 保留子模块历史；显示依赖检查会从本地 `stm_common` 克隆较旧的固定提交，只有浅克隆的当前提交无法完成此检查：
 
 ```sh
 git submodule update --init --recursive
