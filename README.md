@@ -43,14 +43,14 @@
 | [stm_lcd_touch_gt9271](https://github.com/NingZiXi/stm_lcd_touch_gt9271) | [`da4479a471bb`](https://github.com/NingZiXi/stm_lcd_touch_gt9271/tree/da4479a471bb21a1acd72fc5fdccca7d0fd2749b) | [![version 0.2.0](https://img.shields.io/badge/version-0.2.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_lcd_touch_gt9271/tree/da4479a471bb21a1acd72fc5fdccca7d0fd2749b) | GT9271 I²C 触摸与坐标读取 |
 | [stm_lcd_axs15231b](https://github.com/NingZiXi/stm_lcd_axs15231b) | [`fecdf3909d77`](https://github.com/NingZiXi/stm_lcd_axs15231b/tree/fecdf3909d77fadc4a444bdcaf8f73936cc34314) | 未发布（基于 `29f19dce2678` 初始提交；主机测试通过，未标记版本） | AXS15231B SPI 命令、窗口与 RGB565 写入（QSPI 不支持） |
 | [stm_lcd_touch_axs15231b](https://github.com/NingZiXi/stm_lcd_touch_axs15231b) | [`202b368a31ed`](https://github.com/NingZiXi/stm_lcd_touch_axs15231b/tree/202b368a31eda0809c185d2447d3fdd27e2be000) | 未发布（基于 `a89ddae9a9db` 初始提交；主机测试通过，未标记版本） | AXS15231B I²C 单点触摸、坐标变换与错误清空 |
-| [stm_lvgl_port](https://github.com/NingZiXi/stm_lvgl_port) | [`54acff68ecf7`](https://github.com/NingZiXi/stm_lvgl_port/tree/54acff68ecf7ac709b4bf88dc79219a900843031) | [![version 0.2.1](https://img.shields.io/badge/version-0.2.1-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_lvgl_port/tree/54acff68ecf7ac709b4bf88dc79219a900843031) | 独立于屏幕型号的显示与触摸接入 |
+| [stm_lvgl_port](https://github.com/NingZiXi/stm_lvgl_port) | [`a09ae1ae1cf6`](https://github.com/NingZiXi/stm_lvgl_port/tree/a09ae1ae1cf6e3e6255e01e4f1fa49c66dadb04c) | [![version 0.3.0](https://img.shields.io/badge/version-0.3.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_lvgl_port/tree/a09ae1ae1cf6e3e6255e01e4f1fa49c66dadb04c) | 独立于屏幕型号的显示与触摸接入，固定 LVGL 9.3.0 自动获取 |
 | [stm_ota](https://github.com/NingZiXi/stm_ota) | [`f9163d2a7efe`](https://github.com/NingZiXi/stm_ota/tree/f9163d2a7efe2f67d089a62c413dc40360c49170) | [![version 0.5.0](https://img.shields.io/badge/version-0.5.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_ota/tree/f9163d2a7efe2f67d089a62c413dc40360c49170) | 同步 OTA 下载、A/B 分区切换与 Flash 校验 |
 
 FatFs 官方源码不直接存入总仓库；当前 `stm_fatfs v1.0.4` 在构建时从官方获取固定的 R0.14b 并校验 SHA-256，下载及编译副本位于构建目录。离线接入可通过 `STM_FATFS_SOURCE_DIR` 指定外部源码目录。
 
 “当前提交”链接对应本仓库固定的 gitlink；徽章只用于有对应 tag 的提交。标为“未发布”的组合不能用其基线 tag 的硬件结论代替新提交验收。组件名称链接到独立仓库首页，那里可能已更新；使用此组合时请读克隆后的 `lib/<组件>/README.md`。
 
-五款显示与触摸芯片组件固定为 `v0.2.0`，`stm_lvgl_port` 固定为 `v0.2.1` 文档补丁（源码/API 与 v0.2.0 相同），采用不透明句柄、`create/delete` 和 `stm_err_t`，不提供 `v0.1.0` 兼容包装。2026-10-07，ILI9881C/GT9271/LVGL port 在 H757 配套模组完成新接口的诊断、五次复位、Release 启动及官方 Widgets 滑动/点击回归；ST7789/ST7796/FT5206 仅完成软件验证。接入、迁移和验证边界见[显示接入指南](docs/display-components.md)。
+五款显示与触摸芯片组件固定为 `v0.2.0`，`stm_lvgl_port` 固定为 `v0.3.0`，新增 LVGL 9.3.0 固定提交自动获取、已有 target 复用与离线源码支持；C API 与 v0.2.x 兼容，采用不透明句柄、`create/delete` 和 `stm_err_t`，不提供 `v0.1.0` 兼容包装。2026-10-07，ILI9881C/GT9271/LVGL port 在 H757 配套模组完成新接口的诊断、五次复位、Release 启动及官方 Widgets 滑动/点击回归；ST7789/ST7796/FT5206 仅完成软件验证。2026-10-08，port v0.3.0 通过主机、真实 LVGL 在线/离线依赖与示例编译检查，未重新执行完整固件链接或实板回归；上述硬件记录仍仅针对旧版组合。接入、迁移和验证边界见[显示接入指南](docs/display-components.md)。
 
 ### 💾 存储组件 Driver 一览
 

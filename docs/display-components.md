@@ -1,6 +1,6 @@
 # STM32 显示与触摸组件接入指南
 
-每个芯片独立维护组件，板级负责传输、GPIO、电源和时序；LVGL port 连接显示/输入回调。没有额外的通用显示或触摸转发层，不兼容 ESP-IDF API。本文针对总仓库当前 gitlink 的五款芯片组件 `v0.2.0` 与 `stm_lvgl_port v0.2.1`，`v0.1.0` 保留旧接口。使用旧 tag 时请读取该 tag 的组件文档，不直接复制本文的新接口。新增 AXS15231B 显示与触摸组件固定为未标记版本的提交，采用同类句柄/回调契约；其 STM32F407 示例和验证范围以组件 README 为准。当前提交与发布状态见[总仓库组件表](../README.md)。
+每个芯片独立维护组件，板级负责传输、GPIO、电源和时序；LVGL port 连接显示/输入回调。没有额外的通用显示或触摸转发层，不兼容 ESP-IDF API。本文针对总仓库当前 gitlink 的五款芯片组件 `v0.2.0` 与 `stm_lvgl_port v0.3.0`，`v0.1.0` 保留旧接口。使用旧 tag 时请读取该 tag 的组件文档，不直接复制本文的新接口。新增 AXS15231B 显示与触摸组件固定为未标记版本的提交，采用同类句柄/回调契约；其 STM32F407 示例和验证范围以组件 README 为准。当前提交与发布状态见[总仓库组件表](../README.md)。
 
 ## 1. 选择与添加组件
 
@@ -21,10 +21,13 @@
 # Lib/stm_common 可同级提供，也可提前定义其 target。
 add_subdirectory(Lib/stm_lcd_st7789)
 target_link_libraries(your_firmware PRIVATE stm_lcd_st7789)
-# 需要 LVGL 时先提供 LVGL 9 的 lvgl target 和 lv_conf.h。
+# 需要 LVGL 时应用提供自己的 lv_conf.h；复用已有 lvgl target，缺失时获取固定 LVGL 9.3.0。
+set(LV_BUILD_CONF_PATH "${CMAKE_CURRENT_SOURCE_DIR}/Config/lv_conf.h" CACHE PATH "LVGL application config")
 add_subdirectory(Lib/stm_lvgl_port)
 target_link_libraries(your_firmware PRIVATE stm_lvgl_port)
 ```
+
+`stm_lvgl_port v0.3.0` 优先复用应用已有 `lvgl` target；其次使用 `STM_LVGL_PORT_LVGL_SOURCE_DIR` 或 `FETCHCONTENT_SOURCE_DIR_LVGL` 离线源码；未提供时通过 FetchContent 获取 LVGL v9.3.0 固定提交，不跟随最新版本。应用仍需配置 C/C++/ASM 工具链和 `lv_conf.h`，组件不接管 tick、handler 或板级资源。下载开关、可信镜像及离线接入见[组件依赖说明](../lib/stm_lvgl_port/README.md#cmake-与依赖)。
 
 组件复用已有 stm_common target，或自动加入同级源码；否则固定下载 stm_common v1.0.0 提交 ce3d186dde2d374a8e9c7b9068a7b88f97d57dc1。STM_COMMON_FETCH=OFF 禁止网络，STM_COMMON_GIT_REPOSITORY 可指定 Gitee 镜像，FETCHCONTENT_SOURCE_DIR_STM_COMMON 可指定离线源码。
 
@@ -124,3 +127,9 @@ CPU 写、LTDC 读时先 clean 再提交，不 invalidate 尚未写回的像素�
 五款芯片组件继续固定 v0.2.0；stm_lvgl_port v0.2.1 只补充 PARTIAL/DIRECT 职责与中文接入文档，源码、公开 API、CMake 与 v0.2.0 相同。消费工程将 SDRAM 缓冲、MPU/DCache、VSYNC 与 DIRECT 提交集中到板级呈现模块，组件不承担这些板级资源。
 
 2026-10-07，整理后的 H757 配套 ILI9881C/GT9271、LVGL 9.3.0 完成诊断 Debug 显示/触摸及连续五次复位、诊断 Release 按钮和官方 Widgets Debug 滑动/点击回归；显示及输入错误均为 0，默认存储 Debug 恢复后初始化与心跳正常。Widgets Release、默认存储 Release 完成构建，未另行烧录。默认 PARTIAL 本轮仅主机测试，未新增 FPS 基准、逐角坐标独立记录或长期稳定性结论。
+
+## v0.3.0 粘合层自动获取与软件验证
+
+新增 LVGL 固定版本自动获取、显式离线源码与下载开关，公开 C API 与 v0.2.x 保持兼容。2026-10-08，通过主机契约、C11/C++17 头文件、11 种隔离 CMake 依赖/失败路径检查，真实 LVGL v9.3.0 的离线、源码覆盖与在线下载后的编译、链接和最小实例创建/销毁测试，以及 H757 HAL 示例与真实 LVGL 头文件/实现编译检查。
+
+未在本轮重新执行消费工程完整固件链接或实板回归；上述 v0.2.0/v0.2.1 硬件记录仍仅代表其当时的提交与板级条件，不扩展为 v0.3.0 验收结论。
