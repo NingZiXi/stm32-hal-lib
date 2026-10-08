@@ -38,7 +38,7 @@ cmake -S ci -B build/compile -G Ninja "-DCMAKE_TOOLCHAIN_FILE=/absolute/path/to/
 cmake --build build/compile
 ```
 
-基础编译工程生成静态库和检查对象；RTT 链接目标也仅用于检查，均不可烧录。平台无关核心不依赖 HAL，显式加入的 STM32 适配器继承 CI 配置。检查组合公共头文件的 C11/C++17 消费者，以及 `STM_LOG_ENABLED=0` 的日志源文件。LittleFS 上游固定为 v2.11.2 对应提交，由适配组件自动下载。
+基础编译工程生成静态库和检查对象；RTT 链接目标也仅用于检查，均不可烧录。平台无关核心不依赖 HAL，显式加入的 STM32 适配器继承 CI 配置。检查组合公共头文件的 C11/C++17 消费者，以及 `STM_LOG_ENABLED=0` 的日志源文件。LittleFS 上游固定为 v2.11.2 对应提交，由适配组件自动下载。EEPROM 同时检查硬件 I2C 和 GPIO 模拟 I2C 适配器；FatFs 检查 SD/NOR 桥接，并由 stm_fatfs 获取带 SHA-256 校验的官方 R0.14b 源码到构建目录，不再使用旧的 STM_FATFS_FETCH_DIR 选项。
 
 LittleFS 主机测试使用本机 GCC/G++，无需连接开发板：
 
@@ -72,17 +72,25 @@ python lib/stm_sdram/tests/run_tests.py --include ci/include --include .ci-deps/
 
 两个运行器分别编译并执行 O0/O2/Os 测试；使用 HAL 桩和 Unicorn Cortex-M7，不访问真实硬件。测试细节见各子模块的 `tests/README.md`，在线版本见 [Flash 测试](https://github.com/NingZiXi/stm_flash/blob/main/tests/README.md) 与 [SDRAM 测试](https://github.com/NingZiXi/stm_sdram/blob/main/tests/README.md)。
 
-当前不包含日志运行时测试、完整固件链接或硬件在环测试。CI 的成功只代表上述软件检查通过。
+日志运行时测试使用 v3 的真实实现，覆盖默认、无颜色/换行、文件行号、关闭日志、小缓冲区、C++ 头文件和示例：
+
+```sh
+cmake -S lib/stm_log/tests -B build/stm_log-tests -G Ninja -DCMAKE_BUILD_TYPE=Debug
+cmake --build build/stm_log-tests
+ctest --test-dir build/stm_log-tests --output-on-failure
+```
+
+当前不包含完整固件链接或硬件在环测试。CI 的成功只代表上述软件检查通过。
 
 RTT 可选依赖还会执行独立编译和链接检查：
 
 ```sh
 cmake -S ci -B build/rtt -G Ninja "-DCMAKE_TOOLCHAIN_FILE=/absolute/path/to/stm32-hal-lib/ci/arm-gcc.cmake" -DSTM_LOG_WITH_RTT=ON
 cmake --build build/rtt
-python ci/check_rtt_dependency.py --source build/rtt/_deps/segger_rtt-src
+python ci/check_rtt_dependency.py --source lib/segger_rtt
 ```
 
-首个构建实际下载固定 RTT 提交，应用只链接 `stm_log`，验证 RTT 头文件和符号被正确传递；后续检查覆盖关闭依赖、指定本地源码/配置、同级目录、已有 target 和离线缺失报错。链接检查使用 HAL 桩和 newlib nosys，产物仅用于检查，不可烧录，也不代表 RTT 硬件通信测试通过。
+stm_log v3.0.2 首次自动获取 RTT 时将固定提交的源码放在 `lib/segger_rtt/`（已忽略），构建目录保存获取管理文件与编译产物；应用只链接 `stm_log`，验证 RTT 头文件和符号被正确传递；后续检查覆盖关闭依赖、指定本地源码/配置、同级目录、已有 target 和离线缺失报错。链接检查使用应用输出/tick 回调和 newlib nosys，不依赖 HAL，产物仅用于检查，不可烧录，也不代表 RTT 硬件通信测试通过。
 
 升级依赖时同步修改工作流和本文的 commit，并重新运行全部检查。组件更新须先推送到独立远程，再提交总仓库的 gitlink；CI 的递归 checkout 会验证该提交能从远程获取。
 
@@ -124,7 +132,7 @@ cmake --build build/sdram-native
 ctest --test-dir build/sdram-native --output-on-failure
 ```
 
-当前内存组件已发布为 `v4.0.0`；H757 QSPI/FMC 实板验证通过，H723 OSPI/FMC 已完成软件模型回归。总仓库 gitlink 固定到已推送的提交。
+此前 Flash/SDRAM `v4.0.0` 组合的 H757 QSPI/FMC 实板验证通过，H723 OSPI/FMC 已完成软件模型回归。当前组合的实际提交与 tag 见总 README；SDRAM `v4.0.1` 增加 FMC ReadBurst 启用配置的接受与软件测试，旧版板测结论不等同于新版完成实板回归。
 
 ## 文档与候选版本同步检查
 

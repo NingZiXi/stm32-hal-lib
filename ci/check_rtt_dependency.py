@@ -21,10 +21,6 @@ def main():
             shutil.copytree(ROOT / 'lib/stm_log', src / 'lib/stm_log',
                             ignore=shutil.ignore_patterns('.git', 'build', '__pycache__'))
             config = 'cmake_minimum_required(VERSION 3.22)\nproject(check C)\n'
-            config += 'add_library(stm32cubemx INTERFACE)\n'
-            config += 'target_compile_definitions(stm32cubemx INTERFACE STM32H723xx USE_HAL_DRIVER)\n'
-            includes = [ROOT / 'ci/include', ROOT / '.ci-deps/hal/Inc', ROOT / '.ci-deps/device/Include', ROOT / '.ci-deps/cmsis/CMSIS/Core/Include']
-            config += 'target_include_directories(stm32cubemx INTERFACE ' + ' '.join(f'"{p.as_posix()}"' for p in includes) + ')\n'
             config += 'set(STM_LOG_RTT_FETCH OFF CACHE BOOL "")\n'
             config += f'set(STM_LOG_WITH_RTT {"OFF" if mode == "disabled" else "ON"} CACHE BOOL "")\n'
             if mode == 'source':
@@ -36,7 +32,6 @@ def main():
                 config += f'add_library(segger_rtt STATIC "{rtt.as_posix()}/RTT/SEGGER_RTT.c")\n'
                 config += f'target_include_directories(segger_rtt PUBLIC "{rtt.as_posix()}/RTT" "{rtt.as_posix()}/Config")\n'
             config += 'add_subdirectory(lib/stm_log)\n'
-            config += 'target_compile_definitions(stm_log PUBLIC STM_LOG_HAL_HEADER="stm32h7xx_hal.h")\n'
             if mode == 'disabled':
                 config += 'if(TARGET segger_rtt)\nmessage(FATAL_ERROR "Unexpected RTT target")\nendif()\n'
             else:

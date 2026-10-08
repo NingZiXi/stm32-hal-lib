@@ -26,15 +26,15 @@
 
 | 组件 | 当前提交 | 发布状态 | 用途 |
 | --- | --- | --- | --- |
-| [stm_common](https://github.com/NingZiXi/stm_common) | [`cc68ae4ad9c0`](https://github.com/NingZiXi/stm_common/tree/cc68ae4ad9c03e39d37d567eaae54dcf3b83e081) | 未发布（基于 [v1.0.0](https://github.com/NingZiXi/stm_common/tree/ce3d186dde2d374a8e9c7b9068a7b88f97d57dc1)） | `stm_err_t` 与公共错误码 |
+| [stm_common](https://github.com/NingZiXi/stm_common) | [`cc68ae4ad9c0`](https://github.com/NingZiXi/stm_common/tree/cc68ae4ad9c03e39d37d567eaae54dcf3b83e081) | [![version 1.0.1](https://img.shields.io/badge/version-1.0.1-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_common/tree/cc68ae4ad9c03e39d37d567eaae54dcf3b83e081) | `stm_err_t` 与公共错误码 |
 | [stm_flash](https://github.com/NingZiXi/stm_flash) | [`2d44d3c09126`](https://github.com/NingZiXi/stm_flash/tree/2d44d3c091262a4d79b33b04ca47a8a04b2fee35) | [![version 4.0.0](https://img.shields.io/badge/version-4.0.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_flash/tree/2d44d3c091262a4d79b33b04ca47a8a04b2fee35) | NOR Flash 读取、分页写入、扇区擦除与校验 |
-| [stm_sdram](https://github.com/NingZiXi/stm_sdram) | [`86f106e8693f`](https://github.com/NingZiXi/stm_sdram/tree/86f106e8693f84a75e0ca120290e4867aee05e6c) | [![version 4.0.0](https://img.shields.io/badge/version-4.0.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_sdram/tree/86f106e8693f84a75e0ca120290e4867aee05e6c) | SDRAM 初始化、刷新、读写、填充及自检 |
-| [stm_log](https://github.com/NingZiXi/stm_log) | [`15642aa90fe3`](https://github.com/NingZiXi/stm_log/tree/15642aa90fe3c5a91cd64680437f2ebd867ca20a) | [![version 2.4.0](https://img.shields.io/badge/version-2.4.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_log/tree/15642aa90fe3c5a91cd64680437f2ebd867ca20a) | 分级日志、标签过滤及自定义输出 |
+| [stm_sdram](https://github.com/NingZiXi/stm_sdram) | [`83725afd77d5`](https://github.com/NingZiXi/stm_sdram/tree/83725afd77d5553b3fbc6bbfda20ed7ae56eb683) | [![version 4.0.1](https://img.shields.io/badge/version-4.0.1-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_sdram/tree/83725afd77d5553b3fbc6bbfda20ed7ae56eb683) | SDRAM 初始化、刷新、读写、填充及自检 |
+| [stm_log](https://github.com/NingZiXi/stm_log) | [`153199b4e04d`](https://github.com/NingZiXi/stm_log/tree/153199b4e04dc42f8e49ebf121587ee30fff8644) | [![version 3.0.2](https://img.shields.io/badge/version-3.0.2-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_log/tree/153199b4e04dc42f8e49ebf121587ee30fff8644) | 分级日志、标签过滤及自定义输出 |
 | [stm_esp_hosted](https://github.com/NingZiXi/stm_esp_hosted) | [`be18b35709f9`](https://github.com/NingZiXi/stm_esp_hosted/tree/be18b35709f93dc1e22c3cc90e282003f86a1078) | [![version 0.8.0](https://img.shields.io/badge/version-0.8.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_esp_hosted/tree/be18b35709f93dc1e22c3cc90e282003f86a1078) | ESP32-C3 SPI 主机、STA/AP Wi-Fi、异步任务与发送队列、恢复诊断、国家/信道/功率、可选 lwIP 网卡 |
 | [stm_littlefs](https://github.com/NingZiXi/stm_littlefs) | [`6360940d6dfb`](https://github.com/NingZiXi/stm_littlefs/tree/6360940d6dfbefdb09f5eed76fb58891af035f0d) | [![version 1.0.2](https://img.shields.io/badge/version-1.0.2-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_littlefs/tree/6360940d6dfbefdb09f5eed76fb58891af035f0d) | LittleFS 分区块设备适配与文件系统接入 |
-| [stm_eeprom](https://github.com/NingZiXi/stm_eeprom) | [`1ac5b9a8dc66`](https://github.com/NingZiXi/stm_eeprom/tree/1ac5b9a8dc6612c5066cefb6b93f5ebbd7e6834c) | [![version 1.0.0](https://img.shields.io/badge/version-1.0.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_eeprom/tree/1ac5b9a8dc6612c5066cefb6b93f5ebbd7e6834c) | I2C EEPROM 器件与控制器适配 |
-| [stm_sd](https://github.com/NingZiXi/stm_sd) | [`0ef93e067633`](https://github.com/NingZiXi/stm_sd/tree/0ef93e067633d3ebc22e3f3aa8dc5d80f25d5d32) | [![version 1.0.0](https://img.shields.io/badge/version-1.0.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_sd/tree/0ef93e067633d3ebc22e3f3aa8dc5d80f25d5d32) | SD NAND/TF 卡块设备与 SDMMC 适配 |
-| [stm_fatfs](https://github.com/NingZiXi/stm_fatfs) | [`da4e096bfc7a`](https://github.com/NingZiXi/stm_fatfs/tree/da4e096bfc7a2137929abca28775479b93b787f9) | [![version 1.0.1](https://img.shields.io/badge/version-1.0.1-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_fatfs/tree/da4e096bfc7a2137929abca28775479b93b787f9) | FatFs 磁盘注册和块设备粘合层 |
+| [stm_eeprom](https://github.com/NingZiXi/stm_eeprom) | [`5db73357a66f`](https://github.com/NingZiXi/stm_eeprom/tree/5db73357a66f54c8d8e85f171468e590924ed0a8) | [![version 1.0.1](https://img.shields.io/badge/version-1.0.1-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_eeprom/tree/5db73357a66f54c8d8e85f171468e590924ed0a8) | I2C EEPROM 器件与控制器适配 |
+| [stm_sd](https://github.com/NingZiXi/stm_sd) | [`43d6d901546f`](https://github.com/NingZiXi/stm_sd/tree/43d6d901546f78012d8293b99df7ce78340c2b16) | [![version 1.0.1](https://img.shields.io/badge/version-1.0.1-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_sd/tree/43d6d901546f78012d8293b99df7ce78340c2b16) | SD NAND/TF 卡块设备与 SDMMC 适配 |
+| [stm_fatfs](https://github.com/NingZiXi/stm_fatfs) | [`e1ec00b42bcd`](https://github.com/NingZiXi/stm_fatfs/tree/e1ec00b42bcd0fe75deb2320d3dee7dbfc6c23f8) | [![version 1.0.3](https://img.shields.io/badge/version-1.0.3-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_fatfs/tree/e1ec00b42bcd0fe75deb2320d3dee7dbfc6c23f8) | FatFs 磁盘注册和块设备粘合层 |
 | [esp_at_client](https://github.com/NingZiXi/esp_at_client) | [`b17f954c76ca`](https://github.com/NingZiXi/esp_at_client/tree/b17f954c76ca4cc3cddcddad48faa1328d80a29f) | [![version 0.5.0](https://img.shields.io/badge/version-0.5.0-5364b5?style=flat-square)](https://github.com/NingZiXi/esp_at_client/tree/b17f954c76ca4cc3cddcddad48faa1328d80a29f) | 平台无关 ESP-AT 轮询客户端，STM32 HAL 适配位于 ports/stm32_hal/ |
 | [stm_lcd_st7789](https://github.com/NingZiXi/stm_lcd_st7789) | [`d3013e3e010c`](https://github.com/NingZiXi/stm_lcd_st7789/tree/d3013e3e010c40a15268ea301722808e5767552b) | [![version 0.2.0](https://img.shields.io/badge/version-0.2.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_lcd_st7789/tree/d3013e3e010c40a15268ea301722808e5767552b) | ST7789 SPI 面板芯片驱动 |
 | [stm_lcd_st7796](https://github.com/NingZiXi/stm_lcd_st7796) | [`a45c88a1bd9f`](https://github.com/NingZiXi/stm_lcd_st7796/tree/a45c88a1bd9f4ce22eb60e19af8184cf3e3d1b1a) | [![version 0.2.0](https://img.shields.io/badge/version-0.2.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_lcd_st7796/tree/a45c88a1bd9f4ce22eb60e19af8184cf3e3d1b1a) | ST7796 SPI 面板芯片驱动 |
@@ -43,6 +43,8 @@
 | [stm_lcd_touch_gt9271](https://github.com/NingZiXi/stm_lcd_touch_gt9271) | [`da4479a471bb`](https://github.com/NingZiXi/stm_lcd_touch_gt9271/tree/da4479a471bb21a1acd72fc5fdccca7d0fd2749b) | [![version 0.2.0](https://img.shields.io/badge/version-0.2.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_lcd_touch_gt9271/tree/da4479a471bb21a1acd72fc5fdccca7d0fd2749b) | GT9271 I²C 触摸与坐标读取 |
 | [stm_lvgl_port](https://github.com/NingZiXi/stm_lvgl_port) | [`54acff68ecf7`](https://github.com/NingZiXi/stm_lvgl_port/tree/54acff68ecf7ac709b4bf88dc79219a900843031) | [![version 0.2.1](https://img.shields.io/badge/version-0.2.1-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_lvgl_port/tree/54acff68ecf7ac709b4bf88dc79219a900843031) | 独立于屏幕型号的显示与触摸接入 |
 | [stm_ota](https://github.com/NingZiXi/stm_ota) | [`f9163d2a7efe`](https://github.com/NingZiXi/stm_ota/tree/f9163d2a7efe2f67d089a62c413dc40360c49170) | [![version 0.5.0](https://img.shields.io/badge/version-0.5.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_ota/tree/f9163d2a7efe2f67d089a62c413dc40360c49170) | 同步 OTA 下载、A/B 分区切换与 Flash 校验 |
+
+FatFs 官方源码不直接存入总仓库；当前 `stm_fatfs v1.0.3` 在构建时从官方获取固定的 R0.14b 并校验 SHA-256，下载及编译副本位于构建目录。离线接入可通过 `STM_FATFS_SOURCE_DIR` 指定外部源码目录。
 
 “当前提交”链接对应本仓库固定的 gitlink；徽章只用于有对应 tag 的提交。标为“未发布”的组合不能用其基线 tag 的硬件结论代替新提交验收。组件名称链接到独立仓库首页，那里可能已更新；使用此组合时请读克隆后的 `lib/<组件>/README.md`。
 
@@ -107,17 +109,18 @@ H723 OSPI 改用 `STM_FLASH_WITH_OSPI` 和 `stm_flash_ospi`；板级还须按[Fl
 
 ### 当前组合的日志与应用接入 skill
 
-直接使用本仓库日志时，以组件表与对应头文件确定版本。下面是含 HAL 依赖的 **stm_log v2** 的 H7 接入示例；若选用 v3，不使用该 HAL 宏，按该版本说明提供输出回调：
+直接使用本仓库日志时，以组件表与对应头文件确定版本。当前固定 **stm_log v3.0.2**，核心不依赖 HAL；应用提供输出与毫秒 tick 回调：
 
 ```cmake
 add_subdirectory(${STM_LIB_DIR}/stm_log)
-target_compile_definitions(stm_log PUBLIC STM_LOG_HAL_HEADER="stm32h7xx_hal.h")
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE stm_log)
 ```
 
+`stm_log_init(&huart, level)` 是已移除的 v2 接口；v3 使用 `stm_log_set_tick()` 和 `stm_log_init_output()`。UART 发送或 RTT 写入由应用回调完成，不由日志库初始化外设。
+
 RTT 在添加组件前设置 `STM_LOG_WITH_RTT=ON`；输出回调、固定 RTT 依赖与离线设置见[当前提交说明](lib/stm_log/README.md)。
 
-分发的 `stm32-app-main` skill 在外部工程通过 FetchContent 获取 stm_log v3.0.0，使用平台无关输出回调。这是另一条消费路径，不会升级本仓库的日志子模块，也不能同时创建两个同名 `stm_log` target。先选择接入路径，再核对 API 和 HAL 依赖；技能的安装、适用范围与版本见 [skills/README.md](skills/README.md)。
+分发的 `stm32-app-main` skill 在外部工程查询并锁定 stm_log 的稳定版本，通过 FetchContent 接入，使用平台无关输出回调。这是另一条消费路径，不会升级本仓库的日志子模块，也不能同时创建两个同名 `stm_log` target。先选择接入路径，再核对 API 和 HAL 依赖；技能的安装、适用范围与版本见 [skills/README.md](skills/README.md)。
 
 ## 目录与验证
 

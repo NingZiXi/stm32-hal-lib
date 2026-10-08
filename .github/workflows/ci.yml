@@ -75,6 +75,11 @@ jobs:
           cmake -S lib/stm_esp_hosted/tests -B build/stm_esp_hosted-tests -G Ninja -DCMAKE_BUILD_TYPE=Debug
           cmake --build build/stm_esp_hosted-tests
           ctest --test-dir build/stm_esp_hosted-tests --output-on-failure
+      - name: Run platform-independent log tests
+        run: |
+          cmake -S lib/stm_log/tests -B build/stm_log-tests -G Ninja -DCMAKE_BUILD_TYPE=Debug
+          cmake --build build/stm_log-tests
+          ctest --test-dir build/stm_log-tests --output-on-failure
       - name: Run EEPROM, SD and FatFs host tests
         run: |
           for component in stm_eeprom stm_sd stm_fatfs; do
@@ -114,7 +119,7 @@ jobs:
         run: |
           cmake -S ci -B build/rtt -G Ninja "-DCMAKE_TOOLCHAIN_FILE=${{ github.workspace }}/ci/arm-gcc.cmake" "-DCMAKE_BUILD_TYPE=Release" -DSTM_LOG_WITH_RTT=ON
           cmake --build build/rtt
-          python ci/check_rtt_dependency.py --source build/rtt/_deps/segger_rtt-src
+          python ci/check_rtt_dependency.py --source lib/segger_rtt
       - name: Run Flash and SDRAM software tests
         run: |
           for component in stm_flash stm_sdram; do

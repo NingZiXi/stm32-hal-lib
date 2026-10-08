@@ -5,3 +5,4 @@ __pycache__/
 *.pyc
 .em_skill.json
 /lib/littlefs/
+/lib/segger_rtt/

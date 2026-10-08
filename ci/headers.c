@@ -10,6 +10,7 @@
 #include "stm_eeprom.h"
 #include "stm_sd.h"
 #include "stm_fatfs.h"
+#include "stm_fatfs_flash.h"
 #include "stm_lcd_st7789.h"
 #include "stm_lcd_st7796.h"
 #include "stm_lcd_touch_ft5206.h"
