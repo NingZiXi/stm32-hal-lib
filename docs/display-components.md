@@ -2,9 +2,9 @@
 
 本文用于接入已有组件；新增/迁移驱动或扩展 LCD/LVGL 能力，请先按[显示组件开发规范](display-development.md)执行，不把板级参考配置或历史 API 当作通用开发标准。
 
-## 当前统一接口组合（v1.0.0）
+## v1.0.0 基线与 AXS 接入
 
-本次新增 [stm_lcd](../lib/stm_lcd/README.md)，统一显示领域的 IO、panel、touch 接口，不依赖 LVGL、RTOS 或日志。当前组合为 `stm_lcd` + 两个 AXS15231B 驱动 + `stm_lvgl_port`，具体提交见[组件表](../README.md)。四个组件均已发布 `v1.0.0` tag 和 GitHub Release，GitHub/Gitee 指向相同提交。这是破坏性接口迁移；旧 API 不与本版本混用，按对应 tag 的公开头文件接入。
+本次新增 [stm_lcd](../lib/stm_lcd/README.md)，统一显示领域的 IO、panel、touch 接口，不依赖 LVGL、RTOS 或日志。该基线组合为 `stm_lcd` + 两个 AXS15231B 驱动 + `stm_lvgl_port`。当前 gitlink 还包含下文的配套扩展，具体提交见[组件表](../README.md)。四个组件均已发布 `v1.0.0` tag 和 GitHub Release，GitHub/Gitee 指向相同提交。这是破坏性接口迁移；旧 API 不与本版本混用，按对应 tag 的公开头文件接入。
 
 四个组件的 README 已补齐接入、生命周期和验证说明，Agent 接入 Prompt 位于简介后且合并为一段；各自根目录新增 AGENTS.md，约束阅读顺序、代码注释及测试。本次正式发布将两个 AXS 的默认框架依赖固定为 `stm_lcd v1.0.0` 的不可变提交，并同步四组件 gitlink 与版本徽章；发布准备不改变已验收运行代码或 MIT LICENSE。总仓库不创建 tag 或 Release，本次不重新烧录。
 
@@ -29,7 +29,42 @@ target_link_libraries(your_firmware PRIVATE
 
 两个 AXS 组件会优先复用已有 `stm_lcd` target、显式本地源码或同级源码，缺失时自动获取 `stm_lcd v1.0.0` 的固定提交 `c359e54a657be38aec90c797ea19ee3d492d9284`，不会追踪 main。支持 `STM_LCD_FETCH=OFF`、`STM_LCD_SOURCE_DIR`、`FETCHCONTENT_SOURCE_DIR_STM_LCD` 和 `STM_LCD_GIT_REPOSITORY`（可指定 Gitee 镜像）。先添加任意一个 AXS 组件即可提供公共框架；port 本身仍要求已有 target 或同级框架。LVGL 的固定 9.3.0 下载和离线解析保持可用。详见[框架](../lib/stm_lcd/README.md)、[面板示例](../lib/stm_lcd_axs15231b/examples/stm32_hal/README.md)、[触摸示例](../lib/stm_lcd_touch_axs15231b/examples/stm32_hal/README.md)和[port 示例](../lib/stm_lvgl_port/examples/stm32_hal/README.md)。
 
-**其他五款驱动未迁移：** ST7789/ST7796/ILI9881C/FT5206/GT9271 仍保留 `v0.2.0` 独立接口，不能直接传给当前 port。使用历史组合（port `v0.3.0`）或另行实现通用接口；本轮不引入兼容包装。H757 DIRECT 实测属于历史消费工程，不作为新 port 的硬件结论；当前 port 不提供 DIRECT。
+## 当前迁移提交组合（尚无新正式版本）
+
+五款驱动的原 v0.2.0 tag 保留旧 API；本仓库当前 gitlink 已固定迁移后的通用句柄实现及配套 `stm_lcd`、`stm_lvgl_port` 扩展。克隆并执行 `git submodule update --init --recursive` 即可取得一致组合；不要混用旧 tag。组件表记录实际固定提交，本次同步 GitHub/Gitee，不新增 tag 或 Release。没有旧接口兼容包装。
+
+| 组件 | 当前提交能力 | 板级必需操作 |
+| --- | --- | --- |
+| ST7789、ST7796 | RGB565 同步 PARTIAL | `tx_param`、同步 `tx_color`，GPIO/延时 |
+| ILI9881C | 同步 PARTIAL 或显式 DIRECT | DCS `tx_param`；PARTIAL 提供 `draw_region`；DIRECT 提供 `present/process/busy/stop_scanout` |
+| FT5206 | 通用单点快照，完整校验最多 5 点帧 | 原子 8 位 `read_reg` |
+| GT9271 | 通用单点快照，保留最多 10 点帧校验和 ACK | 原子 16 位 `read_reg/write_reg` |
+| AXS15231B 显示/触摸 | 原有 PARTIAL、SPI 异步和触摸协议保留 | 原有适配器，无新增寄存器要求 |
+
+芯片构造返回 `stm_lcd_panel_handle_t` 或 `stm_lcd_touch_handle_t`，应用统一调用框架 reset/init/read/get/delete。port 配置直接接收句柄，没有芯片分支或应用 flush/input 包装。FT/GT 的寄存器地址与数据必须组成一次控制器事务；不能用 AXS 的独立 STOP 写读协议代替。H7 示例使用 `HAL_I2C_Mem_Read/Write`，7 位地址仅在 HAL 边界左移一次。
+
+```cmake
+set(STM_COMMON_FETCH OFF CACHE BOOL "" FORCE)
+set(STM_LCD_FETCH OFF CACHE BOOL "" FORCE)
+add_subdirectory(lib/stm_common)
+add_subdirectory(lib/stm_lcd) # 必须是配套的本地扩展
+add_subdirectory(lib/stm_lcd_ili9881c)
+add_subdirectory(lib/stm_lcd_touch_gt9271)
+# 提供 LVGL 9.3.0 target 或其本地源码，以及应用 lv_conf.h。
+add_subdirectory(lib/stm_lvgl_port)
+target_link_libraries(your_firmware PRIVATE
+    stm_lcd_ili9881c stm_lcd_touch_gt9271 stm_lvgl_port)
+```
+
+默认 PARTIAL 由 port 调用 `stm_lcd_panel_draw_bitmap`；DSI/LTDC 平台同步复制紧密 RGB565 区域，返回后不再引用源缓冲。DIRECT 设置 `render_mode = LVGL_PORT_RENDER_DIRECT`，提供两块互不重叠、对齐、等于完整帧字节数的 RGB565 缓冲；实际 LVGL stride 必须是宽度 × 2。最后一个 flush 提交整帧，主循环处理 VSYNC 完成，再归还旧帧；新扫描帧持续被硬件借用。平台负责 DCache、扫描地址及停止所有预取，port 负责 LVGL 完成和独立触摸服务。停止失败时保留对象和缓冲，不假装刷新完成。示例和资源表见[port README](../lib/stm_lvgl_port/README.md)、[渲染契约](../lib/stm_lvgl_port/docs/render-modes.md)及各组件中文示例。
+
+ILI9881C、FT5206、GT9271 和扩展 port 会检查 `STM_LCD_FRAMEBUFFER_API=1`，旧已发布框架会在配置阶段明确失败。不得把未发布扩展伪装成可自动下载的版本。SPI 两款支持原有框架能力；公共依赖优先已有 target、本地来源、同级源码，下载仅使用已有固定提交。移植时读取所选提交头文件，不从旧 tag 复制接口。
+
+软件测试覆盖五款协议、通用生命周期、同一 port 接入、真实 LVGL 9.3.0 PARTIAL/DIRECT 渲染及 H757 HAL 示例编译。两种真实渲染测试分别在独立进程冷启动，避免先运行 PARTIAL 掩盖 DIRECT 初始化问题。port 先初始化 LVGL，再查询实际行跨度；应用不预先调用 lv_init()。
+
+2026-10-11，H757 消费工程默认存储与 LVGL 两种配置的 CM4、CM7、顶层 Debug/Release 已完成构建；冷启动修复后重新构建 LVGL Debug/Release。LVGL-Debug 诊断固件采用 ILI9881C/GT9271、DSI 两通道、800×1280 RGB565 DIRECT 双缓冲、板级 DMA2D，通过 ST-Link 双核烧录及独立读回、持续刷新、触摸/按钮事件及五次软件复位；错误状态和 CFSR/HFSR 为 0，用户确认显示及触摸正常。
+
+该结论仅对应本次迁移提交组合和上述板级实例。未重新验证 Release、Widgets、PARTIAL 实板、ST7789/ST7796/FT5206 实物、掉电复位或长期稳定性；没有独立量化色序、边角坐标或滑动性能。HAL 示例编译不等于示例的具体接线已通过板测。固件、源码哈希、日志与完整 Flash 备份留在 H757 消费工程本地 `build/display-cold-start-fix-20261011/` 和 `build/display-generic-hardware-20261011/`，不纳入公共组件源码。
 
 **实板范围：** 2026-10-10，STM32F407 + AXS15231B，SPI 21 MHz、170×560 原生竖屏、RGB565、两块 16 行 SRAM 缓冲，用户确认显示和触摸正常。未完成独立长时间 soak，未宣称既有畸形触摸帧问题已修复。软件测试与该次板测分别记录。
 

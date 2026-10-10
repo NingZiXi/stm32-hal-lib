@@ -4,7 +4,7 @@
 
 ## 1. 开始前：版本基线与阅读顺序
 
-当前统一接口基线为 `stm_lcd`、两个 AXS15231B 驱动及 `stm_lvgl_port` 的 `v1.0.0`，实际组合由[组件表](../README.md)及 gitlink 固定。ST7789、ST7796、ILI9881C、FT5206、GT9271 的当前 `v0.2.0` 仍使用旧 API，尚未符合下面的通用句柄接入要求；旧 H757 DIRECT 板测不能作为新 port 验收。
+当前统一接口基线为 `stm_lcd`、两个 AXS15231B 驱动及 `stm_lvgl_port` 的 `v1.0.0`，实际组合由[组件表](../README.md)及 gitlink 固定。五款驱动的固定 `v0.2.0` tag 仍使用旧 API。本地工作区已将 ST7789、ST7796、ILI9881C、FT5206、GT9271 迁移为通用句柄，并扩展框架与 port；尚未更新 gitlink 或发布。使用本地扩展必须选择同一组源码，旧 H757 DIRECT 板测不能作为迁移后的验收。2026-10-11 本地迁移组合已完成 H757 ILI9881C/GT9271 的 DIRECT 诊断 Debug 回归；范围及未验证项见[接入指南](display-components.md#本地迁移组合尚未发布)，不代表其他器件或已发布 gitlink 通过验收。
 
 1. 检查根仓库和目标子模块的状态、HEAD、暂存区引用及局部 AGENTS.md，保留用户改动，不自动升级其他组件。
 2. 阅读本规范、目标组件 README/CMake/公开头文件、芯片与具体模组资料；确认分辨率、总线、像素格式、复位/供电及共享引脚。不猜接线或初始化表。
@@ -259,9 +259,9 @@ stm_err_t lcd_touch_example_create(const lcd_touch_example_config_t *config,
 
 ### 6.2 当前能力与后续设计分开
 
-当前 port 为 LVGL 9、PARTIAL RGB565、外部缓冲、可选单点触摸和协作式主循环；没有 DIRECT/FULL、任意 stride、多显示管理或 RTOS 服务。平台适配目前以 F4 为参考，不能因此声明支持全部 MCU/总线。
+已发布 port v1.0.0 支持 LVGL 9、PARTIAL RGB565、外部缓冲、可选单点触摸和协作式主循环。本地扩展保持 PARTIAL 为零值默认，增加显式 DIRECT 双缓冲；没有 FULL、任意 stride、多显示管理或 RTOS 服务。F4 原始适配器不提供新增寄存器和整帧能力，不能因此声明支持全部 MCU/总线。
 
-LTDC/RGB/DSI、DIRECT/FULL、多点触摸、旋转、其他像素格式、多显示和 RTOS 均为需单独设计的扩展，不在驱动迁移时顺带实现。每项扩展至少说明：
+本地迁移经明确授权，增加 `draw_region`、`present/process/busy/stop_scanout` 及原子 `read_reg/write_reg`。ILI9881C 保留 DCS 初始化，板级提供 LTDC/DSI 的区域复制或整帧扫描适配；FT5206/GT9271 使用各自 8/16 位寄存器事务。详见[接入指南](display-components.md)和[渲染契约](../lib/stm_lvgl_port/docs/render-modes.md)。FULL、多点 LVGL 输入、旋转、其他像素格式、多显示和 RTOS 仍需单独设计。每项扩展至少说明：
 
 - **语义**：逻辑/物理尺寸、坐标变换归属、像素格式/字节序/stride、刷新区域，现有字段是否足够。
 - **所有权与完成**：谁持有哪个缓冲、何时允许 CPU 重用，提交、DMA 完成、扫描/VSync/换帧各自含义；DIRECT/FULL 不能套用“字节传输结束即完成”。

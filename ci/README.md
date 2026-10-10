@@ -154,10 +154,25 @@ python -m unittest discover -s ci -p test_sync_latest_tags.py
 
 ## 统一 LCD 框架依赖检查
 
-当前 `stm_lcd`、两个 AXS 驱动及 port 使用通用句柄。主机矩阵加入框架契约与分配失败测试；集成脚本保留五款旧驱动检查，补充框架已有 target/同级源码以及缺失时禁止隐式下载的失败检查。H757 port 示例为通用接口语法检查，不代表新 port 的 DIRECT 板测。
+当前 `stm_lcd`、两个 AXS 驱动及 port 使用通用句柄。主机矩阵加入框架契约与分配失败测试；集成脚本覆盖五款迁移驱动检查，补充框架已有 target/同级源码以及缺失时禁止隐式下载的失败检查。H757 port 示例为通用接口语法检查，不代表新 port 的 DIRECT 板测。
 
 ```sh
 python lib/stm_lvgl_port/tests/test_dependency.py --lvgl-source .ci-deps/lvgl
 ```
 
 保留 LVGL 既有 target（含 alias）、离线来源、固定下载选择、选项不覆盖、无配置/错误来源的检查，并用真实 LVGL 编译 C/C++、链接和运行通用面板消费者。该过程不烧录。
+
+### 五款驱动迁移与 DIRECT 扩展验证
+
+当前 gitlink 固定配套迁移提交；原正式 tag 保留，本次未发布新 tag 或 Release。七个改动组件各自从 `tests/` 配置主机测试；port 增加五款真实驱动的统一接入测试。真实 LVGL 9.3.0 运行模型分别在两个独立进程验证 PARTIAL/DIRECT 冷启动、渲染、双帧同步及 VSYNC 前旧扫描帧保持不变；禁止通过先创建 PARTIAL 预初始化 LVGL 来掩盖 DIRECT 冷启动问题。实板验收独立记录在显示接入指南，不由 CI 模型代替。
+
+```sh
+cmake -S lib/stm_lvgl_port/tests/real_lvgl -B build/real-render -G Ninja \
+  -DSTM_LVGL_PORT_LVGL_SOURCE_DIR=<本地LVGL9.3.0源码>
+cmake --build build/real-render
+ctest --test-dir build/real-render --output-on-failure
+python ci/check_display_migration_dependencies.py
+python ci/check_repository.py
+```
+
+实际 HAL 示例、真实 LVGL 编译和 C11/C++17 检查继续使用 `check_display_integration.py`。主机模拟扫描不是 MCU 固件链接或硬件验证，不对迁移后的 H757、ST/FT 器件作实板结论。依赖检查须证明 BUILD_INTERFACE/alias 可复用，同时拒绝旧框架用于需要扩展的组件；配套迁移提交可通过 gitlink 固定，README 标明“未发布（基于旧版本）”；不得将旧版本徽章指向新提交。
