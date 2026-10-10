@@ -8,19 +8,11 @@
 
 ## 🤖 让 Agent 帮助接入
 
-复制以下 Prompt 给你的编程 Agent（如 Codex、Trae），将 `<...>` 替换为实际需求。
+复制以下 Prompt，将 `<...>` 替换为实际需求：
 
-### 🚀 快速接入
+> 将 [stm32-hal-lib](https://github.com/NingZiXi/stm32-hal-lib) 中的 `<组件>` 接入当前工程，实现 `<功能>`。硬件：`<MCU/器件型号、外设与引脚、必要配置>`。先读组件 AGENTS.md（如有）和 README，核对配置，保留已有代码；缺失信息先询问，不猜接线。完成后说明版本、编译结果和未验证项；未经确认不烧录或擦写。
 
-> 将 [stm32-hal-lib](https://github.com/NingZiXi/stm32-hal-lib) 中的 `<组件>` 接入当前工程，制作 `<功能>` 的最小 Demo。先检查工程，按组件文档适配，保留已有代码；信息不全先询问。需要业务入口和日志时，按 skills/README.md 使用适用的 skill。完成后说明版本、编译结果和未验证项。
-
-### 🔌 指定硬件
-
-在上面的 Prompt 后补充以下信息，删除不适用的字段：
-
-> 硬件：MCU/开发板 `<型号>`，器件 `<型号>`，外设 `<I2C1/SPI1等>`，信号与引脚 `<如 SDA=PB7、SCL=PB6>`，按键 `<UP/DOWN/OK引脚及有效电平>`。先核对引脚和外设配置，不猜测接线；缺少初始化时列出 CubeMX 配置步骤。未经确认不烧录或擦写存储。
-
-💡 [Gitee 镜像](https://gitee.com/nzxhg/stm32-hal-lib)也可使用。配套 [stm32-app-main skill](skills/README.md) 仅用于已有 **CubeMX1 CMake 工程的业务入口与日志**，不是通用外设或 UI 接入技能；编译通过不代表实板验证通过。
+💡 可使用 [Gitee 镜像](https://gitee.com/nzxhg/stm32-hal-lib)。需要业务入口和日志时，参考 [skills/README.md](skills/README.md)（仅适用于已有 CubeMX1 CMake 工程）；编译通过不代表实板验证通过。
 
 ## 组件与固定组合
 
@@ -36,15 +28,15 @@
 | [stm_sd](https://github.com/NingZiXi/stm_sd) | [`fe5da0d003e3`](https://github.com/NingZiXi/stm_sd/tree/fe5da0d003e330730b45cc7a7a8ad1c68988b1c6) | [![version 1.0.2](https://img.shields.io/badge/version-1.0.2-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_sd/tree/fe5da0d003e330730b45cc7a7a8ad1c68988b1c6) | SD NAND/TF 卡块设备与 SDMMC 适配 |
 | [stm_fatfs](https://github.com/NingZiXi/stm_fatfs) | [`891204bb40b8`](https://github.com/NingZiXi/stm_fatfs/tree/891204bb40b853c12f05e382ae3ec87ed1772a3e) | [![version 1.0.4](https://img.shields.io/badge/version-1.0.4-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_fatfs/tree/891204bb40b853c12f05e382ae3ec87ed1772a3e) | FatFs 磁盘注册和块设备粘合层 |
 | [esp_at_client](https://github.com/NingZiXi/esp_at_client) | [`b17f954c76ca`](https://github.com/NingZiXi/esp_at_client/tree/b17f954c76ca4cc3cddcddad48faa1328d80a29f) | [![version 0.5.0](https://img.shields.io/badge/version-0.5.0-5364b5?style=flat-square)](https://github.com/NingZiXi/esp_at_client/tree/b17f954c76ca4cc3cddcddad48faa1328d80a29f) | 平台无关 ESP-AT 轮询客户端，STM32 HAL 适配位于 ports/stm32_hal/ |
-| [stm_lcd](https://github.com/NingZiXi/stm_lcd) | [`da713eecea80`](https://github.com/NingZiXi/stm_lcd/tree/da713eecea80c5abb59973a3b003015800011b4a) | 未发布（基于 首次实现；无 tag） | 显示领域公共 IO、panel、touch；可选 F4 HAL 适配 |
+| [stm_lcd](https://github.com/NingZiXi/stm_lcd) | [`effeff24a9b4`](https://github.com/NingZiXi/stm_lcd/tree/effeff24a9b4fdd1f56714cdd7bf3d1ff1b3962f) | 未发布（基于 首次实现；无 tag） | 显示领域公共 IO、panel、touch；可选 F4 HAL 适配 |
 | [stm_lcd_st7789](https://github.com/NingZiXi/stm_lcd_st7789) | [`d3013e3e010c`](https://github.com/NingZiXi/stm_lcd_st7789/tree/d3013e3e010c40a15268ea301722808e5767552b) | [![version 0.2.0](https://img.shields.io/badge/version-0.2.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_lcd_st7789/tree/d3013e3e010c40a15268ea301722808e5767552b) | ST7789 SPI 面板芯片驱动 |
 | [stm_lcd_st7796](https://github.com/NingZiXi/stm_lcd_st7796) | [`a45c88a1bd9f`](https://github.com/NingZiXi/stm_lcd_st7796/tree/a45c88a1bd9f4ce22eb60e19af8184cf3e3d1b1a) | [![version 0.2.0](https://img.shields.io/badge/version-0.2.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_lcd_st7796/tree/a45c88a1bd9f4ce22eb60e19af8184cf3e3d1b1a) | ST7796 SPI 面板芯片驱动 |
 | [stm_lcd_touch_ft5206](https://github.com/NingZiXi/stm_lcd_touch_ft5206) | [`e49ae91ff723`](https://github.com/NingZiXi/stm_lcd_touch_ft5206/tree/e49ae91ff723b23ce7d619e895152d96727b3b02) | [![version 0.2.0](https://img.shields.io/badge/version-0.2.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_lcd_touch_ft5206/tree/e49ae91ff723b23ce7d619e895152d96727b3b02) | FT5206 I2C 触摸芯片驱动 |
 | [stm_lcd_ili9881c](https://github.com/NingZiXi/stm_lcd_ili9881c) | [`daeb162266d2`](https://github.com/NingZiXi/stm_lcd_ili9881c/tree/daeb162266d217709187629ea90768cf6083ebaf) | [![version 0.2.0](https://img.shields.io/badge/version-0.2.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_lcd_ili9881c/tree/daeb162266d217709187629ea90768cf6083ebaf) | ILI9881C DSI 面板初始化，模组命令表仅适用于已测 10.1 寸屏幕 |
 | [stm_lcd_touch_gt9271](https://github.com/NingZiXi/stm_lcd_touch_gt9271) | [`da4479a471bb`](https://github.com/NingZiXi/stm_lcd_touch_gt9271/tree/da4479a471bb21a1acd72fc5fdccca7d0fd2749b) | [![version 0.2.0](https://img.shields.io/badge/version-0.2.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_lcd_touch_gt9271/tree/da4479a471bb21a1acd72fc5fdccca7d0fd2749b) | GT9271 I²C 触摸与坐标读取 |
-| [stm_lcd_axs15231b](https://github.com/NingZiXi/stm_lcd_axs15231b) | [`1975f4f2c642`](https://github.com/NingZiXi/stm_lcd_axs15231b/tree/1975f4f2c6428c3d94b9022e35aaf4b7ca07a96d) | 未发布（基于 此前无 tag 提交；接口重构，待发布） | AXS15231B 通用面板接口、独立窗口与同步/异步像素 |
-| [stm_lcd_touch_axs15231b](https://github.com/NingZiXi/stm_lcd_touch_axs15231b) | [`0df69a27e243`](https://github.com/NingZiXi/stm_lcd_touch_axs15231b/tree/0df69a27e24398a83c1ab180adc390b2645b64e0) | 未发布（基于 此前无 tag 提交；接口重构，待发布） | AXS15231B 通用触摸接口、单点协议与非消费快照 |
-| [stm_lvgl_port](https://github.com/NingZiXi/stm_lvgl_port) | [`31750491d9dc`](https://github.com/NingZiXi/stm_lvgl_port/tree/31750491d9dc1e3a98684b5c2477b01b17b9e1ad) | 未发布（基于 v0.3.0；接口重构，待发布） | 通用设备接入、PARTIAL RGB565 与协作式 DMA/输入服务 |
+| [stm_lcd_axs15231b](https://github.com/NingZiXi/stm_lcd_axs15231b) | [`20cd2c634aad`](https://github.com/NingZiXi/stm_lcd_axs15231b/tree/20cd2c634aad6dcb0ac0aa3066594b96c5a5210d) | 未发布（基于 此前无 tag 提交；接口重构，待发布） | AXS15231B 通用面板接口、独立窗口与同步/异步像素 |
+| [stm_lcd_touch_axs15231b](https://github.com/NingZiXi/stm_lcd_touch_axs15231b) | [`55f9e6cdd865`](https://github.com/NingZiXi/stm_lcd_touch_axs15231b/tree/55f9e6cdd8659893f736f6bb960cb10817f00342) | 未发布（基于 此前无 tag 提交；接口重构，待发布） | AXS15231B 通用触摸接口、单点协议与非消费快照 |
+| [stm_lvgl_port](https://github.com/NingZiXi/stm_lvgl_port) | [`e7ad9e9768e7`](https://github.com/NingZiXi/stm_lvgl_port/tree/e7ad9e9768e735f9154e581e2d299dfd751583cd) | 未发布（基于 v0.3.0；接口重构，待发布） | 通用设备接入、PARTIAL RGB565 与协作式 DMA/输入服务 |
 | [stm_ota](https://github.com/NingZiXi/stm_ota) | [`f9163d2a7efe`](https://github.com/NingZiXi/stm_ota/tree/f9163d2a7efe2f67d089a62c413dc40360c49170) | [![version 0.5.0](https://img.shields.io/badge/version-0.5.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_ota/tree/f9163d2a7efe2f67d089a62c413dc40360c49170) | 同步 OTA 下载、A/B 分区切换与 Flash 校验 |
 
 FatFs 官方源码不直接存入总仓库；当前 `stm_fatfs v1.0.4` 在构建时从官方获取固定的 R0.14b 并校验 SHA-256，下载及编译副本位于构建目录。离线接入可通过 `STM_FATFS_SOURCE_DIR` 指定外部源码目录。

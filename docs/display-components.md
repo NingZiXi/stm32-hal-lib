@@ -4,6 +4,8 @@
 
 本次新增 [stm_lcd](../lib/stm_lcd/README.md)，统一显示领域的 IO、panel、touch 接口，不依赖 LVGL、RTOS 或日志。当前组合为 `stm_lcd` + 两个 AXS15231B 驱动 + `stm_lvgl_port`，具体提交见[组件表](../README.md)。这是破坏性接口迁移，尚未创建新 tag 或 Release。
 
+四个组件的 README 已补齐接入、生命周期和验证说明，Agent 接入 Prompt 位于简介后且合并为一段；各自根目录新增 AGENTS.md，约束阅读顺序、代码注释及测试。此次同步仅整理文档、注释和格式，不改变运行逻辑或 MIT LICENSE，默认依赖固定提交保持不变；不创建版本 tag 或 Release。
+
 - 板级创建 IO，协调复位，并用芯片构造函数取得通用面板/触摸句柄。
 - 面板与触摸借用 IO，不隐式销毁硬件；像素缓冲由应用静态提供。
 - port 配置接收 `.io`、`.panel`、可选 `.touch`、缓冲和 `.clock_ms`；不再提供旧 `.draw`、`.touch` 回调包装。
