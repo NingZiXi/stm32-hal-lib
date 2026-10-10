@@ -13,7 +13,7 @@
 
 ```cmake
 add_subdirectory(Lib/stm_common)
-add_subdirectory(Lib/stm_lcd)
+# AXS 组件负责提供 stm_lcd，无需应用显式添加。
 add_subdirectory(Lib/stm_lcd_axs15231b)
 add_subdirectory(Lib/stm_lcd_touch_axs15231b)
 # 提供已有 lvgl target 或应用 lv_conf.h 与固定版本依赖来源。
@@ -23,7 +23,7 @@ target_link_libraries(your_firmware PRIVATE
 # F4 HAL 适配器按实际工程单独选择，见 stm_lcd README。
 ```
 
-`stm_lcd` 依赖优先使用已有 target 或同级源码；缺失明确报错，不自动拉取未经发布验证的框架。LVGL 的固定 9.3.0 下载和离线解析保持可用。详见[框架](../lib/stm_lcd/README.md)、[面板示例](../lib/stm_lcd_axs15231b/examples/stm32_hal/README.md)、[触摸示例](../lib/stm_lcd_touch_axs15231b/examples/stm32_hal/README.md)和[port 示例](../lib/stm_lvgl_port/examples/stm32_hal/README.md)。
+两个 AXS 组件会优先复用已有 `stm_lcd` target、显式本地源码或同级源码，缺失时自动获取固定验证提交 `da713eecea80c5abb59973a3b003015800011b4a`，不会追踪 main。支持 `STM_LCD_FETCH=OFF`、`STM_LCD_SOURCE_DIR`、`FETCHCONTENT_SOURCE_DIR_STM_LCD` 和 `STM_LCD_GIT_REPOSITORY`（可指定 Gitee 镜像）。先添加任意一个 AXS 组件即可提供公共框架；port 本身仍要求已有 target 或同级框架。LVGL 的固定 9.3.0 下载和离线解析保持可用。详见[框架](../lib/stm_lcd/README.md)、[面板示例](../lib/stm_lcd_axs15231b/examples/stm32_hal/README.md)、[触摸示例](../lib/stm_lcd_touch_axs15231b/examples/stm32_hal/README.md)和[port 示例](../lib/stm_lvgl_port/examples/stm32_hal/README.md)。
 
 **其他五款驱动未迁移：** ST7789/ST7796/ILI9881C/FT5206/GT9271 仍保留 `v0.2.0` 独立接口，不能直接传给当前 port。使用历史组合（port `v0.3.0`）或另行实现通用接口；本轮不引入兼容包装。H757 DIRECT 实测属于历史消费工程，不作为新 port 的硬件结论；当前 port 不提供 DIRECT。
 

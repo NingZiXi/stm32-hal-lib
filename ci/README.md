@@ -106,6 +106,15 @@ python ci/check_display_integration.py --lvgl-source /absolute/path/to/lvgl-9.3.
 
 Windows 可用 --c-compiler、--cxx-compiler 指定 MinGW GCC/G++，--arm-compiler 指定 GNU Arm GCC。CI 使用 LVGL v9.3.0。该脚本不烧录也不发布；外部消费工程的完整链接和硬件回归是独立验收步骤，不能因脚本通过就声明硬件支持。组合状态见[显示接入指南](../docs/display-components.md)。
 
+### AXS 公共框架自动获取检查
+
+```sh
+python lib/stm_lcd_axs15231b/tests/test_dependency.py --lcd-source lib/stm_lcd --common-source lib/stm_common --lcd-repository /absolute/path/to/lib/stm_lcd --peer-source lib/stm_lcd_touch_axs15231b
+python lib/stm_lcd_touch_axs15231b/tests/test_dependency.py --lcd-source lib/stm_lcd --common-source lib/stm_common --lcd-repository /absolute/path/to/lib/stm_lcd
+```
+
+分别覆盖 16/14 个隔离配置：已有 target/alias、同级源码、显式及 FetchContent 离线覆盖、优先级、固定提交拉取、关闭下载、无效目录/缺失 target、完全离线缺失，以及两个组件的正反添加顺序。配置成功后编译组件与 C11/C++17 消费者；关闭下载/无效目录时不得尝试联网。默认本地镜像验证固定提交；省略 `--lcd-repository` 时默认使用 `--lcd-source` 本地 Git checkout；显式传入 GitHub/Gitee URL 才进行真实网络获取验证。此测试不连接硬件，不改变此前板测范围。
+
 ## H757 / QSPI 扩展检查
 
 ```sh

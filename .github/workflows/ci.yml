@@ -105,6 +105,10 @@ jobs:
           persist-credentials: false
       - name: Check display dependencies and HAL examples
         run: python ci/check_display_integration.py --lvgl-source .ci-deps/lvgl
+      - name: Check AXS framework dependency resolution
+        run: |
+          python lib/stm_lcd_axs15231b/tests/test_dependency.py --lcd-source lib/stm_lcd --common-source lib/stm_common --lcd-repository "${{ github.workspace }}/lib/stm_lcd" --peer-source lib/stm_lcd_touch_axs15231b
+          python lib/stm_lcd_touch_axs15231b/tests/test_dependency.py --lcd-source lib/stm_lcd --common-source lib/stm_common --lcd-repository "${{ github.workspace }}/lib/stm_lcd"
       - name: Check LVGL target and offline dependency resolution
         run: python lib/stm_lvgl_port/tests/test_dependency.py --lvgl-source .ci-deps/lvgl
       - name: Run H757 QSPI and SDRAM software tests

@@ -64,6 +64,8 @@ def main():
             shutil.copytree(ROOT / 'lib' / name, source / 'lib' / name,
                             ignore=shutil.ignore_patterns('.git', 'build', '__pycache__'))
         flags = []
+        if mode.startswith('lcd_missing_'):
+            flags += ['-DSTM_LCD_FETCH=OFF']
         prelude = ''
         common = ROOT / 'lib/stm_common'
         if mode == 'target' or mode.startswith('lcd_missing_'):
