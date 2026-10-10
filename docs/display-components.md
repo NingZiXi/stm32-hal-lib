@@ -4,9 +4,9 @@
 
 ## v1.0.0 基线与 AXS 接入
 
-本次新增 [stm_lcd](../lib/stm_lcd/README.md)，统一显示领域的 IO、panel、touch 接口，不依赖 LVGL、RTOS 或日志。该基线组合为 `stm_lcd` + 两个 AXS15231B 驱动 + `stm_lvgl_port`。当前 gitlink 还包含下文的配套扩展，具体提交见[组件表](../README.md)。四个组件均已发布 `v1.0.0` tag 和 GitHub Release，GitHub/Gitee 指向相同提交。这是破坏性接口迁移；旧 API 不与本版本混用，按对应 tag 的公开头文件接入。
+`stm_lcd` 统一显示领域的 IO、panel、touch 接口，不依赖 LVGL、RTOS 或日志。最初正式基线为 `stm_lcd`、两个 AXS15231B 驱动和 `stm_lvgl_port` 的 `v1.0.0`；这些历史 tag 保留。当前聚合组合升级到框架/port `v1.1.0`，AXS 两组件继续使用 `v1.0.0`，具体提交见[组件表](../README.md)。通用句柄与更早的芯片回调 API 不混用，按对应 tag 的公开头文件接入。
 
-四个组件的 README 已补齐接入、生命周期和验证说明，Agent 接入 Prompt 位于简介后且合并为一段；各自根目录新增 AGENTS.md，约束阅读顺序、代码注释及测试。本次正式发布将两个 AXS 的默认框架依赖固定为 `stm_lcd v1.0.0` 的不可变提交，并同步四组件 gitlink 与版本徽章；发布准备不改变已验收运行代码或 MIT LICENSE。总仓库不创建 tag 或 Release，本次不重新烧录。
+组件 README 提供接入、生命周期和验证说明，根目录 AGENTS.md 提供阅读顺序与测试要求。两个 AXS 组件在独立接入时仍自动获取框架 `v1.0.0` 的固定提交；与当前 port `v1.1.0` 组合时应先提供框架 `v1.1.0` target 或同级源码，复用规则会保留应用选择。总仓库只固定组合，不创建 tag 或 Release。
 
 - 板级创建 IO，协调复位，并用芯片构造函数取得通用面板/触摸句柄。
 - 面板与触摸借用 IO，不隐式销毁硬件；像素缓冲由应用静态提供。
@@ -17,7 +17,7 @@
 
 ```cmake
 add_subdirectory(Lib/stm_common)
-# AXS 组件负责提供 stm_lcd，无需应用显式添加。
+add_subdirectory(Lib/stm_lcd) # 当前 port v1.1.0 需要 stm_lcd v1.1.0
 add_subdirectory(Lib/stm_lcd_axs15231b)
 add_subdirectory(Lib/stm_lcd_touch_axs15231b)
 # 提供已有 lvgl target 或应用 lv_conf.h 与固定版本依赖来源。
@@ -27,11 +27,11 @@ target_link_libraries(your_firmware PRIVATE
 # F4 HAL 适配器按实际工程单独选择，见 stm_lcd README。
 ```
 
-两个 AXS 组件会优先复用已有 `stm_lcd` target、显式本地源码或同级源码，缺失时自动获取 `stm_lcd v1.0.0` 的固定提交 `c359e54a657be38aec90c797ea19ee3d492d9284`，不会追踪 main。支持 `STM_LCD_FETCH=OFF`、`STM_LCD_SOURCE_DIR`、`FETCHCONTENT_SOURCE_DIR_STM_LCD` 和 `STM_LCD_GIT_REPOSITORY`（可指定 Gitee 镜像）。先添加任意一个 AXS 组件即可提供公共框架；port 本身仍要求已有 target 或同级框架。LVGL 的固定 9.3.0 下载和离线解析保持可用。详见[框架](../lib/stm_lcd/README.md)、[面板示例](../lib/stm_lcd_axs15231b/examples/stm32_hal/README.md)、[触摸示例](../lib/stm_lcd_touch_axs15231b/examples/stm32_hal/README.md)和[port 示例](../lib/stm_lvgl_port/examples/stm32_hal/README.md)。
+两个 AXS 组件会优先复用已有 `stm_lcd` target、显式本地源码或同级源码，缺失时自动获取 `stm_lcd v1.0.0` 的固定提交 `c359e54a657be38aec90c797ea19ee3d492d9284`，不会追踪 main。支持 `STM_LCD_FETCH=OFF`、`STM_LCD_SOURCE_DIR`、`FETCHCONTENT_SOURCE_DIR_STM_LCD` 和 `STM_LCD_GIT_REPOSITORY`（可指定 Gitee 镜像）。AXS 独立使用时可由任意一个组件提供公共框架；搭配当前 port v1.1.0 时先按上例提供框架 v1.1.0，避免自动下载旧基线。port 本身仍要求已有 target 或同级框架。LVGL 的固定 9.3.0 下载和离线解析保持可用。详见[框架](../lib/stm_lcd/README.md)、[面板示例](../lib/stm_lcd_axs15231b/examples/stm32_hal/README.md)、[触摸示例](../lib/stm_lcd_touch_axs15231b/examples/stm32_hal/README.md)和[port 示例](../lib/stm_lvgl_port/examples/stm32_hal/README.md)。
 
-## 当前迁移提交组合（尚无新正式版本）
+## 当前正式版本组合
 
-五款驱动的原 v0.2.0 tag 保留旧 API；本仓库当前 gitlink 已固定迁移后的通用句柄实现及配套 `stm_lcd`、`stm_lvgl_port` 扩展。克隆并执行 `git submodule update --init --recursive` 即可取得一致组合；不要混用旧 tag。组件表记录实际固定提交，本次同步 GitHub/Gitee，不新增 tag 或 Release。没有旧接口兼容包装。
+五款芯片组件 `v1.0.0` 统一使用通用面板/触摸句柄，与旧 `v0.2.0` 接口不兼容；框架和 port 的 `v1.1.0` 兼容增加所需能力。七款新 tag 已同步 GitHub/Gitee，并提供对应 GitHub Release；旧 tag 保留。克隆并执行 `git submodule update --init --recursive` 即可取得 gitlink 固定的正式组合，不提供旧接口兼容包装。硬件验证范围单独记录。
 
 | 组件 | 当前提交能力 | 板级必需操作 |
 | --- | --- | --- |
@@ -47,7 +47,7 @@ target_link_libraries(your_firmware PRIVATE
 set(STM_COMMON_FETCH OFF CACHE BOOL "" FORCE)
 set(STM_LCD_FETCH OFF CACHE BOOL "" FORCE)
 add_subdirectory(lib/stm_common)
-add_subdirectory(lib/stm_lcd) # 必须是配套的本地扩展
+add_subdirectory(lib/stm_lcd) # stm_lcd v1.1.0
 add_subdirectory(lib/stm_lcd_ili9881c)
 add_subdirectory(lib/stm_lcd_touch_gt9271)
 # 提供 LVGL 9.3.0 target 或其本地源码，以及应用 lv_conf.h。
@@ -58,13 +58,13 @@ target_link_libraries(your_firmware PRIVATE
 
 默认 PARTIAL 由 port 调用 `stm_lcd_panel_draw_bitmap`；DSI/LTDC 平台同步复制紧密 RGB565 区域，返回后不再引用源缓冲。DIRECT 设置 `render_mode = LVGL_PORT_RENDER_DIRECT`，提供两块互不重叠、对齐、等于完整帧字节数的 RGB565 缓冲；实际 LVGL stride 必须是宽度 × 2。最后一个 flush 提交整帧，主循环处理 VSYNC 完成，再归还旧帧；新扫描帧持续被硬件借用。平台负责 DCache、扫描地址及停止所有预取，port 负责 LVGL 完成和独立触摸服务。停止失败时保留对象和缓冲，不假装刷新完成。示例和资源表见[port README](../lib/stm_lvgl_port/README.md)、[渲染契约](../lib/stm_lvgl_port/docs/render-modes.md)及各组件中文示例。
 
-ILI9881C、FT5206、GT9271 和扩展 port 会检查 `STM_LCD_FRAMEBUFFER_API=1`，旧已发布框架会在配置阶段明确失败。不得把未发布扩展伪装成可自动下载的版本。SPI 两款支持原有框架能力；公共依赖优先已有 target、本地来源、同级源码，下载仅使用已有固定提交。移植时读取所选提交头文件，不从旧 tag 复制接口。
+ILI9881C、FT5206、GT9271 和 port v1.1.0 检查 `STM_LCD_FRAMEBUFFER_API=1`，旧框架 v1.0.0 会在配置阶段明确失败。五款芯片组件的自动下载已固定框架 v1.1.0 完整提交；优先复用已有 target、显式本地源码与同级源码，支持禁用下载及 GitHub/Gitee 镜像。port 仅复用框架 target 或同级源码，不下载框架。移植时读取所选版本头文件，不从旧 tag 复制接口。
 
 软件测试覆盖五款协议、通用生命周期、同一 port 接入、真实 LVGL 9.3.0 PARTIAL/DIRECT 渲染及 H757 HAL 示例编译。两种真实渲染测试分别在独立进程冷启动，避免先运行 PARTIAL 掩盖 DIRECT 初始化问题。port 先初始化 LVGL，再查询实际行跨度；应用不预先调用 lv_init()。
 
 2026-10-11，H757 消费工程默认存储与 LVGL 两种配置的 CM4、CM7、顶层 Debug/Release 已完成构建；冷启动修复后重新构建 LVGL Debug/Release。LVGL-Debug 诊断固件采用 ILI9881C/GT9271、DSI 两通道、800×1280 RGB565 DIRECT 双缓冲、板级 DMA2D，通过 ST-Link 双核烧录及独立读回、持续刷新、触摸/按钮事件及五次软件复位；错误状态和 CFSR/HFSR 为 0，用户确认显示及触摸正常。
 
-该结论仅对应本次迁移提交组合和上述板级实例。未重新验证 Release、Widgets、PARTIAL 实板、ST7789/ST7796/FT5206 实物、掉电复位或长期稳定性；没有独立量化色序、边角坐标或滑动性能。HAL 示例编译不等于示例的具体接线已通过板测。固件、源码哈希、日志与完整 Flash 备份留在 H757 消费工程本地 `build/display-cold-start-fix-20261011/` 和 `build/display-generic-hardware-20261011/`，不纳入公共组件源码。
+该结论仅对应本次正式版本所含驱动源码与迁移组合和上述板级实例。未重新验证 Release、Widgets、PARTIAL 实板、ST7789/ST7796/FT5206 实物、掉电复位或长期稳定性；没有独立量化色序、边角坐标或滑动性能。HAL 示例编译不等于示例的具体接线已通过板测。固件、源码哈希、日志与完整 Flash 备份留在 H757 消费工程本地 `build/display-cold-start-fix-20261011/` 和 `build/display-generic-hardware-20261011/`，不纳入公共组件源码。
 
 **实板范围：** 2026-10-10，STM32F407 + AXS15231B，SPI 21 MHz、170×560 原生竖屏、RGB565、两块 16 行 SRAM 缓冲，用户确认显示和触摸正常。未完成独立长时间 soak，未宣称既有畸形触摸帧问题已修复。软件测试与该次板测分别记录。
 
