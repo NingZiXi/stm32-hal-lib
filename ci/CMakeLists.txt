@@ -20,6 +20,7 @@ target_include_directories(stm32cubemx INTERFACE
     "${DEPS_ROOT}/cmsis/CMSIS/Core/Include")
 
 add_subdirectory("${LIB_ROOT}/lib/stm_common" stm_common)
+add_subdirectory("${LIB_ROOT}/lib/stm_lcd" stm_lcd)
 add_subdirectory("${LIB_ROOT}/lib/stm_flash" stm_flash)
 add_subdirectory("${LIB_ROOT}/lib/stm_sdram" stm_sdram)
 if(CI_MCU STREQUAL "STM32H757xx")
@@ -76,7 +77,7 @@ target_compile_features(public_headers PRIVATE c_std_11 cxx_std_17)
 target_link_libraries(public_headers PRIVATE stm_flash stm_sdram stm_log stm_littlefs
     stm_eeprom_i2c stm_eeprom_gpio_i2c stm_sd_sdmmc stm_fatfs stm_fatfs_sd stm_fatfs_flash
     stm_lcd_st7789 stm_lcd_st7796 stm_lcd_touch_ft5206 stm_lcd_ili9881c stm_lcd_touch_gt9271
-    stm_lcd_axs15231b stm_lcd_touch_axs15231b)
+    stm_lcd stm_lcd_axs15231b stm_lcd_touch_axs15231b)
 
 add_library(log_disabled OBJECT "${LIB_ROOT}/lib/stm_log/stm_log.c")
 target_compile_definitions(log_disabled PRIVATE STM_LOG_ENABLED=0)

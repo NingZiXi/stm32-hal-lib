@@ -11,6 +11,7 @@ HAL_COMPONENTS = ['stm_lcd_st7789', 'stm_lcd_st7796', 'stm_lcd_ili9881c',
                   'stm_lcd_touch_ft5206', 'stm_lcd_touch_gt9271', 'stm_lvgl_port']
 # AXS15231B 示例使用 F407 HAL，不混入 H757 示例编译；核心/依赖/公共头文件仍检查。
 COMPONENTS = HAL_COMPONENTS + ['stm_lcd_axs15231b', 'stm_lcd_touch_axs15231b']
+FRAMEWORK = 'stm_lcd'
 PIN = 'ce3d186dde2d374a8e9c7b9068a7b88f97d57dc1'
 
 
@@ -18,7 +19,7 @@ def run(command, log, expect_missing=False):
     result = subprocess.run(command, capture_output=True, text=True, encoding='utf-8', errors='replace')
     log.write_text(result.stdout + result.stderr, encoding='utf-8')
     if expect_missing:
-        if result.returncode == 0 or 'stm_common is missing' not in result.stderr:
+        if result.returncode == 0 or not any(text in result.stderr for text in ['stm_common is missing', 'stm_lcd requires stm_common', 'stm_lcd is missing']):
             raise RuntimeError(f'Expected offline dependency error: {log}')
     elif result.returncode:
         raise RuntimeError(f'Command failed: {command}\nSee {log}\n{result.stdout[-2000:]}{result.stderr[-2000:]}')
@@ -45,22 +46,30 @@ def main():
     sandbox = Path(tempfile.mkdtemp(prefix='dependency-', dir=output)).resolve()
     assert sandbox.is_relative_to(output)
     modes = ['target', 'sibling', 'source_override', 'fetch_forward', 'fetch_reverse']
-    modes += [f'offline_{name}' for name in COMPONENTS]
+    modes += [f'offline_{name}' for name in [*COMPONENTS, FRAMEWORK]]
+    modes += [f'lcd_missing_{name}' for name in ['stm_lvgl_port', 'stm_lcd_axs15231b', 'stm_lcd_touch_axs15231b']]
     for mode in modes:
         source = sandbox / mode
         source.mkdir()
         order = COMPONENTS if mode != 'fetch_reverse' else list(reversed(COMPONENTS))
-        missing = mode.startswith('offline_')
-        if missing:
+        missing = mode.startswith(('offline_', 'lcd_missing_'))
+        if mode.startswith('offline_'):
             order = [mode.removeprefix('offline_')]
+        elif mode.startswith('lcd_missing_'):
+            order = [mode.removeprefix('lcd_missing_')]
+        if not mode.startswith('lcd_missing_') and FRAMEWORK not in order:
+            shutil.copytree(ROOT / 'lib' / FRAMEWORK, source / 'lib' / FRAMEWORK,
+                            ignore=shutil.ignore_patterns('.git', 'build', '__pycache__'))
         for name in order:
             shutil.copytree(ROOT / 'lib' / name, source / 'lib' / name,
                             ignore=shutil.ignore_patterns('.git', 'build', '__pycache__'))
         flags = []
         prelude = ''
         common = ROOT / 'lib/stm_common'
-        if mode == 'target':
+        if mode == 'target' or mode.startswith('lcd_missing_'):
             prelude = f'add_subdirectory("{common.as_posix()}" common)\n'
+            if mode == 'target':
+                prelude += 'add_subdirectory(lib/stm_lcd)\n'
         elif mode == 'sibling':
             common = source / 'lib/stm_common'
             shutil.copytree(ROOT / 'lib/stm_common', common, ignore=shutil.ignore_patterns('.git'))
@@ -92,7 +101,8 @@ def main():
     config = output / 'lv_conf.h'
     config.write_text('#ifndef LV_CONF_H\n#define LV_CONF_H\n#define LV_COLOR_DEPTH 16\n#endif\n', encoding='utf-8')
     includes = [ROOT / 'ci/include', ROOT / '.ci-deps/hal/Inc', ROOT / '.ci-deps/device/Include',
-                ROOT / '.ci-deps/cmsis/CMSIS/Core/Include', ROOT / 'lib/stm_common', lvgl]
+                ROOT / '.ci-deps/cmsis/CMSIS/Core/Include', ROOT / 'lib/stm_common',
+                ROOT / 'lib/stm_lcd/include', lvgl]
     flags = ['-mcpu=cortex-m7', '-mthumb', '-mfloat-abi=soft', '-std=c11', '-Wall', '-Wextra', '-Werror',
              '-DSTM32H757xx', '-DUSE_HAL_DRIVER', '-DCORE_CM7', '-DHAL_DSI_MODULE_ENABLED',
              f'-DLV_CONF_PATH="{config.as_posix()}"']
@@ -107,19 +117,19 @@ def main():
     # 聚合所有公共头文件，使用真实 LVGL 检查 C11/C++17 消费者及 port 实现。
     port = ROOT / 'lib/stm_lvgl_port'
     for extension in ['c', 'cpp']:
-        content = ''.join(f'#include "{name}.h"\n' for name in COMPONENTS)
+        content = ''.join(f'#include "{name}.h"\n' for name in [FRAMEWORK, *COMPONENTS])
         (output / f'all-display-headers.{extension}').write_text(content, encoding='utf-8')
     for extension, compiler, standard in [('c', args.c_compiler, 'c11'), ('cpp', args.cxx_compiler, 'c++17')]:
         command = [compiler, f'-std={standard}', '-Wall', '-Wextra', '-Werror',
                    f'-DLV_CONF_PATH="{config.as_posix()}"']
-        for path in [lvgl, ROOT / 'lib/stm_common', *[ROOT / 'lib' / name / 'include' for name in COMPONENTS]]:
+        for path in [lvgl, ROOT / 'lib/stm_common', *[ROOT / 'lib' / name / 'include' for name in [FRAMEWORK, *COMPONENTS]]]:
             command += ['-I', str(path)]
         # LVGL 来自源码 -I，不把测试桩的 include 路径加入消费者。
         command += ['-c', str(output / f'all-display-headers.{extension}'), '-o', str(output / f'lvgl-headers-{extension}.o')]
         run(command, output / f'lvgl-real-headers-{extension}.log')
     run([args.c_compiler, '-std=c11', '-Wall', '-Wextra', '-Werror',
          f'-DLV_CONF_PATH="{config.as_posix()}"', '-I', str(lvgl), '-I', str(ROOT / 'lib/stm_common'),
-         '-I', str(port / 'include'), '-c', str(port / 'src/stm_lvgl_port.c'), '-o', str(output / 'lvgl-real-port.o')],
+         '-I', str(ROOT / 'lib/stm_lcd/include'), '-I', str(port / 'include'), '-c', str(port / 'src/stm_lvgl_port.c'), '-o', str(output / 'lvgl-real-port.o')],
         output / 'lvgl-real-port.log')
     print('PASS: real LVGL port C11/C++17 headers and implementation', flush=True)
 

@@ -1,3 +1,4 @@
+#include "stm_lcd.h"
 /**
  * @file    headers.cpp
  * @brief   C++ 消费者的组件公共头文件编译检查

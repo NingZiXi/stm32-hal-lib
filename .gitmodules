@@ -58,3 +58,6 @@
 [submodule "lib/stm_lcd_touch_axs15231b"]
 	path = lib/stm_lcd_touch_axs15231b
 	url = ../stm_lcd_touch_axs15231b.git
+[submodule "lib/stm_lcd"]
+	path = lib/stm_lcd
+	url = ../stm_lcd.git

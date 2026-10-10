@@ -91,7 +91,7 @@ jobs:
           done
       - name: Run LCD, touch and LVGL port host tests
         run: |
-          for component in stm_lcd_st7789 stm_lcd_st7796 stm_lcd_touch_ft5206 stm_lcd_ili9881c stm_lcd_touch_gt9271 stm_lcd_axs15231b stm_lcd_touch_axs15231b stm_lvgl_port; do
+          for component in stm_lcd stm_lcd_st7789 stm_lcd_st7796 stm_lcd_touch_ft5206 stm_lcd_ili9881c stm_lcd_touch_gt9271 stm_lcd_axs15231b stm_lcd_touch_axs15231b stm_lvgl_port; do
             cmake -S lib/$component/tests -B build/$component-tests -G Ninja -DCMAKE_BUILD_TYPE=Debug
             cmake --build build/$component-tests
             ctest --test-dir build/$component-tests --output-on-failure
@@ -105,6 +105,8 @@ jobs:
           persist-credentials: false
       - name: Check display dependencies and HAL examples
         run: python ci/check_display_integration.py --lvgl-source .ci-deps/lvgl
+      - name: Check LVGL target and offline dependency resolution
+        run: python lib/stm_lvgl_port/tests/test_dependency.py --lvgl-source .ci-deps/lvgl
       - name: Run H757 QSPI and SDRAM software tests
         run: |
           python lib/stm_flash/tests/run_tests.py --mcu STM32H757xx --bus qspi --include ci/include --include .ci-deps/hal/Inc --include .ci-deps/device/Include --include .ci-deps/cmsis/CMSIS/Core/Include --build-dir build/qspi-tests

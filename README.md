@@ -36,21 +36,22 @@
 | [stm_sd](https://github.com/NingZiXi/stm_sd) | [`fe5da0d003e3`](https://github.com/NingZiXi/stm_sd/tree/fe5da0d003e330730b45cc7a7a8ad1c68988b1c6) | [![version 1.0.2](https://img.shields.io/badge/version-1.0.2-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_sd/tree/fe5da0d003e330730b45cc7a7a8ad1c68988b1c6) | SD NAND/TF 卡块设备与 SDMMC 适配 |
 | [stm_fatfs](https://github.com/NingZiXi/stm_fatfs) | [`891204bb40b8`](https://github.com/NingZiXi/stm_fatfs/tree/891204bb40b853c12f05e382ae3ec87ed1772a3e) | [![version 1.0.4](https://img.shields.io/badge/version-1.0.4-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_fatfs/tree/891204bb40b853c12f05e382ae3ec87ed1772a3e) | FatFs 磁盘注册和块设备粘合层 |
 | [esp_at_client](https://github.com/NingZiXi/esp_at_client) | [`b17f954c76ca`](https://github.com/NingZiXi/esp_at_client/tree/b17f954c76ca4cc3cddcddad48faa1328d80a29f) | [![version 0.5.0](https://img.shields.io/badge/version-0.5.0-5364b5?style=flat-square)](https://github.com/NingZiXi/esp_at_client/tree/b17f954c76ca4cc3cddcddad48faa1328d80a29f) | 平台无关 ESP-AT 轮询客户端，STM32 HAL 适配位于 ports/stm32_hal/ |
+| [stm_lcd](https://github.com/NingZiXi/stm_lcd) | [`da713eecea80`](https://github.com/NingZiXi/stm_lcd/tree/da713eecea80c5abb59973a3b003015800011b4a) | 未发布（基于 首次实现；无 tag） | 显示领域公共 IO、panel、touch；可选 F4 HAL 适配 |
 | [stm_lcd_st7789](https://github.com/NingZiXi/stm_lcd_st7789) | [`d3013e3e010c`](https://github.com/NingZiXi/stm_lcd_st7789/tree/d3013e3e010c40a15268ea301722808e5767552b) | [![version 0.2.0](https://img.shields.io/badge/version-0.2.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_lcd_st7789/tree/d3013e3e010c40a15268ea301722808e5767552b) | ST7789 SPI 面板芯片驱动 |
 | [stm_lcd_st7796](https://github.com/NingZiXi/stm_lcd_st7796) | [`a45c88a1bd9f`](https://github.com/NingZiXi/stm_lcd_st7796/tree/a45c88a1bd9f4ce22eb60e19af8184cf3e3d1b1a) | [![version 0.2.0](https://img.shields.io/badge/version-0.2.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_lcd_st7796/tree/a45c88a1bd9f4ce22eb60e19af8184cf3e3d1b1a) | ST7796 SPI 面板芯片驱动 |
 | [stm_lcd_touch_ft5206](https://github.com/NingZiXi/stm_lcd_touch_ft5206) | [`e49ae91ff723`](https://github.com/NingZiXi/stm_lcd_touch_ft5206/tree/e49ae91ff723b23ce7d619e895152d96727b3b02) | [![version 0.2.0](https://img.shields.io/badge/version-0.2.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_lcd_touch_ft5206/tree/e49ae91ff723b23ce7d619e895152d96727b3b02) | FT5206 I2C 触摸芯片驱动 |
 | [stm_lcd_ili9881c](https://github.com/NingZiXi/stm_lcd_ili9881c) | [`daeb162266d2`](https://github.com/NingZiXi/stm_lcd_ili9881c/tree/daeb162266d217709187629ea90768cf6083ebaf) | [![version 0.2.0](https://img.shields.io/badge/version-0.2.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_lcd_ili9881c/tree/daeb162266d217709187629ea90768cf6083ebaf) | ILI9881C DSI 面板初始化，模组命令表仅适用于已测 10.1 寸屏幕 |
 | [stm_lcd_touch_gt9271](https://github.com/NingZiXi/stm_lcd_touch_gt9271) | [`da4479a471bb`](https://github.com/NingZiXi/stm_lcd_touch_gt9271/tree/da4479a471bb21a1acd72fc5fdccca7d0fd2749b) | [![version 0.2.0](https://img.shields.io/badge/version-0.2.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_lcd_touch_gt9271/tree/da4479a471bb21a1acd72fc5fdccca7d0fd2749b) | GT9271 I²C 触摸与坐标读取 |
-| [stm_lcd_axs15231b](https://github.com/NingZiXi/stm_lcd_axs15231b) | [`fecdf3909d77`](https://github.com/NingZiXi/stm_lcd_axs15231b/tree/fecdf3909d77fadc4a444bdcaf8f73936cc34314) | 未发布（基于 `29f19dce2678` 初始提交；主机测试通过，未标记版本） | AXS15231B SPI 命令、窗口与 RGB565 写入（QSPI 不支持） |
-| [stm_lcd_touch_axs15231b](https://github.com/NingZiXi/stm_lcd_touch_axs15231b) | [`202b368a31ed`](https://github.com/NingZiXi/stm_lcd_touch_axs15231b/tree/202b368a31eda0809c185d2447d3fdd27e2be000) | 未发布（基于 `a89ddae9a9db` 初始提交；主机测试通过，未标记版本） | AXS15231B I²C 单点触摸、坐标变换与错误清空 |
-| [stm_lvgl_port](https://github.com/NingZiXi/stm_lvgl_port) | [`a09ae1ae1cf6`](https://github.com/NingZiXi/stm_lvgl_port/tree/a09ae1ae1cf6e3e6255e01e4f1fa49c66dadb04c) | [![version 0.3.0](https://img.shields.io/badge/version-0.3.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_lvgl_port/tree/a09ae1ae1cf6e3e6255e01e4f1fa49c66dadb04c) | 独立于屏幕型号的显示与触摸接入，固定 LVGL 9.3.0 自动获取 |
+| [stm_lcd_axs15231b](https://github.com/NingZiXi/stm_lcd_axs15231b) | [`836b9b977e01`](https://github.com/NingZiXi/stm_lcd_axs15231b/tree/836b9b977e01a8161d0072637d9f83a505fd86b2) | 未发布（基于 此前无 tag 提交；接口重构，待发布） | AXS15231B 通用面板接口、独立窗口与同步/异步像素 |
+| [stm_lcd_touch_axs15231b](https://github.com/NingZiXi/stm_lcd_touch_axs15231b) | [`b42732affd04`](https://github.com/NingZiXi/stm_lcd_touch_axs15231b/tree/b42732affd04b587b6786b35c8284202f4e50674) | 未发布（基于 此前无 tag 提交；接口重构，待发布） | AXS15231B 通用触摸接口、单点协议与非消费快照 |
+| [stm_lvgl_port](https://github.com/NingZiXi/stm_lvgl_port) | [`31750491d9dc`](https://github.com/NingZiXi/stm_lvgl_port/tree/31750491d9dc1e3a98684b5c2477b01b17b9e1ad) | 未发布（基于 v0.3.0；接口重构，待发布） | 通用设备接入、PARTIAL RGB565 与协作式 DMA/输入服务 |
 | [stm_ota](https://github.com/NingZiXi/stm_ota) | [`f9163d2a7efe`](https://github.com/NingZiXi/stm_ota/tree/f9163d2a7efe2f67d089a62c413dc40360c49170) | [![version 0.5.0](https://img.shields.io/badge/version-0.5.0-5364b5?style=flat-square)](https://github.com/NingZiXi/stm_ota/tree/f9163d2a7efe2f67d089a62c413dc40360c49170) | 同步 OTA 下载、A/B 分区切换与 Flash 校验 |
 
 FatFs 官方源码不直接存入总仓库；当前 `stm_fatfs v1.0.4` 在构建时从官方获取固定的 R0.14b 并校验 SHA-256，下载及编译副本位于构建目录。离线接入可通过 `STM_FATFS_SOURCE_DIR` 指定外部源码目录。
 
 “当前提交”链接对应本仓库固定的 gitlink；徽章只用于有对应 tag 的提交。标为“未发布”的组合不能用其基线 tag 的硬件结论代替新提交验收。组件名称链接到独立仓库首页，那里可能已更新；使用此组合时请读克隆后的 `lib/<组件>/README.md`。
 
-五款显示与触摸芯片组件固定为 `v0.2.0`，`stm_lvgl_port` 固定为 `v0.3.0`，新增 LVGL 9.3.0 固定提交自动获取、已有 target 复用与离线源码支持；C API 与 v0.2.x 兼容，采用不透明句柄、`create/delete` 和 `stm_err_t`，不提供 `v0.1.0` 兼容包装。2026-10-07，ILI9881C/GT9271/LVGL port 在 H757 配套模组完成新接口的诊断、五次复位、Release 启动及官方 Widgets 滑动/点击回归；ST7789/ST7796/FT5206 仅完成软件验证。2026-10-08，port v0.3.0 通过主机、真实 LVGL 在线/离线依赖与示例编译检查，未重新执行完整固件链接或实板回归；上述硬件记录仍仅针对旧版组合。接入、迁移和验证边界见[显示接入指南](docs/display-components.md)。
+五款旧显示/触摸驱动仍固定为 `v0.2.0`，本轮未迁移其接口。当前 `stm_lvgl_port` 已改为借用 `stm_lcd` 通用句柄，与旧 draw/touch 回调 API 不兼容；固定 LVGL 9.3.0 获取、已有 target 与离线源码解析保留。2026-10-07 的 H757 ILI9881C/GT9271/Widgets 硬件回归及 2026-10-08 的 port `v0.3.0` 软件检查是历史组合记录，不作为当前 port 的 DIRECT 或新版硬件验收。当前 AXS/F407 组合与历史接入边界见[显示接入指南](docs/display-components.md)。
 
 ### 💾 存储组件 Driver 一览
 
@@ -158,3 +159,9 @@ CI 不连接 J-Link，也不证明板级电气时序、温度或长期稳定性�
 ## 贡献与许可
 
 新增组件、接口契约、注释和发布流程见 [CONTRIBUTING.md](CONTRIBUTING.md)；自动依赖的 target 复用、离线源码、固定版本拉取和验证要求见 [CMake 依赖获取规范](CONTRIBUTING.md#cmake-依赖获取规范)。本仓库原创文档和工具采用 [MIT License](LICENSE)；子模块及第三方部分遵循各自许可证。
+
+## 当前显示统一接口组合
+
+新增 `stm_lcd`，两个 AXS 驱动与 `stm_lvgl_port` 已迁移到公共句柄和协作式 process；应用不再提供绘图、完成、等待或触摸连接包装。此为未发布破坏性重构提交，无新 tag 或 Release。五款旧驱动仍是原 `v0.2.0` API，不能直接接入当前 port；历史组合与当前配置见[显示接入指南](docs/display-components.md)。
+
+2026-10-10，用户确认 STM32F407 + AXS15231B 的显示与触摸正常（21 MHz SPI、170×560、RGB565、两个 16 行普通 SRAM 缓冲）。该结论不覆盖其他器件、DIRECT、独立长时间 soak，也不宣称既有触摸畸形帧问题已修复。

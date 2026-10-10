@@ -1,6 +1,41 @@
 # STM32 显示与触摸组件接入指南
 
-每个芯片独立维护组件，板级负责传输、GPIO、电源和时序；LVGL port 连接显示/输入回调。没有额外的通用显示或触摸转发层，不兼容 ESP-IDF API。本文针对总仓库当前 gitlink 的五款芯片组件 `v0.2.0` 与 `stm_lvgl_port v0.3.0`，`v0.1.0` 保留旧接口。使用旧 tag 时请读取该 tag 的组件文档，不直接复制本文的新接口。新增 AXS15231B 显示与触摸组件固定为未标记版本的提交，采用同类句柄/回调契约；其 STM32F407 示例和验证范围以组件 README 为准。当前提交与发布状态见[总仓库组件表](../README.md)。
+## 当前统一接口组合（未发布开发提交）
+
+本次新增 [stm_lcd](../lib/stm_lcd/README.md)，统一显示领域的 IO、panel、touch 接口，不依赖 LVGL、RTOS 或日志。当前组合为 `stm_lcd` + 两个 AXS15231B 驱动 + `stm_lvgl_port`，具体提交见[组件表](../README.md)。这是破坏性接口迁移，尚未创建新 tag 或 Release。
+
+- 板级创建 IO，协调复位，并用芯片构造函数取得通用面板/触摸句柄。
+- 面板与触摸借用 IO，不隐式销毁硬件；像素缓冲由应用静态提供。
+- port 配置接收 `.io`、`.panel`、可选 `.touch`、缓冲和 `.clock_ms`；不再提供旧 `.draw`、`.touch` 回调包装。
+- `lvgl_port_create` 接管 LVGL 初始化和 tick，主循环调用 `lvgl_port_process(port, now)`，内部服务完成事件、输入和到期 handler。
+- 同步/异步 PARTIAL RGB565 均支持。IRQ 只记录 DMA 状态；主循环确认硬件停止后恰好一次通知 LVGL。删除前必须没有在途刷新，并解除订阅。
+- 触摸 read 更新快照，get 不访问总线且不消费；交换轴/边界/镜像只应用一次。总线故障与畸形报文分开处理。
+
+```cmake
+add_subdirectory(Lib/stm_common)
+add_subdirectory(Lib/stm_lcd)
+add_subdirectory(Lib/stm_lcd_axs15231b)
+add_subdirectory(Lib/stm_lcd_touch_axs15231b)
+# 提供已有 lvgl target 或应用 lv_conf.h 与固定版本依赖来源。
+add_subdirectory(Lib/stm_lvgl_port)
+target_link_libraries(your_firmware PRIVATE
+    stm_lcd_axs15231b stm_lcd_touch_axs15231b stm_lvgl_port)
+# F4 HAL 适配器按实际工程单独选择，见 stm_lcd README。
+```
+
+`stm_lcd` 依赖优先使用已有 target 或同级源码；缺失明确报错，不自动拉取未经发布验证的框架。LVGL 的固定 9.3.0 下载和离线解析保持可用。详见[框架](../lib/stm_lcd/README.md)、[面板示例](../lib/stm_lcd_axs15231b/examples/stm32_hal/README.md)、[触摸示例](../lib/stm_lcd_touch_axs15231b/examples/stm32_hal/README.md)和[port 示例](../lib/stm_lvgl_port/examples/stm32_hal/README.md)。
+
+**其他五款驱动未迁移：** ST7789/ST7796/ILI9881C/FT5206/GT9271 仍保留 `v0.2.0` 独立接口，不能直接传给当前 port。使用历史组合（port `v0.3.0`）或另行实现通用接口；本轮不引入兼容包装。H757 DIRECT 实测属于历史消费工程，不作为新 port 的硬件结论；当前 port 不提供 DIRECT。
+
+**实板范围：** 2026-10-10，STM32F407 + AXS15231B，SPI 21 MHz、170×560 原生竖屏、RGB565、两块 16 行 SRAM 缓冲，用户确认显示和触摸正常。未完成独立长时间 soak，未宣称既有畸形触摸帧问题已修复。软件测试与该次板测分别记录。
+
+---
+
+## 历史 tag 接入指南（重构前 API，不可复制到当前 port）
+
+下面保留旧版本迁移及 H757 验收记录；其中回调 API、手动 tick/handler 与 DIRECT 扩展只适用于所述旧 tag，旧 AXS 无 tag 提交需按其原始提交文档使用，不与上面新组合混用。
+
+每个芯片独立维护组件，板级负责传输、GPIO、电源和时序；LVGL port 连接显示/输入回调。没有额外的通用显示或触摸转发层，不兼容 ESP-IDF API。以下历史内容针对重构前 gitlink 的五款芯片组件 `v0.2.0` 与 `stm_lvgl_port v0.3.0`，`v0.1.0` 保留旧接口。使用旧 tag 时请读取该 tag 的组件文档，不直接复制本文的新接口。新增 AXS15231B 显示与触摸组件固定为未标记版本的提交，采用同类句柄/回调契约；其 STM32F407 示例和验证范围以组件 README 为准。历史版本不代表当前组合；当前提交与发布状态见[总仓库组件表](../README.md)。
 
 ## 1. 选择与添加组件
 
