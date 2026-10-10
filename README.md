@@ -130,6 +130,10 @@ RTT 在添加组件前设置 `STM_LOG_WITH_RTT=ON`；输出回调、固定 RTT �
 
 分发的 `stm32-app-main` skill 在外部工程查询并锁定 stm_log 的稳定版本，通过 FetchContent 接入，使用平台无关输出回调。这是另一条消费路径，不会升级本仓库的日志子模块，也不能同时创建两个同名 `stm_log` target。先选择接入路径，再核对 API 和 HAL 依赖；技能的安装、适用范围与版本见 [skills/README.md](skills/README.md)。
 
+## 编写或迁移屏幕、触摸驱动
+
+使用已有组件看[显示接入指南](docs/display-components.md)；开发新驱动、迁移旧驱动或扩展 LVGL port，先读[显示组件开发规范](docs/display-development.md)。统一通用句柄和生命周期，不统一芯片协议：换芯片不改 port，板级参数不当通用默认。规范包含实现骨架、迁移步骤、扩展边界、验收矩阵及可交给 Agent 的任务提示。
+
 ## 目录与验证
 
 ```text

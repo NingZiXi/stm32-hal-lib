@@ -14,12 +14,14 @@
 | --- | --- |
 | 使用或介绍组件 | [README.md](README.md)，再读所选组件当前提交的 README 和示例 |
 | 修改组件、引用或发布流程 | [CONTRIBUTING.md](CONTRIBUTING.md)，再读目标组件的公开头文件、CMake、实现和相关测试 |
-| 开发显示/触摸/LVGL 组件 | [显示开发规范](docs/display-development.md)；具体契约以目标版本头文件为准 |
-| 接入显示功能或迁移接口 | [显示接入指南](docs/display-components.md)及选中组件的板级示例 |
+| 新增或迁移屏幕/触摸驱动、扩展 LCD/LVGL 公共能力 | 必读[显示开发规范](docs/display-development.md)，再读目标组件局部 AGENTS、公开头、实现和测试；按其迁移流程、能力边界及验收矩阵执行 |
+| 使用已有组件接入显示功能 | [显示接入指南](docs/display-components.md)及选中组件的板级示例；不要把旧 tag 示例套用到新 API |
 | 修改检查脚本或工作流 | [ci/README.md](ci/README.md)、受影响的脚本与 `.github/workflows/` |
 | 将业务入口和日志接入外部 CubeMX 工程 | [skills/README.md](skills/README.md)，适用时激活其固定版本的 SKILL.md，再按所选后端读取 reference/asset |
 
 只读当前任务需要的材料。维护总仓库文档或驱动不需要激活应用接入 skill；skill 不向外部工程传播本仓库的目录指令。
+
+显示驱动迁移与 port 扩展以显示开发规范为共同依据：换芯片不增加 port 芯片分支，不把 F407/AXS 板级参数当通用默认。涉及 API 缺口先提出契约与验证方案；不得仅靠应用包装、空成功实现或删旧测试获得通过。修改组件须在相应独立仓库完成，聚合 gitlink 更新另行审查；本文件不授权烧录、发布或推送。
 
 ## 信息来源与版本
 

@@ -30,6 +30,12 @@ git submodule add ../stm_<name>.git lib/stm_<name>
 
 按实际复杂度组织目录：当前 Flash/SDRAM 使用 `include/`、`src/`、`adapters/stm32_hal/`，较小组件可以在根目录放源码与头文件；均提供 `CMakeLists.txt`、`README.md` 和 `LICENSE`。示例和测试按需提供，不要求空目录、CHANGELOG 或额外 docs。
 
+## 显示与触摸开发依据
+
+新增或迁移屏幕/触摸组件、扩展公共 LCD 接口或 LVGL 粘合层时，必须按[显示组件开发规范](docs/display-development.md)执行。该文件集中定义职责、通用契约、最小对象骨架、迁移流程、扩展设计和验收矩阵；[显示接入指南](docs/display-components.md)只说明如何使用已有组合。
+
+不同芯片复用同一通用接口，不统一其芯片协议，也不把当前 AXS/F407 参数推广到其他硬件。现有旧驱动未迁移前如实保留其 API/版本状态；公共接口不够时先设计能力与安全语义，不能在 port 增加芯片分支或在应用增加重复连接层。组件独立文档仍须足够使用，AGENTS 只补阅读入口和局部约束，不复制多份完整规范。
+
 ## CMake 依赖获取规范
 
 新增或修改组件的自动获取逻辑时遵循本节；已有版本的选项、目录和依赖顺序仍以该提交的 CMake 与 README 为准，不为统一文档而批量迁移组件。总仓库 gitlink 固定自有组件组合，组件内 FetchContent 固定其依赖，两者分别维护；配置或构建不得自动更新总仓库子模块或追踪远端最新版本。

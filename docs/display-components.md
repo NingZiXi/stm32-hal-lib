@@ -1,5 +1,7 @@
 # STM32 显示与触摸组件接入指南
 
+本文用于接入已有组件；新增/迁移驱动或扩展 LCD/LVGL 能力，请先按[显示组件开发规范](display-development.md)执行，不把板级参考配置或历史 API 当作通用开发标准。
+
 ## 当前统一接口组合（v1.0.0）
 
 本次新增 [stm_lcd](../lib/stm_lcd/README.md)，统一显示领域的 IO、panel、touch 接口，不依赖 LVGL、RTOS 或日志。当前组合为 `stm_lcd` + 两个 AXS15231B 驱动 + `stm_lvgl_port`，具体提交见[组件表](../README.md)。四个组件均已发布 `v1.0.0` tag 和 GitHub Release，GitHub/Gitee 指向相同提交。这是破坏性接口迁移；旧 API 不与本版本混用，按对应 tag 的公开头文件接入。
