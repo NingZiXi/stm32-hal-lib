@@ -1,10 +1,10 @@
 # STM32 显示与触摸组件接入指南
 
-## 当前统一接口组合（未发布开发提交）
+## 当前统一接口组合（v1.0.0）
 
-本次新增 [stm_lcd](../lib/stm_lcd/README.md)，统一显示领域的 IO、panel、touch 接口，不依赖 LVGL、RTOS 或日志。当前组合为 `stm_lcd` + 两个 AXS15231B 驱动 + `stm_lvgl_port`，具体提交见[组件表](../README.md)。这是破坏性接口迁移，尚未创建新 tag 或 Release。
+本次新增 [stm_lcd](../lib/stm_lcd/README.md)，统一显示领域的 IO、panel、touch 接口，不依赖 LVGL、RTOS 或日志。当前组合为 `stm_lcd` + 两个 AXS15231B 驱动 + `stm_lvgl_port`，具体提交见[组件表](../README.md)。四个组件均已发布 `v1.0.0` tag 和 GitHub Release，GitHub/Gitee 指向相同提交。这是破坏性接口迁移；旧 API 不与本版本混用，按对应 tag 的公开头文件接入。
 
-四个组件的 README 已补齐接入、生命周期和验证说明，Agent 接入 Prompt 位于简介后且合并为一段；各自根目录新增 AGENTS.md，约束阅读顺序、代码注释及测试。此次同步仅整理文档、注释和格式，不改变运行逻辑或 MIT LICENSE，默认依赖固定提交保持不变；不创建版本 tag 或 Release。
+四个组件的 README 已补齐接入、生命周期和验证说明，Agent 接入 Prompt 位于简介后且合并为一段；各自根目录新增 AGENTS.md，约束阅读顺序、代码注释及测试。本次正式发布将两个 AXS 的默认框架依赖固定为 `stm_lcd v1.0.0` 的不可变提交，并同步四组件 gitlink 与版本徽章；发布准备不改变已验收运行代码或 MIT LICENSE。总仓库不创建 tag 或 Release，本次不重新烧录。
 
 - 板级创建 IO，协调复位，并用芯片构造函数取得通用面板/触摸句柄。
 - 面板与触摸借用 IO，不隐式销毁硬件；像素缓冲由应用静态提供。
@@ -25,7 +25,7 @@ target_link_libraries(your_firmware PRIVATE
 # F4 HAL 适配器按实际工程单独选择，见 stm_lcd README。
 ```
 
-两个 AXS 组件会优先复用已有 `stm_lcd` target、显式本地源码或同级源码，缺失时自动获取固定验证提交 `da713eecea80c5abb59973a3b003015800011b4a`，不会追踪 main。支持 `STM_LCD_FETCH=OFF`、`STM_LCD_SOURCE_DIR`、`FETCHCONTENT_SOURCE_DIR_STM_LCD` 和 `STM_LCD_GIT_REPOSITORY`（可指定 Gitee 镜像）。先添加任意一个 AXS 组件即可提供公共框架；port 本身仍要求已有 target 或同级框架。LVGL 的固定 9.3.0 下载和离线解析保持可用。详见[框架](../lib/stm_lcd/README.md)、[面板示例](../lib/stm_lcd_axs15231b/examples/stm32_hal/README.md)、[触摸示例](../lib/stm_lcd_touch_axs15231b/examples/stm32_hal/README.md)和[port 示例](../lib/stm_lvgl_port/examples/stm32_hal/README.md)。
+两个 AXS 组件会优先复用已有 `stm_lcd` target、显式本地源码或同级源码，缺失时自动获取 `stm_lcd v1.0.0` 的固定提交 `c359e54a657be38aec90c797ea19ee3d492d9284`，不会追踪 main。支持 `STM_LCD_FETCH=OFF`、`STM_LCD_SOURCE_DIR`、`FETCHCONTENT_SOURCE_DIR_STM_LCD` 和 `STM_LCD_GIT_REPOSITORY`（可指定 Gitee 镜像）。先添加任意一个 AXS 组件即可提供公共框架；port 本身仍要求已有 target 或同级框架。LVGL 的固定 9.3.0 下载和离线解析保持可用。详见[框架](../lib/stm_lcd/README.md)、[面板示例](../lib/stm_lcd_axs15231b/examples/stm32_hal/README.md)、[触摸示例](../lib/stm_lcd_touch_axs15231b/examples/stm32_hal/README.md)和[port 示例](../lib/stm_lvgl_port/examples/stm32_hal/README.md)。
 
 **其他五款驱动未迁移：** ST7789/ST7796/ILI9881C/FT5206/GT9271 仍保留 `v0.2.0` 独立接口，不能直接传给当前 port。使用历史组合（port `v0.3.0`）或另行实现通用接口；本轮不引入兼容包装。H757 DIRECT 实测属于历史消费工程，不作为新 port 的硬件结论；当前 port 不提供 DIRECT。
 
