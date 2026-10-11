@@ -104,13 +104,13 @@ git submodule add ../stm_<name>.git lib/stm_<name>
 
 ## 自动候选更新与开发组合
 
-[同步工作流](.github/workflows/sync-latest-tags.yml)原先每天或手动运行 [sync_latest_tags.py](ci/sync_latest_tags.py)，查询 `lib/` 子模块的最高数字语义化版本 tag（`vX.Y.Z` 或 `X.Y.Z`，排除预发布后缀），同步 README 的当前提交与版本徽章，并创建或更新草稿 PR。为保持总仓库仅有 `main`，该工作流当前已在 GitHub 停用；确定不创建额外分支的同步方式前，不直接重新启用。手动脚本仍可使用，`skills/` 不在该任务范围内。
+[同步工作流](.github/workflows/sync-latest-tags.yml)原先每天或手动运行 [sync_latest_tags.py](ci/sync_latest_tags.py)，查询 `lib/` 子模块的最高数字语义化版本 tag（`vX.Y.Z` 或 `X.Y.Z`，排除预发布后缀），同步子模块固定提交与 README 版本徽章，并创建或更新草稿 PR。为保持总仓库仅有 `main`，该工作流当前已在 GitHub 停用；确定不创建额外分支的同步方式前，不直接重新启用。手动脚本仍可使用，`skills/` 不在该任务范围内。
 
 在干净工作区可先运行 `python ci/sync_latest_tags.py --dry-run` 预览，再运行不带该参数的命令更新。脚本只允许当前提交向候选 tag 的后代快进；若当前提交在旧 tag 之后或历史分叉，则跳过并报告，保留未发布开发组合。预览缺少候选对象时会提示需获取对象后检查历史，不把无法确认的关系当作可更新。
 
 tag 发现不等于正式发布验收：该脚本不检查 GitHub Release、镜像可获取性或硬件结果。合入前按上节确认发布资料、两端提交、兼容性和所需检查；GitHub Actions 自带 token 创建的 PR 不自动触发 CI，需要在候选分支手动运行 CI 或由维护者推送触发。
 
-README 表格必须展示实际 gitlink，只有对应提交有版本 tag 时才展示版本徽章。未发布提交标明基线版本与验证状态；保留旧 tag，不能用其测试结论覆盖新接口迁移。文档中的迁移状态描述特定组合，不构成后续任务的推送、烧录或发布授权。
+README 表格必须展示实际 gitlink，只有对应提交有版本 tag 时才展示版本徽章。未发布提交在发布状态中标明基线版本、固定提交的源码链接与验证状态；保留旧 tag，不能用其测试结论覆盖新接口迁移。文档中的迁移状态描述特定组合，不构成后续任务的推送、烧录或发布授权。
 
 ## 文档与技能维护
 

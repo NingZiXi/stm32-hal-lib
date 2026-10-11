@@ -13,8 +13,9 @@ from sync_latest_tags import latest_tag, update_badge
 
 
 def readme_row(sha, release='未发布（基于 v1.0.0）'):
-    return (f'| [stm_log](https://github.com/NingZiXi/stm_log) | '
-            f'[`{sha[:12]}`](https://github.com/NingZiXi/stm_log/tree/{sha}) | {release} | notes |\n')
+    if release.startswith('未发布（基于 '):
+        release = release[:-1] + f'；[源码](https://github.com/NingZiXi/stm_log/tree/{sha})）'
+    return f'| [stm_log](https://github.com/NingZiXi/stm_log) | {release} | notes |\n'
 
 
 class SyncLatestTagsTest(unittest.TestCase):
@@ -34,9 +35,28 @@ class SyncLatestTagsTest(unittest.TestCase):
     def test_badge_tracks_selected_commit(self):
         row = readme_row('a' * 40)
         new = update_badge(row, "stm_log", "v3.0.2", "f" * 40)
-        self.assertIn("version-3.0.2-5364b5", new)
+        self.assertIn("version-3.0.2-5364b5?style=for-the-badge", new)
+        self.assertNotIn('[`', new)
+        self.assertTrue(new.endswith(' | notes |\n'))
         self.assertIn("/tree/" + "f" * 40, new)
         self.assertEqual(update_badge(new, "stm_log", "v3.0.2", "f" * 40), new)
+
+    def test_legacy_badge_upgrades_to_larger_style(self):
+        published = update_badge(readme_row('a' * 40), 'stm_log', 'v3.0.2', 'f' * 40)
+        legacy = published.replace('style=for-the-badge', 'style=flat-square')
+        check_readme_references(legacy, {'lib/stm_log': 'f' * 40})
+        self.assertEqual(update_badge(legacy, 'stm_log', 'v3.0.2', 'f' * 40), published)
+
+    def test_repository_check_rejects_unlinked_or_wrong_component_status(self):
+        current = 'f' * 40
+        entries = {'lib/stm_log': current}
+        unlinked = '| [stm_log](https://github.com/NingZiXi/stm_log) | 未发布（基于 v1.0.0） | notes |\n'
+        with self.assertRaisesRegex(SystemExit, 'with source link'):
+            check_readme_references(unlinked, entries)
+        published = update_badge(readme_row(current), 'stm_log', 'v3.0.2', current)
+        wrong_name = published.replace(f'/stm_log/tree/{current}', f'/stm_common/tree/{current}')
+        with self.assertRaisesRegex(SystemExit, 'source link differs'):
+            check_readme_references(wrong_name, entries)
 
     def test_missing_or_duplicate_rows_fail(self):
         row = readme_row('a' * 40)
@@ -50,10 +70,10 @@ class SyncLatestTagsTest(unittest.TestCase):
         published = update_badge(readme_row(current), 'stm_log', 'v3.0.2', current)
         check_readme_references(published, entries)
         check_readme_references(readme_row(current), entries)
-        with self.assertRaisesRegex(SystemExit, 'current commit differs'):
+        with self.assertRaisesRegex(SystemExit, 'source link differs'):
             check_readme_references(readme_row('a' * 40), entries)
         stale_badge = published.rsplit('/tree/' + current, 1)
-        with self.assertRaisesRegex(SystemExit, 'badge must link'):
+        with self.assertRaisesRegex(SystemExit, 'source link differs'):
             check_readme_references(('/tree/' + 'a' * 40).join(stale_badge), entries)
 
 

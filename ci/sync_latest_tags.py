@@ -19,9 +19,9 @@ BADGE = re.compile(
     r"version-(?P=version)-5364b5\?style=(?:flat-square|for-the-badge)\)\]"
     r"\(https://github\.com/NingZiXi/(?P<name>[^/)]+)/tree/(?P<sha>[0-9a-f]{40})\)"
 )
-COMMIT = re.compile(
-    r"\[`(?P<short>[0-9a-f]{12})`\]"
-    r"\(https://github\.com/NingZiXi/(?P<name>[^/)]+)/tree/(?P<sha>[0-9a-f]{40})\)"
+UNPUBLISHED = re.compile(
+    r"未发布（基于 v?\d+\.\d+\.\d+；\[源码\]"
+    r"\(https://github\.com/NingZiXi/(?P<name>[^/)]+)/tree/(?P<sha>[0-9a-f]{40})\)）"
 )
 
 
@@ -60,7 +60,7 @@ def configured_libraries():
 def component_row(readme, name):
     pattern = re.compile(
         rf"^(\| \[{re.escape(name)}\]\(https://github\.com/NingZiXi/{re.escape(name)}\) \| )"
-        r"([^|]+) \| ([^|]+)( \|[^\r\n]*\|)$", re.M)
+        r"([^|]+)( \|[^\r\n]*\|)$", re.M)
     rows = list(pattern.finditer(readme))
     if len(rows) != 1:
         raise ValueError(f"Expected exactly one README row for {name}; found {len(rows)}")
@@ -69,15 +69,12 @@ def component_row(readme, name):
 
 def update_badge(readme, name, tag, sha):
     row = component_row(readme, name)
-    if not COMMIT.fullmatch(row[2].strip()):
-        raise ValueError(f"Unexpected README commit cell for {name}: {row[2]}")
-    if not BADGE.fullmatch(row[3].strip()) and not row[3].strip().startswith("未发布（基于 "):
-        raise ValueError(f"Unexpected README release cell for {name}: {row[3]}")
+    if not BADGE.fullmatch(row[2].strip()) and not UNPUBLISHED.fullmatch(row[2].strip()):
+        raise ValueError(f"Unexpected README release cell for {name}: {row[2]}")
     version = tag.removeprefix("v")
     badge = (f"[![version {version}](https://img.shields.io/badge/version-{version}-5364b5?style=for-the-badge)]"
              f"(https://github.com/NingZiXi/{name}/tree/{sha})")
-    commit = f"[`{sha[:12]}`](https://github.com/NingZiXi/{name}/tree/{sha})"
-    replacement = row[1] + commit + " | " + badge + row[4]
+    replacement = row[1] + badge + row[3]
     return readme[:row.start()] + replacement + readme[row.end():]
 
 

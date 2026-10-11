@@ -5,7 +5,7 @@ import re
 import subprocess
 from urllib.parse import unquote, urlsplit
 
-from sync_latest_tags import BADGE, COMMIT, component_row
+from sync_latest_tags import BADGE, UNPUBLISHED, component_row
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -23,16 +23,12 @@ def check_readme_references(readme, entries):
             row = component_row(readme, name)
         except ValueError as error:
             raise SystemExit(str(error)) from error
-        commit = COMMIT.fullmatch(row[2].strip())
-        if not commit or commit['name'] != name or commit['sha'] != sha or commit['short'] != sha[:12]:
-            raise SystemExit(f'{path}: README current commit differs from staged gitlink')
-        release = row[3].strip()
-        badge = BADGE.fullmatch(release)
-        if badge:
-            if badge['name'] != name or badge['sha'] != sha:
-                raise SystemExit(f'{path}: README version badge must link to the current commit')
-        elif not release.startswith('未发布（基于 '):
-            raise SystemExit(f'{path}: expected a version badge or an unpublished baseline')
+        release = row[2].strip()
+        reference = BADGE.fullmatch(release) or UNPUBLISHED.fullmatch(release)
+        if not reference:
+            raise SystemExit(f'{path}: expected a version badge or an unpublished baseline with source link')
+        if reference['name'] != name or reference['sha'] != sha:
+            raise SystemExit(f'{path}: README release source link differs from staged gitlink')
 
 
 def main():

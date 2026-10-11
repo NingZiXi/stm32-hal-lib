@@ -150,7 +150,7 @@ python ci/check_repository.py
 python -m unittest discover -s ci -p test_sync_latest_tags.py
 ```
 
-前者检查总仓库跟踪的 Markdown（包括 AGENTS.md）、组件目录、README 当前提交和暂存区 gitlink。后者离线测试 tag 选择、版本表更新与历史关系保护，不需要 HAL 或开发板。同步任务的候选选择、预览和合入条件统一见 [CONTRIBUTING.md](../CONTRIBUTING.md)，不用为文档整理运行会修改 gitlink 的同步命令。
+前者检查总仓库跟踪的 Markdown（包括 AGENTS.md）、组件目录、README 发布状态中的源码链接与暂存区 gitlink。后者离线测试 tag 选择、版本表更新与历史关系保护，不需要 HAL 或开发板。同步任务的候选选择、预览和合入条件统一见 [CONTRIBUTING.md](../CONTRIBUTING.md)，不用为文档整理运行会修改 gitlink 的同步命令。
 
 ## 统一 LCD 框架依赖检查
 
