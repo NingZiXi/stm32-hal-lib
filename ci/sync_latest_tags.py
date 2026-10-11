@@ -16,7 +16,7 @@ ROOT = Path(__file__).resolve().parents[1]
 TAG = re.compile(r"v?(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)\Z")
 BADGE = re.compile(
     r"\[!\[version (?P<version>\d+\.\d+\.\d+)\]\(https://img\.shields\.io/badge/"
-    r"version-(?P=version)-5364b5\?style=flat-square\)\]"
+    r"version-(?P=version)-5364b5\?style=(?:flat-square|for-the-badge)\)\]"
     r"\(https://github\.com/NingZiXi/(?P<name>[^/)]+)/tree/(?P<sha>[0-9a-f]{40})\)"
 )
 COMMIT = re.compile(
@@ -74,7 +74,7 @@ def update_badge(readme, name, tag, sha):
     if not BADGE.fullmatch(row[3].strip()) and not row[3].strip().startswith("未发布（基于 "):
         raise ValueError(f"Unexpected README release cell for {name}: {row[3]}")
     version = tag.removeprefix("v")
-    badge = (f"[![version {version}](https://img.shields.io/badge/version-{version}-5364b5?style=flat-square)]"
+    badge = (f"[![version {version}](https://img.shields.io/badge/version-{version}-5364b5?style=for-the-badge)]"
              f"(https://github.com/NingZiXi/{name}/tree/{sha})")
     commit = f"[`{sha[:12]}`](https://github.com/NingZiXi/{name}/tree/{sha})"
     replacement = row[1] + commit + " | " + badge + row[4]
