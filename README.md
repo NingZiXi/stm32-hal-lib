@@ -19,7 +19,7 @@
 | 组件 | 发布状态 | 用途 |
 | --- | --- | --- |
 | [stm_common](https://github.com/NingZiXi/stm_common) | [![version 1.0.1](https://img.shields.io/badge/version-1.0.1-5364b5?style=for-the-badge)](https://github.com/NingZiXi/stm_common/tree/cc68ae4ad9c03e39d37d567eaae54dcf3b83e081) | `stm_err_t` 与公共错误码 |
-| [stm_flash](https://github.com/NingZiXi/stm_flash) | [![version 4.0.1](https://img.shields.io/badge/version-4.0.1-5364b5?style=for-the-badge)](https://github.com/NingZiXi/stm_flash/tree/829fee879f098fce68af0048eb7de361bd719c73) | NOR Flash 读取、分页写入、扇区擦除与校验 |
+| [stm_flash](https://github.com/NingZiXi/stm_flash) | [![version 4.1.0](https://img.shields.io/badge/version-4.1.0-5364b5?style=for-the-badge)](https://github.com/NingZiXi/stm_flash/tree/cacdb5c60230bde2ecff11381d8edf040c3dd8de) | NOR Flash 器件驱动、SPI/QSPI/OSPI 适配、读取与写擦校验 |
 | [stm_sdram](https://github.com/NingZiXi/stm_sdram) | [![version 4.0.2](https://img.shields.io/badge/version-4.0.2-5364b5?style=for-the-badge)](https://github.com/NingZiXi/stm_sdram/tree/e0599b9414c04ea4ef9c096cce420faa3721d872) | SDRAM 初始化、刷新、读写、填充及自检 |
 | [stm_log](https://github.com/NingZiXi/stm_log) | [![version 3.0.2](https://img.shields.io/badge/version-3.0.2-5364b5?style=for-the-badge)](https://github.com/NingZiXi/stm_log/tree/153199b4e04dc42f8e49ebf121587ee30fff8644) | 分级日志、标签过滤及自定义输出 |
 | [stm_esp_hosted](https://github.com/NingZiXi/stm_esp_hosted) | [![version 0.8.0](https://img.shields.io/badge/version-0.8.0-5364b5?style=for-the-badge)](https://github.com/NingZiXi/stm_esp_hosted/tree/be18b35709f93dc1e22c3cc90e282003f86a1078) | ESP32-C3 SPI 主机、STA/AP Wi-Fi、异步任务与发送队列、恢复诊断、国家/信道/功率、可选 lwIP 网卡 |
@@ -47,11 +47,11 @@ FatFs 官方源码不直接存入总仓库；当前 `stm_fatfs v1.0.4` 在构建
 
 ### 💾 存储组件 Driver 一览
 
-本次六个存储组件版本均为文档补丁，驱动源码/API 未改变，也未新增硬件验收结论。下表是当前固定组合的内置器件与接入后端摘要；详细约束见各组件 README。列出 Driver 不等于每种器件/总线组合均已完成实板验证，自定义接口也不等于现成支持。
+`stm_flash v4.1.0` 新增 GD25Q128C/E 公共单线子集及 STM32 HAL 普通 SPI 后端，并完成 F407 实板授权末尾 4 KiB 扇区的有限写擦验收；其他组合的验证范围以各组件 README 为准。下表是当前固定组合的内置器件与接入后端摘要；列出 Driver 不等于每种器件/总线组合均已完成实板验证，自定义接口也不等于现成支持。
 
 | 组件 | 内置器件 / 存储后端 | 控制器或适配 Driver |
 | --- | --- | --- |
-| [stm_flash](lib/stm_flash/README.md) | GD25Q256E、W25Q256JV-IQ | STM32 HAL QSPI / OSPI；同步 SDR NOR，不含 OPI/DTR、普通 SPI 或 NAND 后端 |
+| [stm_flash](lib/stm_flash/README.md) | GD25Q128C/E 公共单线子集、GD25Q256E、W25Q256JV-IQ | STM32 HAL SPI / QSPI / OSPI；同步 SDR NOR，不含 OPI/DTR 或 NAND 后端 |
 | [stm_sdram](lib/stm_sdram/README.md) | IS42S32800J-7（-7BLI 参数）、W9825G6KH-6 | STM32 HAL FMC SDRAM；器件显式选择 |
 | [stm_eeprom](lib/stm_eeprom/README.md) | BL24C16F | STM32 HAL 硬件 I²C、GPIO 模拟 I²C；GPIO 延时依赖 DWT/CYCCNT |
 | [stm_sd](lib/stm_sd/README.md) | 通用 SD / TF 默认速率描述符、XCZSDNAND4GAS | STM32 HAL SDMMC；默认速率上限 25 MHz，512 B 逻辑扇区 |
